@@ -3,7 +3,7 @@
 class DrawableObj
 {
 private:
-	unsigned _listNum;
+	int _listNum;
 
 public:
 	DrawableObj(const std::string &directory, const std::string &fileName, const std::string &objName, float scale);

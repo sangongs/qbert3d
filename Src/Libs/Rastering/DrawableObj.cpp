@@ -9,6 +9,8 @@
 #include <exception>
 #include <fstream>
 
+#include <boost/format.hpp>
+
 #include "SDL\SDL.h"
 #include "SDL\SDL_opengl.h"
 
@@ -84,7 +86,6 @@ public:
 class MtlObj
 {
 public:
-	MtlObj();
 	Point3D ka, kd, ks;
 	int illum;
 	int ns;
@@ -99,7 +100,7 @@ std::string readLine(std::ifstream& stream)
 
 DrawableObj::DrawableObj(const std::string& directory, const std::string &fileName, const std::string &objName, float scale) : _listNum(-1) // so that we wont accedently delete a list
 {
-	std::ifstream objFile((directory + "\\" + fileName).c_str);
+	std::ifstream objFile((boost::format("%1%//%2%") % directory % fileName).str().c_str());
 
 	bool readingObject = false;
 	std::string currentMtllib;
@@ -142,10 +143,10 @@ DrawableObj::DrawableObj(const std::string& directory, const std::string &fileNa
 	if (faces.size() == 0)
 		throw std::exception("Couldn't find object in file when trying to construct DrawableObj");
 
-	ifstream mtlFile((directory + "\\" + fileName).c_str());
+	std::ifstream mtlFile((boost::format("%1%//%2%") % directory % fileName).str().c_str());
 
 	std::string currentMtlObjName;
-	map<std::string, MtlObj> mtlObjects;
+	std::map<std::string, MtlObj> mtlObjects;
 	MtlObj currentMtlObj;
 
 	while (!objFile.eof())
@@ -159,7 +160,7 @@ DrawableObj::DrawableObj(const std::string& directory, const std::string &fileNa
 		if (command == "newmtl")
 		{		
 			if (!currentMtlObjName.empty())
-				map.insert(std::pair<std::string, MtlObj>(currentMtlObjName, currentMtlObj));
+				mtlObjects.insert(std::pair<std::string, MtlObj>(currentMtlObjName, currentMtlObj));
 
 			currentMtlObjName = arguments;
 		}
@@ -188,27 +189,27 @@ DrawableObj::DrawableObj(const std::string& directory, const std::string &fileNa
 			for (int i = 0; i < 3; i++)
 			{
 				normals[(*iter).normals[i]].Normalize();
-				map<std::string, MtlObj>::iterator mtlObjIter = mtlObjects.find((*iter).MtlObjName);
+				std::map<std::string, MtlObj>::iterator mtlObjIter = mtlObjects.find((*iter).MtlObjName);
 
 				if (mtlObjIter == mtlObjects.end())
 					throw std::exception("Couldn't find mtlObj for a face I was trying to draw.");
 
-				glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, (*mtlObjIter).second.ka.Points, 0);
-				glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, (*mtlObjIter).second.kd.Points, 0);
+				glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, (*mtlObjIter).second.ka.Points);
+				glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, (*mtlObjIter).second.kd.Points);
 				
 				if ((*mtlObjIter).second.illum == 2)
 				{
-					glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, (*mtlObjIter).second.ks.Points, 0);
-					glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, (GLfloat)(*mtlObjIter).second.ns);
+					glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, (*mtlObjIter).second.ks.Points);
+					glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, (GLfloat)(*mtlObjIter).second.ns);
 				}
 				else
 				{
 					float zeroArray[] = {0.0f, 0.0f, 0.0f};
-					glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, zeroArray, 0);
+					glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, zeroArray);
 				}
 
-				glNormal3f(normals[(*iter).normals[i]].X, normals[(*iter).normals[i]].Y, normals[(*iter).normals[i]].Z);
-				glVertex3f(vertices[(*iter).vertices[i]].X * scale, vertices[(*iter).vertices[i]].Y * scale, vertices[(*iter).vertices[i]].Z * scale);
+				glNormal3fv(normals[(*iter).normals[i]].Points);
+				glVertex3f(vertices[(*iter).vertices[i]].Points[0] * scale, vertices[(*iter).vertices[i]].Points[1] * scale, vertices[(*iter).vertices[i]].Points[2] * scale);
 			}
 		}
 
