@@ -61,7 +61,7 @@ void SimpleView::Init(unsigned int width, unsigned int height)
 	glPushMatrix();
 	glMatrixMode( GL_MODELVIEW );
 
-	_objects.insert(std::pair<std::string, DrawableObj_Ptr>("object__2", DrawableObj_Ptr(new DrawableObj("D:\\Programing\\qbert3d\\Objects\\smurf_2.obj", "object__2", 0.02f))));
+	_objects.insert(std::pair<std::string, DrawableObj_Ptr>("object__2", DrawableObj_Ptr(new DrawableObj("D:\\Programing\\qbert3d\\Objects", "smurf_2.obj", "object__2", 0.02f))));
 }
 
 void SimpleView::Draw()
