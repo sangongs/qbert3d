@@ -100,7 +100,7 @@ std::string readLine(std::ifstream& stream)
 
 DrawableObj::DrawableObj(const std::string& directory, const std::string &fileName, const std::string &objName, float scale) : _listNum(-1) // so that we wont accedently delete a list
 {
-	std::ifstream objFile((boost::format("%1%//%2%") % directory % fileName).str().c_str());
+	std::ifstream objFile((boost::format("%1%\\%2%") % directory % fileName).str().c_str());
 
 	bool readingObject = false;
 	std::string currentMtllib;
@@ -143,13 +143,13 @@ DrawableObj::DrawableObj(const std::string& directory, const std::string &fileNa
 	if (faces.size() == 0)
 		throw std::exception("Couldn't find object in file when trying to construct DrawableObj");
 
-	std::ifstream mtlFile((boost::format("%1%//%2%") % directory % fileName).str().c_str());
+	std::ifstream mtlFile((boost::format("%1%\\%2%") % directory % currentMtllib).str().c_str());
 
 	std::string currentMtlObjName;
 	std::map<std::string, MtlObj> mtlObjects;
 	MtlObj currentMtlObj;
 
-	while (!objFile.eof())
+	while (!mtlFile.eof())
 	{
 		std::string line(readLine(mtlFile));
 		
@@ -157,7 +157,7 @@ DrawableObj::DrawableObj(const std::string& directory, const std::string &fileNa
 		std::string command = line.substr(0, commandEnd);
 		std::string arguments = line.substr(commandEnd + 1, line.npos);
 
-		if (command == "newmtl")
+		if ((command == "newmtl") || (command.empty()))
 		{		
 			if (!currentMtlObjName.empty())
 				mtlObjects.insert(std::pair<std::string, MtlObj>(currentMtlObjName, currentMtlObj));
