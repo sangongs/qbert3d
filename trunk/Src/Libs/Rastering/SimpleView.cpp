@@ -69,6 +69,12 @@ void SimpleView::Draw()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	glMatrixMode( GL_MODELVIEW );
+	
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	float pos[] = {0.0f, 0.0f, 0.0f, 1.0f};
+	glLightfv(GL_LIGHT0, GL_POSITION, pos, 0);
+
 	glColor3f(0.3f, 0.5f, 0.9f);
 	for (std::list<GameObject>::const_iterator iter = _objList->begin(); iter != _objList->end(); iter++)
 	{	
