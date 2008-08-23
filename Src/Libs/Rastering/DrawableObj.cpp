@@ -17,9 +17,14 @@
 class Point3D
 {
 public:
-	Point3D(const std::string& argument)
+	Point3D(const std::string& arguments)
 	{
-		if (sscanf(argument.c_str(), "%f %f %f", &X, &Y, &Z) != 3)
+		LoadFromArguments(arguments);
+	}
+
+	LoadFromArguments(const std::String arguments)
+	{
+		if (sscanf(arguments.c_str(), "%f %f %f", &X, &Y, &Z) != 3)
 			throw std::exception("Couldn't read line into Point3D");
 	}
 
@@ -57,9 +62,9 @@ public:
 class Face
 {
 public:
-	Face(const std::string &arguemnts)
+	Face(const std::string &arguments, const std::string& mtlObjName)
 	{
-		if (sscanf(arguemnts.c_str(), "%d/%d/%d %d/%d/%d %d/%d/%d"
+		if (sscanf(arguments.c_str(), "%d/%d/%d %d/%d/%d %d/%d/%d"
 			, vertices, texture, normals, vertices + 1, texture + 1, normals + 1, vertices + 2, texture + 2, normals + 2) != 9)
 			throw std::exception("Can't parse argument in constructor for face");
 		for (int i = 0; i < 3; i++)
@@ -73,11 +78,31 @@ public:
 	Face(){};
 
 	unsigned vertices[3], texture[3], normals[3];
+	std::string mtlObjName;
 };
 
-DrawableObj::DrawableObj(const std::string &fileName, const std::string &objName, float scale) : _listNum(-1) // so that we wont accedently delete a list
+class MtlObj
 {
-	std::ifstream file(fileName.c_str());
+public:
+	MtlObj();
+	Point3D ka, kd, ks;
+	int illum;
+	int ns;
+
+	
+
+};
+
+std::String readLine(ifstream& stream)
+{
+	char buffer[1024];
+	stream.getline(buffer, 1024);
+	return std::string(buffer);
+}
+
+DrawableObj::DrawableObj(const std::string& directory, const std::string &fileName, const std::string &objName, float scale) : _listNum(-1) // so that we wont accedently delete a list
+{
+	std::ifstream objFile((directory + "\\" + fileName).c_str);
 
 	bool readingObject = false;
 	std::string currentMtllib;
@@ -88,20 +113,17 @@ DrawableObj::DrawableObj(const std::string &fileName, const std::string &objName
 	std::vector<Point3D> normals(0);
 	std::list<Face> faces;
 
-	while (!file.eof())
+	while (!objFile.eof())
 	{
-		char buffer[1024];
-		file.getline(buffer, 1024);
-		std::string line(buffer);
-		
+		std::string line(readLine(objFile));
 		size_t commandEnd(line.find(' ', 0));
 		std::string command = line.substr(0, commandEnd);
 		std::string arguments = line.substr(commandEnd + 1, line.npos);
 
 		if (command == "mtllib")
 			currentMtllib = arguments;
-		else if ((command == "g") && (arguments == objName))
-			readingObject = true;
+		else if (command == "g")
+			readingObject = (arguments == objName);
 		
 		if (readingObject)
 		{
@@ -114,12 +136,52 @@ DrawableObj::DrawableObj(const std::string &fileName, const std::string &objName
 			else if (command == "usemtl")
 				mtlObjName = arguments;
 			else if (command == "f")
-				faces.push_back(Face(arguments));
+				faces.push_back(Face(arguments, mtlObjName));
 		}
 	}
 
-	if (!readingObject)
+	objFile.close();
+
+	ifstream mtlFile((directory + "\\" + fileName).c_str());
+
+	std::string currentMtlObjName;
+	map<std::string, MtlObj> mtlObjects;
+	MtlObj currentMtlObj;
+
+	while (!objFile.eof())
+	{
+		std::string line(readLine(mtlFile));
+		
+		size_t commandEnd(line.find(' ', 0));
+		std::string command = line.substr(0, commandEnd);
+		std::string arguments = line.substr(commandEnd + 1, line.npos);
+
+		if (command == "newmtl")
+		{		
+			if (!currentMtlObjName.empty())
+				map.insert(std::pair<std::string, MtlObj>(currentMtlObjName, currentMtlObj));
+
+			currentMtlObjName = arguments;
+		}
+		else if (command == "Ka")
+			currentMtlObj.ka.LoadFromArguments(arguments);
+		else if (command == "Kd")
+			currentMtlObj.kd.LoadFromArguments(arguments);
+		else if (command == "Ks")
+			currentMtlObj.ks.LoadFromArguments(arguments);
+		else if (command == "illum")
+			sscanf(arguments.c_str(), "%d", &currentMtlObj.illum);
+		else if (command == "Ns")
+			sscanf(arguments.c_str(), "%d", &currentMtlObj.ns);
+			
+	}
+
+	mtlFile.close();
+
+	if (faces.size() == 0)
 		throw std::exception("Couldn't find object in file when trying to construct DrawableObj");
+
+	
 
 	if (0 == (_listNum = glGenLists(1)))
 		throw std::exception("Can't generate display list while creating a drawable object.");
