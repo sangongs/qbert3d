@@ -5,6 +5,6 @@
 class GameObject
 {
 public:
-	float x, y, z, xRotate, yRotate, zRotate;
-	std::string name;
+	float X, Y, Z, XRotate, YRotate, ZRotate;
+	std::string Name;
 };

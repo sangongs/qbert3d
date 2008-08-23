@@ -3,6 +3,9 @@
 #include "View.h"
 #include "Model.h"
 
+#include "SDL\SDL.h"
+#include "SDL\SDL_opengl.h"
+
 #include "SimpleControler.h"
 
 class SDLLayer
@@ -37,7 +40,7 @@ public:
 };
 
 
-SimpleControler::SimpleControler)(View * view, Model * model) : _view(view), _model(_model), _leftMouseKeyDown(false), _running(true)
+SimpleControler::SimpleControler(View * view, Model * model) : _view(view), _model(model), _leftMouseKeyDown(false), _running(true)
 {
 }
 
@@ -47,8 +50,8 @@ void SimpleControler::Input()
 	{
 		int newX, newY;
 		SDL_GetRelativeMouseState(&newX, &newY);
-		_view->CameraMove(0, 0, 0, newX, 0, 0);
-		_view->CameraMove(0, 0, 0, 0, newY, 0);
+		_view->CameraMove(0, 0, 0, 0 , (float)newX / 4.0f , 0);
+		_view->CameraMove(0, 0, 0, (float)newY / 4.0f, 0 , 0);
 	}
 
 	SDL_Event event;
@@ -75,7 +78,7 @@ void SimpleControler::Input()
 			// 					DisplayKey(&event.key);
 			break;
 		case SDL_QUIT:
-			running = false;
+			_running = false;
 			return;
 			break;
 		}
@@ -85,17 +88,13 @@ void SimpleControler::Input()
 void SimpleControler::Run(unsigned startWidth, unsigned startHeight, unsigned depth)
 {
 	SDLLayer sdl(startWidth, startHeight, depth);
-	_view->ChangeResolution(startWidth, startHeight);
-	
-	bool running(true);
-
+	_view->Init(startWidth, startHeight);
 
 	DWORD lastTime = GetTickCount();
 
 	while(_running)
 	{
 		Input();
-		_view->Init(startWidth, startHeight);
 
 		DWORD tempTime = GetTickCount();
 		_model->TimeTick(lastTime - tempTime);

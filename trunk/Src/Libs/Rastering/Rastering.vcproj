@@ -41,7 +41,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="$(SolutionDir)\..\Common\Includes"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -104,7 +104,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="$(SolutionDir)\..\Common\Includes"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_WARNINGS"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"
 				WarningLevel="4"
@@ -149,6 +149,26 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\DrawableObj.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Model.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimpleControler.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimpleModel.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimpleView.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\stdafx.cpp"
 				>
 				<FileConfiguration
@@ -175,7 +195,35 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath=".\DrawableObj.h"
+				>
+			</File>
+			<File
+				RelativePath=".\GameObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Model.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SimpleControler.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SimpleModel.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SimpleView.h"
+				>
+			</File>
+			<File
 				RelativePath=".\stdafx.h"
+				>
+			</File>
+			<File
+				RelativePath=".\View.h"
 				>
 			</File>
 		</Filter>

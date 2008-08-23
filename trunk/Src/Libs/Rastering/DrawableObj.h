@@ -3,10 +3,13 @@
 class DrawableObj
 {
 private:
-	int _listNum;
+	unsigned _listNum;
 
 public:
-	DrawableObj::DrawableObj(const std::string &fileName, const std::string &objName);
-
+	DrawableObj(const std::string &fileName, const std::string &objName, float scale);
+	~DrawableObj();
+	
 	void Draw();
 };
+
+typedef boost::shared_ptr<DrawableObj> DrawableObj_Ptr;
