@@ -22,7 +22,7 @@ public:
 		LoadFromArguments(arguments);
 	}
 
-	LoadFromArguments(const std::String arguments)
+	void LoadFromArguments(const std::string& arguments)
 	{
 		if (sscanf(arguments.c_str(), "%f %f %f", Points, Points + 1, Points + 2) != 3)
 			throw std::exception("Couldn't read line into Point3D");
@@ -62,7 +62,7 @@ public:
 class Face
 {
 public:
-	Face(const std::string &arguments, const std::string& mtlObjName)
+	Face(const std::string &arguments, const std::string& mtlObjName) : MtlObjName(mtlObjName)
 	{
 		if (sscanf(arguments.c_str(), "%d/%d/%d %d/%d/%d %d/%d/%d"
 			, vertices, texture, normals, vertices + 1, texture + 1, normals + 1, vertices + 2, texture + 2, normals + 2) != 9)
@@ -78,7 +78,7 @@ public:
 	Face(){};
 
 	unsigned vertices[3], texture[3], normals[3];
-	std::string mtlObjName;
+	std::string MtlObjName;
 };
 
 class MtlObj
@@ -88,12 +88,9 @@ public:
 	Point3D ka, kd, ks;
 	int illum;
 	int ns;
-
-	
-
 };
 
-std::String readLine(ifstream& stream)
+std::string readLine(std::ifstream& stream)
 {
 	char buffer[1024];
 	stream.getline(buffer, 1024);
@@ -191,8 +188,25 @@ DrawableObj::DrawableObj(const std::string& directory, const std::string &fileNa
 			for (int i = 0; i < 3; i++)
 			{
 				normals[(*iter).normals[i]].Normalize();
+				map<std::string, MtlObj>::iterator mtlObjIter = mtlObjects.find((*iter).MtlObjName);
+
+				if (mtlObjIter == mtlObjects.end())
+					throw std::exception("Couldn't find mtlObj for a face I was trying to draw.");
+
+				glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, (*mtlObjIter).second.ka.Points, 0);
+				glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, (*mtlObjIter).second.kd.Points, 0);
 				
-				glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, v, 0);
+				if ((*mtlObjIter).second.illum == 2)
+				{
+					glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, (*mtlObjIter).second.ks.Points, 0);
+					glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, (GLfloat)(*mtlObjIter).second.ns);
+				}
+				else
+				{
+					float zeroArray[] = {0.0f, 0.0f, 0.0f};
+					glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, zeroArray, 0);
+				}
+
 				glNormal3f(normals[(*iter).normals[i]].X, normals[(*iter).normals[i]].Y, normals[(*iter).normals[i]].Z);
 				glVertex3f(vertices[(*iter).vertices[i]].X * scale, vertices[(*iter).vertices[i]].Y * scale, vertices[(*iter).vertices[i]].Z * scale);
 			}
