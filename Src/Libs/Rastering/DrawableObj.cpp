@@ -24,7 +24,7 @@ public:
 
 	LoadFromArguments(const std::String arguments)
 	{
-		if (sscanf(arguments.c_str(), "%f %f %f", &X, &Y, &Z) != 3)
+		if (sscanf(arguments.c_str(), "%f %f %f", Points, Points + 1, Points + 2) != 3)
 			throw std::exception("Couldn't read line into Point3D");
 	}
 
@@ -32,17 +32,17 @@ public:
 
 	void Normalize()
 	{
-		float length = sqrt(X*X + Y*Y + Z*Z);
+		float length = sqrt(Points[0]*Points[0] + Points[1]*Points[1] + Points[2]*Points[2]);
 		
 		if (length == 0)
 			return; //can't devide by 0
 
-		X /= length;
-		Y /= length;
-		Z /= length;
+		Points[0] /= length;
+		Points[1] /= length;
+		Points[2] /= length;
 	}
 
-	float X, Y, Z;
+	float Points[3];
 };
 
 class Point2D
@@ -50,13 +50,13 @@ class Point2D
 public:
 	Point2D(const std::string& argument)
 	{
-		if (sscanf(argument.c_str(), "%f %f", &X, &Y) != 2)
+		if (sscanf(argument.c_str(), "%f %f", Points, Points + 1) != 2)
 			throw std::exception("Couldn't read line into Point2D");
 	}
 
 	Point2D() {}
 
-	float X, Y;
+	float Points[2];
 };
 
 class Face
@@ -142,6 +142,9 @@ DrawableObj::DrawableObj(const std::string& directory, const std::string &fileNa
 
 	objFile.close();
 
+	if (faces.size() == 0)
+		throw std::exception("Couldn't find object in file when trying to construct DrawableObj");
+
 	ifstream mtlFile((directory + "\\" + fileName).c_str());
 
 	std::string currentMtlObjName;
@@ -173,15 +176,9 @@ DrawableObj::DrawableObj(const std::string& directory, const std::string &fileNa
 			sscanf(arguments.c_str(), "%d", &currentMtlObj.illum);
 		else if (command == "Ns")
 			sscanf(arguments.c_str(), "%d", &currentMtlObj.ns);
-			
 	}
 
 	mtlFile.close();
-
-	if (faces.size() == 0)
-		throw std::exception("Couldn't find object in file when trying to construct DrawableObj");
-
-	
 
 	if (0 == (_listNum = glGenLists(1)))
 		throw std::exception("Can't generate display list while creating a drawable object.");
@@ -194,7 +191,8 @@ DrawableObj::DrawableObj(const std::string& directory, const std::string &fileNa
 			for (int i = 0; i < 3; i++)
 			{
 				normals[(*iter).normals[i]].Normalize();
-				glColor3f(0.4f, 0.7f, 0.6f);
+				
+				glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, v, 0);
 				glNormal3f(normals[(*iter).normals[i]].X, normals[(*iter).normals[i]].Y, normals[(*iter).normals[i]].Z);
 				glVertex3f(vertices[(*iter).vertices[i]].X * scale, vertices[(*iter).vertices[i]].Y * scale, vertices[(*iter).vertices[i]].Z * scale);
 			}
