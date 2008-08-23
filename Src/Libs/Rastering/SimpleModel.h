@@ -1,9 +1,16 @@
 #pragma once
 
-class SimpleModel
-{
-public:
-	SimpleModel(void);
+#include "Model.h"
 
-	~SimpleModel(void);
+class SimpleModel : public Model
+{
+private:
+	std::list<GameObject> _gameObjects;
+
+public:
+	void TimeTick(unsigned deltaT);
+	void Move(unsigned right, unsigned left, unsigned forword, unsigned backword);
+	std::list<GameObject>* GetObjects();
+
+	SimpleModel();
 };

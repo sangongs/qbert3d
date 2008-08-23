@@ -1,5 +1,8 @@
 #pragma once
 
+#include "View.h"
+#include "Model.h"
+
 class SimpleControler
 {
 private:
@@ -14,5 +17,5 @@ private:
 public:
 	SimpleControler(View * view, Model * model);
 	
-	void Run();
+	void Run(unsigned startWidth, unsigned startHeight, unsigned depth);
 };

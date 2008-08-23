@@ -3,13 +3,14 @@
 #include <map>
 
 #include "View.h"
+#include "DrawableObj.h"
 
 
 class SimpleView : public View
 {
 private:
 	float _x, _y, _z, _xRotate, _yRotate, _zRotate;
-	std::map<std::string, DrawableObj> _objects;
+	std::map<std::string, DrawableObj_Ptr> _objects;
 	std::list<GameObject> *_objList;
 
 public:
