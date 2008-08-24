@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(SolutionDir)\..\Common\Includes"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)\..\Common\Includes&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -149,6 +149,10 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\DiamondQbertModel.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\DrawableObj.cpp"
 				>
 			</File>
@@ -195,6 +199,10 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath=".\DiamondQbertModel.h"
+				>
+			</File>
+			<File
 				RelativePath=".\DrawableObj.h"
 				>
 			</File>
@@ -204,6 +212,10 @@
 			</File>
 			<File
 				RelativePath=".\Model.h"
+				>
+			</File>
+			<File
+				RelativePath=".\QbertModel.h"
 				>
 			</File>
 			<File
