@@ -10,9 +10,9 @@ SimpleModel::SimpleModel()
 {
 	GameObject obj;
 	obj.X = 0;
-	obj.Y = 40;
-	obj.Z = -20;
-	obj.XRotate = 0;
+	obj.Y = 0;
+	obj.Z = -1;
+	obj.XRotate = 80;
 	obj.YRotate = 0;
 	obj.ZRotate = 0;
 	obj.Name = "object__2";

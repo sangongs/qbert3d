@@ -60,8 +60,9 @@ void SimpleView::Init(unsigned int width, unsigned int height)
 	gluPerspective(45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 1000.0f);
 	glPushMatrix();
 	glMatrixMode( GL_MODELVIEW );
+	glEnable(GL_NORMALIZE);
 
-	_objects.insert(std::pair<std::string, DrawableObj_Ptr>("object__2", DrawableObj_Ptr(new DrawableObj("D:\\Programing\\qbert3d\\Objects", "smurf_2.obj", "object__2", 0.02f))));
+	_objects.insert(std::pair<std::string, DrawableObj_Ptr>("object__2", DrawableObj_Ptr(new DrawableObj("D:\\Programing\\qbert3d\\Objects", "smurf_2.obj", "object__2", 2, -90, 0, 0))));
 }
 
 void SimpleView::Draw()
@@ -86,11 +87,7 @@ void SimpleView::Draw()
 			throw std::exception("Couldn't find object while trying to draw the model, (in the view function)");
 		glLoadIdentity();
 		glTranslatef((*iter).X, (*iter).Y, (*iter).Z);
-		glRotatef((*iter).XRotate, 1.0f, 0.0f, 0.0f);
-		glRotatef((*iter).YRotate, 0.0f, 1.0f, 0.0f);
-		glRotatef((*iter).ZRotate, 0.0f, 0.0f, 1.0f);
-
-		(*objToDraw).second->Draw();
+		(*objToDraw).second->Draw((*iter).XRotate, (*iter).YRotate, (*iter).ZRotate, 1.0f);
 	}
 
 	SDL_GL_SwapBuffers();
