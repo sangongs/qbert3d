@@ -5,8 +5,3 @@ Model::Model()
 {
 
 }
-
-void Model::foo()
-{
-
-}
