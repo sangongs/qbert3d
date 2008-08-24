@@ -27,7 +27,6 @@ public:
 		_screen = SDL_SetVideoMode(width, height, depth, SDL_OPENGL | SDL_RESIZABLE);
 		if (!_screen)
 			throw std::exception("Call to SDL_SetVideoMode failed...");
-
 	}
 
 	~SDLLayer()
@@ -73,9 +72,10 @@ void SimpleControler::Input()
 		case SDL_KEYDOWN:
 			break;
 		case SDL_KEYUP:
-			// 					DisplayState(&event.key);
-			// 					DisplayModifiers(&event.key);
-			// 					DisplayKey(&event.key);
+			if (event.key.keysym.sym == SDLK_KP_PLUS)
+				_view->CameraMove(0, 0, -1, 0, 0, 0);
+			else if (event.key.keysym.sym == SDLK_KP_ENTER)
+				_view->CameraMove(0, 0, 1, 0, 0, 0);
 			break;
 		case SDL_QUIT:
 			_running = false;

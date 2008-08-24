@@ -14,7 +14,7 @@ int WINAPI WinMain(HINSTANCE /*hInst*/, HINSTANCE /*hPrev*/, LPSTR /*szCmdLine*/
 	SimpleView view;
 	SimpleControler controler((View*)&view, (Model*)&model);
 
-	controler.Run(640, 480, 8);
+	controler.Run(800, 640, 8);
 	
 	return 0;
 }
