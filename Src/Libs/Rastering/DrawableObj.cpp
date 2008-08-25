@@ -18,51 +18,6 @@
 
 #include "DrawableObj.h"
 
-class Point3D
-{
-public:
-	Point3D(const std::string& arguments)
-	{
-		LoadFromArguments(arguments);
-	}
-
-	void LoadFromArguments(const std::string& arguments)
-	{
-		if (sscanf(arguments.c_str(), "%f %f %f", Points, Points + 1, Points + 2) != 3)
-			throw std::exception("Couldn't read line into Point3D");
-	}
-
-	Point3D() {}
-
-	void Normalize()
-	{
-		float length = sqrt(Points[0]*Points[0] + Points[1]*Points[1] + Points[2]*Points[2]);
-		
-		if (length == 0)
-			return; //can't devide by 0
-
-		Points[0] /= length;
-		Points[1] /= length;
-		Points[2] /= length;
-	}
-
-	float Points[3];
-};
-
-class Point2D
-{
-public:
-	Point2D(const std::string& argument)
-	{
-		if (sscanf(argument.c_str(), "%f %f", Points, Points + 1) != 2)
-			throw std::exception("Couldn't read line into Point2D");
-	}
-
-	Point2D() {}
-
-	float Points[2];
-};
-
 class Face
 {
 public:

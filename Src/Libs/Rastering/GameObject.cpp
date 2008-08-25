@@ -8,3 +8,7 @@ GameObject::GameObject(void)
 GameObject::~GameObject(void)
 {
 }
+
+void DecideOnMove()
+{
+}
