@@ -1,5 +1,106 @@
 #pragma once
 
+#include <math.h>
+
+class Point3D
+{
+public:
+	Point3D(const std::string& arguments)
+	{
+		LoadFromArguments(arguments);
+	}
+
+	Point3D(const Point3D& point)
+	{
+		Points[0] = point.Points[0];
+		Points[1] = point.Points[1];
+		Points[2] = point.Points[2];
+	}
+
+	Point3D& operator= (const Point3D& point)
+	{
+		Points[0] = point.Points[0];
+		Points[1] = point.Points[1];
+		Points[2] = point.Points[2];
+		return *this;
+	}
+
+	void LoadFromArguments(const std::string& arguments)
+	{
+		if (sscanf(arguments.c_str(), "%f %f %f", Points, Points + 1, Points + 2) != 3)
+			throw std::exception("Couldn't read line into Point3D");
+	}
+
+ 	Point3D(float x, float y, float z)
+ 	{
+		Points[0] = x;
+ 		Points[1] = y;
+ 		Points[2] = z;
+ 	}
+
+	Point3D()
+	{
+		Points[0] = 0;
+		Points[1] = 0;
+		Points[2] = 0;
+	}
+
+	bool operator< (const Point3D& point) const   //for map compreation.
+	{
+		if (Points[0] < point.Points[0])
+			return true;
+		else if (Points[0] > point.Points[0])
+			return false;
+
+
+		if (Points[1] < point.Points[1])
+			return true;
+		else if (Points[1] > point.Points[1])
+			return false;
+
+
+		if (Points[2] < point.Points[2])
+			return true;
+		else if (Points[2] > point.Points[2])
+			return false;
+
+		return false;
+	}
+
+	bool operator== (const Point3D point) const
+	{
+		return (Points[0] == point.Points[0] && Points[1] == point.Points[1] && Points[2] == point.Points[2]);
+	}
+
+	void Normalize()
+	{
+		float length = sqrt(Points[0]*Points[0] + Points[1]*Points[1] + Points[2]*Points[2]);
+
+		if (length == 0)
+			return; //can't devide by 0
+
+		Points[0] /= length;
+		Points[1] /= length;
+		Points[2] /= length;
+	}
+
+	float Points[3];
+};
+
+
+class Point2D
+{
+public:
+	Point2D(const std::string& argument)
+	{
+		if (sscanf(argument.c_str(), "%f %f", Points, Points + 1) != 2)
+			throw std::exception("Couldn't read line into Point2D");
+	}
+
+	Point2D() {}
+
+	float Points[2];
+};
 class DrawableObj
 {
 private:
