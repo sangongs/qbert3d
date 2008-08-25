@@ -68,10 +68,34 @@ class Face
 public:
 	Face(const std::string &arguments, const std::string& mtlObjName) : MtlObjName(mtlObjName)
 	{
-		if (sscanf(arguments.c_str(), "%d/%d/%d %d/%d/%d %d/%d/%d"
-			, vertices, texture, normals, vertices + 1, texture + 1, normals + 1, vertices + 2, texture + 2, normals + 2) != 9)
-			throw std::exception("Can't parse argument in constructor for face");
-		for (int i = 0; i < 3; i++)
+		char temp[1024];
+		if (sscanf(arguments.c_str(), "%s %s %s %s", temp, temp, temp, temp) == 3)
+			vertices.resize(3);
+		else
+			vertices.resize(4);
+
+		texture.resize(vertices.size());
+		normals.resize(vertices.size());
+
+		if (vertices.size() == 3)
+		{
+			if (sscanf(arguments.c_str(), "%d/%d/%d %d/%d/%d %d/%d/%d"
+				, &vertices[0], &texture[0], &normals[0]
+				, &vertices[0] + 1, &texture[0] + 1, &normals[0] + 1
+				, &vertices[0] + 2, &texture[0] + 2, &normals[0] + 2) != 9)
+				throw std::exception("Can't parse argument in constructor for face");
+		}
+		else
+		{
+			if (sscanf(arguments.c_str(), "%d/%d/%d %d/%d/%d %d/%d/%d %d/%d/%d"
+				, &vertices[0], &texture[0], &normals[0]
+				, &vertices[0] + 1, &texture[0] + 1, &normals[0] + 1
+				, &vertices[0] + 2, &texture[0] + 2, &normals[0] + 2
+				, &vertices[0] + 3, &texture[0] + 3, &normals[0] + 3) != 12)
+				throw std::exception("Can't parse argument in constructor for face");
+		}
+		
+		for (unsigned i = 0; i < vertices.size(); i++)
 		{
 			vertices[i]--;
 			texture[i]--;
@@ -81,16 +105,57 @@ public:
 
 	Face(){};
 
-	unsigned vertices[3], texture[3], normals[3];
+	std::vector<unsigned> vertices, texture, normals;
 	std::string MtlObjName;
 };
+
+
+GLuint LoadTexture(const std::string& file)
+{
+	SDL_Surface *surface;
+	if ( !(surface = SDL_LoadBMP(file.c_str())) ) 
+		throw std::exception("Couldn't load bitmap file");
+
+	GLint nOfColors = surface->format->BytesPerPixel;
+	GLenum texture_format;
+	if (nOfColors == 4)     // contains an alpha channel
+	{
+		if (surface->format->Rmask == 0x000000ff)
+			texture_format = GL_RGBA;
+		else
+			texture_format = GL_BGRA;
+	} 
+	else if (nOfColors == 3)     // no alpha channel
+	{
+		if (surface->format->Rmask == 0x000000ff)
+			texture_format = GL_RGB;
+		else
+			texture_format = GL_BGR;
+	} 
+	else 
+		throw std::exception("Image is not truecolor, can't load it.");
+
+	GLuint texture;
+	glGenTextures( 1, &texture );
+
+	glBindTexture( GL_TEXTURE_2D, texture );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+	glTexImage2D( GL_TEXTURE_2D, 0, nOfColors, surface->w, surface->h, 0, texture_format, GL_UNSIGNED_BYTE, surface->pixels );
+
+	return texture;
+}
 
 class MtlObj
 {
 public:
+	MtlObj() : HasTexture(false){}
+
 	Point3D ka, kd, ks;
 	int illum;
 	int ns;
+	bool HasTexture;
+	GLuint Texture;
 };
 
 std::string readLine(std::ifstream& stream)
@@ -134,19 +199,21 @@ DrawableObj::DrawableObj(const std::string& directory, const std::string &fileNa
 			currentMtllib = arguments;
 		else if (command == "g")
 			readingObject = (arguments == objName);
+		else if (command == "v")
+			vertices.push_back(Point3D(arguments));
+		else if (command == "vt")
+			texturePoints.push_back(Point2D(arguments));
+		else if (command == "vn")
+			normals.push_back(Point3D(arguments));
 		
+		if (command == "usemtl")
+			mtlObjName = arguments;
+		else if (command == "f")
+			faces.push_back(Face(arguments, mtlObjName));
+
 		if (readingObject)
 		{
-			if (command == "v")
-				vertices.push_back(Point3D(arguments));
-			else if (command == "vt")
-				texturePoints.push_back(Point2D(arguments));
-			else if (command == "vn")
-				normals.push_back(Point3D(arguments));
-			else if (command == "usemtl")
-				mtlObjName = arguments;
-			else if (command == "f")
-				faces.push_back(Face(arguments, mtlObjName));
+			
 		}
 	}
 
@@ -186,6 +253,11 @@ DrawableObj::DrawableObj(const std::string& directory, const std::string &fileNa
 			sscanf(arguments.c_str(), "%d", &currentMtlObj.illum);
 		else if (command == "Ns")
 			sscanf(arguments.c_str(), "%d", &currentMtlObj.ns);
+		else if ((command == "map_Kd") && (!arguments.empty()))
+		{
+			currentMtlObj.Texture = LoadTexture((boost::format("%1%\\%2%") % directory % arguments).str().c_str());
+			currentMtlObj.HasTexture = true;
+		}
 	}
 
 	mtlFile.close();
@@ -201,7 +273,7 @@ DrawableObj::DrawableObj(const std::string& directory, const std::string &fileNa
 
 	for (std::list<Face>::const_iterator iter = faces.begin(); iter != faces.end(); iter++)
 	{
-		for (int i = 0; i < 3; i++)
+		for (unsigned i = 0; i < (*iter).vertices.size(); i++)
 		{
 			for (int coordIndex = 0; coordIndex < 3; coordIndex++)
 			{
@@ -221,7 +293,7 @@ DrawableObj::DrawableObj(const std::string& directory, const std::string &fileNa
 
 	_yMin = std::numeric_limits<float>::infinity();
 	for (std::list<Face>::const_iterator iter = faces.begin(); iter != faces.end(); iter++)
-		for (int i = 0; i < 3; i++)
+		for (unsigned i = 0; i < (*iter).vertices.size(); i++)
 			_yMin = std::min(_yMin, (
 				  (vertices[(*iter).vertices[i]].Points[0] - centerOfMass[0]) * (scale / size) * (-DSin(rotateX) * DCos(rotateY) * DCos(rotateZ) - DSin(rotateY) * DSin(rotateZ))
 				+ (vertices[(*iter).vertices[i]].Points[1] - centerOfMass[1]) * (scale / size) * (DCos(rotateX) * DCos(rotateZ))
@@ -239,47 +311,62 @@ DrawableObj::DrawableObj(const std::string& directory, const std::string &fileNa
 		glRotatef(rotateY, 0.0f, 1.0f, 0.0f);
 		glScalef(scale / size, scale / size, scale / size);
 		glTranslatef(-centerOfMass[0], -centerOfMass[1], -centerOfMass[2]);
-		
-		glBegin(GL_TRIANGLES);
 
 		for (std::list<Face>::const_iterator iter = faces.begin(); iter != faces.end(); iter++)
 		{
-			for (int i = 0; i < 3; i++)
+			std::map<std::string, MtlObj>::iterator mtlObjIter = mtlObjects.find((*iter).MtlObjName);
+			if (mtlObjIter == mtlObjects.end())
+				throw std::exception("Couldn't find mtlObj for a face I was trying to draw.");
+
+			glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, (*mtlObjIter).second.ka.Points);
+			glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, (*mtlObjIter).second.kd.Points);
+
+			if ((*mtlObjIter).second.illum == 2)
 			{
-				std::map<std::string, MtlObj>::iterator mtlObjIter = mtlObjects.find((*iter).MtlObjName);
+				glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, (*mtlObjIter).second.ks.Points);
+				glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, (GLfloat)(*mtlObjIter).second.ns);
+			}
+			else
+			{
+				float zeroArray[] = {0.0f, 0.0f, 0.0f};
+				glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, zeroArray);
+			}
 
-				if (mtlObjIter == mtlObjects.end())
-					throw std::exception("Couldn't find mtlObj for a face I was trying to draw.");
 
-				glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, (*mtlObjIter).second.ka.Points);
-				glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, (*mtlObjIter).second.kd.Points);
-				
-				if ((*mtlObjIter).second.illum == 2)
-				{
-					glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, (*mtlObjIter).second.ks.Points);
-					glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, (GLfloat)(*mtlObjIter).second.ns);
-				}
-				else
-				{
-					float zeroArray[] = {0.0f, 0.0f, 0.0f};
-					glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, zeroArray);
-				}
-				
+			if ((*mtlObjIter).second.HasTexture)
+			{
+				glEnable(GL_TEXTURE_2D);
+				glBindTexture(GL_TEXTURE_2D, (*mtlObjIter).second.Texture);
+			}
+			else
+			{
+				glDisable(GL_TEXTURE_2D);
+			}
+
+			if (vertices.size() == 3)
+				glBegin(GL_TRIANGLES);
+			else
+				glBegin(GL_QUADS);
+
+			for (unsigned i = 0; i < (*iter).vertices.size(); i++)
+			{
 				normals[(*iter).normals[i]].Normalize();
 				glNormal3fv(normals[(*iter).normals[i]].Points);
+				
+				if ((*mtlObjIter).second.HasTexture)
+					glTexCoord2f(texturePoints[(*iter).texture[i]].Points[0], texturePoints[(*iter).texture[i]].Points[1]);
+				
 				glVertex3f(vertices[(*iter).vertices[i]].Points[0]
 						 , vertices[(*iter).vertices[i]].Points[1]
 						 , vertices[(*iter).vertices[i]].Points[2]);
 			}
+
+			glEnd();
 		}
 	
-		glEnd();
-
 		glPopMatrix();
 		
 	glEndList();
-
-
 }
 
 void DrawableObj::Draw(float rotateX, float rotateY, float rotateZ, float scale)

@@ -62,7 +62,8 @@ void SimpleView::Init(unsigned int width, unsigned int height)
 	glMatrixMode( GL_MODELVIEW );
 	glEnable(GL_NORMALIZE);
 
-	_objects.insert(std::pair<std::string, DrawableObj_Ptr>("object__2", DrawableObj_Ptr(new DrawableObj("D:\\Programing\\qbert3d\\Objects", "smurf_2.obj", "object__2", 2, -90, 0, 0))));
+	_objects.insert(std::pair<std::string, DrawableObj_Ptr>("object__2", DrawableObj_Ptr(new DrawableObj("D:\\Programing\\qbert3d\\Objects", "kirby.obj", "back_faces_of_object", 2, 0, 0, 0))));
+
 }
 
 void SimpleView::Draw()
@@ -73,7 +74,7 @@ void SimpleView::Draw()
 	glLoadIdentity();
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
-	float lightParams[] = {0.0f, 0.0f, 0.0f, 1.0f, 0.2f, 0.2f, 0.2f, 0.7f, 0.7f, 0.7f, 0.3f, 0.3f, 0.3f};
+	float lightParams[] = {0.0f, 0.0f, 100.0f, 1.0f, 0.2f, 0.2f, 0.2f, 0.7f, 0.7f, 0.7f, 0.3f, 0.3f, 0.3f};
 	glLightfv(GL_LIGHT0, GL_POSITION, lightParams);
 	glLightfv(GL_LIGHT0, GL_AMBIENT, lightParams + 4);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, lightParams + 7);
