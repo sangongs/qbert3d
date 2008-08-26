@@ -68,7 +68,7 @@ public:
 GLuint LoadTexture(const std::string& file)
 {
 	SDL_Surface *surface;
-	if ( !(surface = SDL_LoadBMP(file.c_str())) ) 
+	if (!(surface = SDL_LoadBMP(file.c_str())))
 		throw std::exception("Couldn't load bitmap file");
 
 	GLint nOfColors = surface->format->BytesPerPixel;

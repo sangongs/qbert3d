@@ -75,39 +75,49 @@ DiamondQbertModel::DiamondQbertModel(int sizeOfDiamond, const std::string boxNam
 	}
 
 	SetQbert(qbertName, NULL);			//[todo] set the starting box for the Qbert;
-	_iters.Init(_objects);
 
 }
 
 QbertModel::ModelObjectsIters DiamondQbertModel::GetObjectsToDraw() const
 {
-	return _iters;
+	return QbertModel::ModelObjectsIters(_objects);
 }
 
 void DiamondQbertModel::ReadInput(const QbertControler::InputData& inputdata)			//Deals with time and decides whether to move or not.
 {
 
-	_progress += (float)((inputdata.CertenTime - _lastTime) / _timeForMove);
-	if (_progress > 1)
-	{
-		_objects.Qbert->_nowOn = _objects.Qbert->_afterOn;
-		_objects.Qbert->_afterOn = GetBoxNeibhor(_objects.Qbert->_nowOn, inputdata.direction);
-	}
+	DWORD deltaTime = inputdata.CertenTime - _lastTime;
 
-	MakeEnemiesMove();
+	QbertMove(inputdata, deltaTime);
 
-	while (_progress > 1)
-		_progress--;
+	MakeEnemiesMove(deltaTime);
 
 	_lastTime = inputdata.CertenTime;
 }
 
-void DiamondQbertModel::MakeEnemiesMove()
+void DiamondQbertModel::QbertMove(const QbertControler::InputData& inputdata, DWORD deltaTime)
+{
+	_objects.Qbert->Progress += (float)(deltaTime / _objects.Qbert->MoveLength);
+
+	if (_objects.Qbert->Progress > 1)
+	{
+		if (_objects.Qbert->NowOn != _objects.Qbert->AfterOn)				//if the Qbert had moved.
+		{
+			_objects.Qbert->NowOn = _objects.Qbert->AfterOn;
+			_objects.Qbert->NowOn->Name = _boxNameAfter;
+		}
+		_objects.Qbert->AfterOn = GetBoxNeibhor(_objects.Qbert->NowOn, inputdata.direction);
+		
+
+		while (_objects.Qbert->Progress > 1)
+			_objects.Qbert->Progress--;
+	}
+
+}
+void DiamondQbertModel::MakeEnemiesMove(DWORD deltaTime)
 {
 	for (std::list<QbertEnemyObj_ptr>::iterator iter = _objects.Enemies.begin(); iter != _objects.Enemies.end(); iter++)
-	{
-		(*iter)->Move(*this);
-	}
+		(*iter)->Move(*this, deltaTime);
 }
 
 DiamondQbertModel::~DiamondQbertModel(void)
