@@ -5,14 +5,15 @@
 #include <boost/shared_ptr.hpp>
 
 #include "Rastering/SimpleControler.h"
-#include "Rastering/SimpleModel.h"
+#include "Rastering/DiamondQbertModel.h"
 #include "Rastering/SimpleView.h"
 
 int WINAPI WinMain(HINSTANCE /*hInst*/, HINSTANCE /*hPrev*/, LPSTR /*szCmdLine*/, int /*sw*/)
 	{
-	SimpleModel model;
+	DiamondQbertModel model(3, "RedBox", "BlueBox", "Qbert");
+/*	SimpleModel model();*/
 	SimpleView view;
-	SimpleControler controler((View*)&view, (Model*)&model);
+	SimpleControler controler((View*)&view, (QbertModel*)&model);
 
 	controler.Run(640, 480, 8);
 	

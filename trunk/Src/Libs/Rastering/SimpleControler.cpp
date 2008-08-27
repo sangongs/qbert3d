@@ -1,7 +1,8 @@
 #include "StdAfx.h"
 
 #include "View.h"
-#include "Model.h"
+#include "QbertModel.h"
+#include "SimpleView.h"
 
 #include "SDL\SDL.h"
 #include "SDL\SDL_opengl.h"
@@ -39,11 +40,11 @@ public:
 };
 
 
-SimpleControler::SimpleControler(View * view, Model * model) : _view(view), _model(model), _leftMouseKeyDown(false), _running(true)
+SimpleControler::SimpleControler(View * view, QbertModel * model) : _view(view), _model(model), _leftMouseKeyDown(false), _running(true)
 {
 }
 
-void SimpleControler::Input()
+void SimpleControler::Input(DWORD deltaTime)
 {
 	if (_leftMouseKeyDown)
 	{
@@ -56,6 +57,10 @@ void SimpleControler::Input()
 	SDL_Event event;
 	while(SDL_PollEvent(&event)) 
 	{
+		InputData inputData;
+		inputData.DeltaTime = deltaTime;
+		inputData.direction = None;
+
 		switch(event.type)
 		{
 		case SDL_MOUSEBUTTONDOWN:
@@ -76,12 +81,22 @@ void SimpleControler::Input()
 				_view->CameraMove(0, 0, -1, 0, 0, 0);
 			else if (event.key.keysym.sym == SDLK_KP_ENTER)
 				_view->CameraMove(0, 0, 1, 0, 0, 0);
+			else if (event.key.keysym.sym == SDLK_UP)
+				inputData.direction = Up;
+			else if (event.key.keysym.sym == SDLK_DOWN)
+				inputData.direction = Down;
+			else if (event.key.keysym.sym == SDLK_LEFT)
+				inputData.direction = Left;
+			else if (event.key.keysym.sym == SDLK_RIGHT)
+				inputData.direction = Right;
 			break;
 		case SDL_QUIT:
 			_running = false;
 			return;
 			break;
 		}
+
+		_model->ReadInput(inputData);
 	}
 }
 
@@ -94,14 +109,11 @@ void SimpleControler::Run(unsigned startWidth, unsigned startHeight, unsigned de
 
 	while(_running)
 	{
-		Input();
-
 		DWORD tempTime = GetTickCount();
-		_model->TimeTick(lastTime - tempTime);
+		Input(tempTime - lastTime);
 		lastTime = tempTime;
 
-		_view->SetGameObjects(_model->GetObjects());
-		_view->Draw();
+		((SimpleView*)_view)->Draw(_model->GetModelObjects());
 
 		SDL_Delay(2); //[todo] maybe we don't need this
 	}

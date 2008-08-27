@@ -5,6 +5,13 @@
 class Point3D
 {
 public:
+	Point3D(float x = 0, float y = 0, float z = 0)
+	{
+		Points[0] = x;
+		Points[1] = y;
+		Points[2] = z;
+	}
+
 	Point3D(const std::string& arguments)
 	{
 		LoadFromArguments(arguments);
@@ -25,24 +32,18 @@ public:
 		return *this;
 	}
 
+	Point3D& operator+= (const Point3D& point)
+	{
+		Points[0] += point.Points[0];
+		Points[1] += point.Points[1];
+		Points[2] += point.Points[2];
+		return *this;
+	}
+
 	void LoadFromArguments(const std::string& arguments)
 	{
 		if (sscanf(arguments.c_str(), "%f %f %f", Points, Points + 1, Points + 2) != 3)
 			throw std::exception("Couldn't read line into Point3D");
-	}
-
- 	Point3D(float x, float y, float z)
- 	{
-		Points[0] = x;
- 		Points[1] = y;
- 		Points[2] = z;
- 	}
-
-	Point3D()
-	{
-		Points[0] = 0;
-		Points[1] = 0;
-		Points[2] = 0;
 	}
 
 	bool operator< (const Point3D& point) const   //for map compreation.

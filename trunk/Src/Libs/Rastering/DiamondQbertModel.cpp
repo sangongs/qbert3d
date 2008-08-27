@@ -3,7 +3,7 @@
 #include <string>
 
 #include "QbertModel.h"
-#include "QbertControler.h"
+#include "SimpleControler.h"
 
 #include "DiamondQbertModel.h"
 
@@ -11,14 +11,18 @@
 DiamondQbertModel::DiamondQbertModel(int sizeOfDiamond, const std::string boxNameBefore, const std::string boxNameAfter, const std::string qbertName)
 	: QbertModel(boxNameBefore, boxNameAfter)
 {
-	for (int i = 0; i < sizeOfDiamond; i++)
+	for (int i = 0, jBorder = sizeOfDiamond - 1; i < sizeOfDiamond; i++, jBorder--)
 	{
-		for (int j = - (sizeOfDiamond - i) + 1; j <= (sizeOfDiamond - i) - 1 - 1; j++)	//the last on in the row will be the first one in the row of the next face;
+		for (int j = -jBorder; j <= jBorder; j++)
 		{
-			for (int face = 0; face < 8; face++)
+			for (int face = 0; face < 4; face++)
 			{
-				if (!i && face == 4)													// Draw the 0 level only once;
+				if (!i && face == 2)													// Draw the 0 level only once; Beware, dosen't draw top and lower levels.
 					break;
+
+				if ((j == -jBorder || j == jBorder) && face % 2 == 0)					// Boxes between faces has to be drawn once.
+					continue;
+
 				float x, y, z;
 				Point3D upDirection(1, 0, 0);
 				switch(face)
@@ -26,78 +30,44 @@ DiamondQbertModel::DiamondQbertModel(int sizeOfDiamond, const std::string boxNam
 				case (0):
 					x = (float)j;
 					y = (float)i;
-					z = (float)-i;
+					z = (float)(sizeOfDiamond - 1 - i - std::abs(j));
 					break;
 				case (1):
-					x = (float)-i;
+					x = (float)j;
 					y = (float)i;
-					z = (float)j;
+					z = -(float)(sizeOfDiamond - 1 - i - std::abs(j));
 					break;
 				case (2):
 					x = (float)j;
-					y = (float)i;
-					z = (float)i;
+					y = (float)-i;
+					z = (float)(sizeOfDiamond - 1 - i - std::abs(j));
+					upDirection.Points[0] = -1;
 					break;
-				case (3):
-					x = (float)i;
-					y = (float)i;
-					z = (float)j;
-					break;
-				case (4):
+				default:				//case(3):
 					x = (float)j;
-					y = (float)i;
-					z = (float)-i;
-					upDirection.Points[0] = -1;
-					break;
-				case (5):
-					x = (float)-i;
-					y = (float)i;
-					z = (float)j;
-					upDirection.Points[0] = -1;
-					break;
-				case (6):
-					x = (float)j;
-					y = (float)i;
-					z = (float)i;
-					upDirection.Points[0] = -1;
-					break;
-				default:				//case(7):
-					x = (float)i;
-					y = (float)i;
-					z = (float)j;
+					y = (float)-i;
+					z = -(float)(sizeOfDiamond - 1 - i - std::abs(j));
 					upDirection.Points[0] = -1;
 				}
 
-				QbertBox_ptr box = QbertBox_ptr(new QbertBox(boxNameBefore, upDirection, face, x, y, z));
-				InsertBox(Point3D(x, y, z), box);
+				InsertBox(Point3D(x, y, z), QbertBox_ptr(new QbertBox(boxNameBefore, upDirection, face, x, y, z)));
+				_boxesUnvisited++;
 			}
 		}
 	}
 
-	SetQbert(qbertName, NULL);			//[todo] set the starting box for the Qbert;
-
+	SetQbert(qbertName, _startingBox = _objects.BoxesMap.find(Point3D(0, (float)sizeOfDiamond - 1, 0))->second.get());
 }
 
-QbertModel::ModelObjectsIters DiamondQbertModel::GetObjectsToDraw() const
+void DiamondQbertModel::ReadInput(const SimpleControler::InputData& inputData)			//Deals with time and decides whether to move or not.
 {
-	return QbertModel::ModelObjectsIters(_objects);
+	QbertMove(inputData);
+	MakeEnemiesMove(inputData.DeltaTime);
 }
 
-void DiamondQbertModel::ReadInput(const QbertControler::InputData& inputdata)			//Deals with time and decides whether to move or not.
+void DiamondQbertModel::QbertMove(const SimpleControler::InputData& inputData)
 {
-
-	DWORD deltaTime = inputdata.CertenTime - _lastTime;
-
-	QbertMove(inputdata, deltaTime);
-
-	MakeEnemiesMove(deltaTime);
-
-	_lastTime = inputdata.CertenTime;
-}
-
-void DiamondQbertModel::QbertMove(const QbertControler::InputData& inputdata, DWORD deltaTime)
-{
-	_objects.Qbert->Progress += (float)(deltaTime / _objects.Qbert->MoveLength);
+	_objects.Qbert->Progress += (float)(inputData.DeltaTime / _objects.Qbert->MoveLength);
 
 	if (_objects.Qbert->Progress > 1)
 	{
@@ -105,8 +75,9 @@ void DiamondQbertModel::QbertMove(const QbertControler::InputData& inputdata, DW
 		{
 			_objects.Qbert->NowOn = _objects.Qbert->AfterOn;
 			_objects.Qbert->NowOn->Name = _boxNameAfter;
+			VisitBox(_objects.Qbert->NowOn);
 		}
-		_objects.Qbert->AfterOn = GetBoxNeibhor(_objects.Qbert->NowOn, inputdata.direction);
+		_objects.Qbert->AfterOn = GetBoxNeibhor(_objects.Qbert->NowOn, inputData.direction);
 		
 
 		while (_objects.Qbert->Progress > 1)
@@ -118,6 +89,14 @@ void DiamondQbertModel::MakeEnemiesMove(DWORD deltaTime)
 {
 	for (std::list<QbertEnemyObj_ptr>::iterator iter = _objects.Enemies.begin(); iter != _objects.Enemies.end(); iter++)
 		(*iter)->Move(*this, deltaTime);
+}
+
+std::list<GameObject_ptr>* DiamondQbertModel::GetObjects()
+{
+	_objects.ObjectsList = std::list<GameObject_ptr>();
+
+	return &_objects.ObjectsList;
+
 }
 
 DiamondQbertModel::~DiamondQbertModel(void)

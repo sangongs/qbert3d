@@ -8,6 +8,9 @@
 
 #include "SimpleView.h"
 
+#include "QbertModel.h"
+
+
 SimpleView::SimpleView()
 {
 	_x = 0;
@@ -18,7 +21,7 @@ SimpleView::SimpleView()
 	_zRotate = 0;
 }
 
-void SimpleView::SetGameObjects(std::list<GameObject> *objList)
+void SimpleView::SetGameObjects(std::list<GameObject_ptr> *objList)
 {
 	_objList = objList;
 }
@@ -59,13 +62,44 @@ void SimpleView::Init(unsigned int width, unsigned int height)
 	glMatrixMode( GL_MODELVIEW );
 	glEnable(GL_NORMALIZE);
 
-	_objects.insert(std::pair<std::string, DrawableObj_Ptr>("object__2", DrawableObj_Ptr(new DrawableObj("D:\\Programing\\qbert3d\\Objects", "toad.obj", 2, 180, 0, 0))));
+	_objects.insert(std::pair<std::string, DrawableObj_Ptr>("object__2", DrawableObj_Ptr(new DrawableObj("D:\\Programing\\qbert3d\\Objects", "smurf_2.obj", "object__2", 2, 0, 0, 0))));
 }
 
-void SimpleView::Draw()
-{	
+void SimpleView::Draw(bool clearScreen = true)
+{
+	if (clearScreen)
+	{
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		
+		glMatrixMode( GL_MODELVIEW );
+		glLoadIdentity();
+		glEnable(GL_LIGHTING);
+		glEnable(GL_LIGHT0);
+		float lightParams[] = {0.0f, 0.0f, 100.0f, 1.0f, 0.2f, 0.2f, 0.2f, 0.7f, 0.7f, 0.7f, 0.3f, 0.3f, 0.3f};
+		glLightfv(GL_LIGHT0, GL_POSITION, lightParams);
+		glLightfv(GL_LIGHT0, GL_AMBIENT, lightParams + 4);
+		glLightfv(GL_LIGHT0, GL_DIFFUSE, lightParams + 7);
+		glLightfv(GL_LIGHT0, GL_SPECULAR, lightParams + 10);
+	}
+
+	for (std::list<GameObject_ptr>::const_iterator iter = _objList->begin(); iter != _objList->end(); iter++)
+	{	
+		glLoadIdentity();
+		std::map<std::string, DrawableObj_Ptr>::iterator objToDraw = _objects.find((*iter)->Name);
+		if (objToDraw == _objects.end())
+			throw std::exception("Couldn't find object while trying to draw the model, (in the view function)");
+		glLoadIdentity();
+		glTranslatef((*iter)->X, (*iter)->Y, (*iter)->Z);
+		(*objToDraw).second->Draw((*iter)->XRotate, (*iter)->YRotate, (*iter)->ZRotate, 1.0f);
+	}
+
+	SDL_GL_SwapBuffers();
+}
+
+void SimpleView::Draw(QbertModel::ModelObjects& modelObjects)
+{
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
+
 	glMatrixMode( GL_MODELVIEW );
 	glLoadIdentity();
 	glEnable(GL_LIGHTING);
@@ -76,16 +110,42 @@ void SimpleView::Draw()
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, lightParams + 7);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, lightParams + 10);
 
-	for (std::list<GameObject>::const_iterator iter = _objList->begin(); iter != _objList->end(); iter++)
+
+
+
+	for (std::list<QbertModel::QbertBox_ptr>::const_iterator iter = modelObjects.Boxes.begin(); iter != modelObjects.Boxes.end(); iter++)
 	{	
-		glLoadIdentity();
-		std::map<std::string, DrawableObj_Ptr>::iterator objToDraw = _objects.find((*iter).Name);
+		std::map<std::string, DrawableObj_Ptr>::iterator objToDraw = _objects.find((*iter)->Name);
 		if (objToDraw == _objects.end())
 			throw std::exception("Couldn't find object while trying to draw the model, (in the view function)");
 		glLoadIdentity();
-		glTranslatef((*iter).X, (*iter).Y, (*iter).Z);
-		(*objToDraw).second->Draw((*iter).XRotate, (*iter).YRotate, (*iter).ZRotate, 1.0f);
+		glTranslatef((*iter)->X, (*iter)->Y, (*iter)->Z);
+		(*objToDraw).second->Draw((*iter)->XRotate, (*iter)->YRotate, (*iter)->ZRotate, 1.0f);
 	}
+
+
+	for (std::list<QbertModel::QbertEnemyObj_ptr>::iterator iter = modelObjects.Enemies.begin(); iter != modelObjects.Enemies.end(); iter++)
+	{
+		Point3D center((*iter)->NowOn->X, (*iter)->NowOn->Y, (*iter)->NowOn->Z);
+		center += (*iter)->NowOn->GetUpDirection();
+
+		std::map<std::string, DrawableObj_Ptr>::iterator objToDraw = _objects.find((*iter)->Name);
+		if (objToDraw == _objects.end())
+			throw std::exception("Couldn't find object while trying to draw the model, (in the view function)");
+		glLoadIdentity();
+		glTranslatef(center.Points[0], center.Points[1], center.Points[2]);
+		(*objToDraw).second->Draw((*iter)->XRotate, (*iter)->YRotate, (*iter)->ZRotate, 1.0f);
+	}
+
+	Point3D center(modelObjects.Qbert->NowOn->X, modelObjects.Qbert->NowOn->Y, modelObjects.Qbert->NowOn->Z);
+	center += modelObjects.Qbert->NowOn->GetUpDirection(); 
+
+	std::map<std::string, DrawableObj_Ptr>::iterator objToDraw = _objects.find(modelObjects.Qbert->Name);
+	if (objToDraw == _objects.end())
+		throw std::exception("Couldn't find object while trying to draw the model, (in the view function)");
+	glLoadIdentity();
+	glTranslatef(center.Points[0], center.Points[1], center.Points[2]);
+	(*objToDraw).second->Draw(modelObjects.Qbert->XRotate, modelObjects.Qbert->YRotate, modelObjects.Qbert->ZRotate, 1.0f);
 
 	SDL_GL_SwapBuffers();
 }
