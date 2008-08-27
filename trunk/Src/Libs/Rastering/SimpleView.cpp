@@ -35,9 +35,6 @@ void SimpleView::CameraMove(float deltaX, float deltaY, float deltaZ, float xRot
 	glMatrixMode( GL_PROJECTION );
 	glPopMatrix();
 	glPushMatrix();
-	//glLoadIdentity();
-	//glViewport( 0, 0, 640, 480 ); //[todo] understand what this does.
-	//gluPerspective(45.0f, (GLfloat)640 / (GLfloat)480, 0.1f, 1000.0f);
 	
  	glTranslatef(_x, _y, _z);
  	glRotatef(_xRotate, 1.0f, 0.0f, 0.0f);
@@ -62,8 +59,7 @@ void SimpleView::Init(unsigned int width, unsigned int height)
 	glMatrixMode( GL_MODELVIEW );
 	glEnable(GL_NORMALIZE);
 
-	_objects.insert(std::pair<std::string, DrawableObj_Ptr>("object__2", DrawableObj_Ptr(new DrawableObj("D:\\Programing\\qbert3d\\Objects", "kirby.obj", "back_faces_of_object", 2, 0, 0, 0))));
-
+	_objects.insert(std::pair<std::string, DrawableObj_Ptr>("object__2", DrawableObj_Ptr(new DrawableObj("D:\\Programing\\qbert3d\\Objects", "toad.obj", 2, 180, 0, 0))));
 }
 
 void SimpleView::Draw()
@@ -74,7 +70,7 @@ void SimpleView::Draw()
 	glLoadIdentity();
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
-	float lightParams[] = {0.0f, 0.0f, 100.0f, 1.0f, 0.2f, 0.2f, 0.2f, 0.7f, 0.7f, 0.7f, 0.3f, 0.3f, 0.3f};
+	float lightParams[] = {0.0f, 0.0f, -10.0f, 1.0f, 0.2f, 0.2f, 0.2f, 0.7f, 0.7f, 0.7f, 0.3f, 0.3f, 0.3f};
 	glLightfv(GL_LIGHT0, GL_POSITION, lightParams);
 	glLightfv(GL_LIGHT0, GL_AMBIENT, lightParams + 4);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, lightParams + 7);
