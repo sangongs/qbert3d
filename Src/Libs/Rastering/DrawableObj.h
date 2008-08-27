@@ -67,7 +67,7 @@ public:
 		return false;
 	}
 
-	bool operator== (const Point3D point) const
+	bool operator == (const Point3D point) const
 	{
 		return (Points[0] == point.Points[0] && Points[1] == point.Points[1] && Points[2] == point.Points[2]);
 	}
@@ -105,10 +105,10 @@ class DrawableObj
 {
 private:
 	int _listNum;
-	float _yMin;
+	float _yDistFromFloor;
 
 public:
-	DrawableObj::DrawableObj(const std::string& directory, const std::string &fileName, const std::string &objName, float scale, float rotateX, float rotateY, float rotateZ);
+	DrawableObj::DrawableObj(const std::string& directory, const std::string &fileName, float scale, float rotateX, float rotateY, float rotateZ);
 	~DrawableObj();
 	
 	void Draw(float rotateX, float rotateY, float rotateZ, float scale);

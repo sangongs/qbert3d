@@ -21,33 +21,23 @@
 class Face
 {
 public:
-	Face(const std::string &arguments, const std::string& mtlObjName) : MtlObjName(mtlObjName)
+	Face(std::string arguments, const std::string& mtlObjName) : MtlObjName(mtlObjName)
 	{
-		char temp[1024];
-		if (sscanf(arguments.c_str(), "%s %s %s %s", temp, temp, temp, temp) == 3)
-			vertices.resize(3);
-		else
-			vertices.resize(4);
-
-		texture.resize(vertices.size());
-		normals.resize(vertices.size());
-
-		if (vertices.size() == 3)
+		int count = 0, v, t, n;
+		arguments += " ";
+		while (sscanf(arguments.c_str(), "%d/%d/%d", &v, &t, &n) == 3)
 		{
-			if (sscanf(arguments.c_str(), "%d/%d/%d %d/%d/%d %d/%d/%d"
-				, &vertices[0], &texture[0], &normals[0]
-				, &vertices[0] + 1, &texture[0] + 1, &normals[0] + 1
-				, &vertices[0] + 2, &texture[0] + 2, &normals[0] + 2) != 9)
-				throw std::exception("Can't parse argument in constructor for face");
-		}
-		else
-		{
-			if (sscanf(arguments.c_str(), "%d/%d/%d %d/%d/%d %d/%d/%d %d/%d/%d"
-				, &vertices[0], &texture[0], &normals[0]
-				, &vertices[0] + 1, &texture[0] + 1, &normals[0] + 1
-				, &vertices[0] + 2, &texture[0] + 2, &normals[0] + 2
-				, &vertices[0] + 3, &texture[0] + 3, &normals[0] + 3) != 12)
-				throw std::exception("Can't parse argument in constructor for face");
+			vertices.resize(++count);
+			texture.resize(count);
+			normals.resize(count);
+			vertices[count - 1] = v;
+			texture[count - 1] = t;
+			normals[count - 1] = n;
+			size_t search = arguments.find(' ', 1);
+			if (search == arguments.npos)
+				break;
+			else
+				arguments = arguments.substr(search, arguments.length() - search);
 		}
 		
 		for (unsigned i = 0; i < vertices.size(); i++)
@@ -97,7 +87,7 @@ GLuint LoadTexture(const std::string& file)
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 	glTexImage2D( GL_TEXTURE_2D, 0, nOfColors, surface->w, surface->h, 0, texture_format, GL_UNSIGNED_BYTE, surface->pixels );
-
+	SDL_FreeSurface( surface );
 	return texture;
 }
 
@@ -113,13 +103,6 @@ public:
 	GLuint Texture;
 };
 
-std::string readLine(std::ifstream& stream)
-{
-	char buffer[1024];
-	stream.getline(buffer, 1024);
-	return std::string(buffer);
-}
-
 float DSin(float degrees)
 {
 	return (float)sin(degrees * (M_PI / 180));
@@ -130,11 +113,29 @@ float DCos(float degrees)
 	return (float)cos(degrees * (M_PI / 180));
 }
 
-DrawableObj::DrawableObj(const std::string& directory, const std::string &fileName, const std::string &objName, float scale, float rotateX, float rotateY, float rotateZ) : _listNum(-1) // so that we wont accedently delete a list
+float Modulu(float inp)
+{
+	return inp - floor(inp);
+}
+
+std::string ReadMultipleLines(std::ifstream& inp)
+{
+	if (inp.eof())
+		return "";
+
+	char buffer[1024];
+	inp.getline(buffer, 1024);
+	std::string read(buffer);
+	if (!read.empty() && (read.substr(read.length() - 1, 1) == "\\"))
+		return read.substr(0, read.length() - 1) + " " + ReadMultipleLines(inp);
+	else
+		return read;
+}
+
+DrawableObj::DrawableObj(const std::string& directory, const std::string &fileName, float scale, float rotateX, float rotateY, float rotateZ) : _listNum(-1) // so that we wont accedently delete a list
 {
 	std::ifstream objFile((boost::format("%1%\\%2%") % directory % fileName).str().c_str());
 
-	bool readingObject = false;
 	std::string currentMtllib;
 	std::string mtlObjName;
 	
@@ -145,31 +146,23 @@ DrawableObj::DrawableObj(const std::string& directory, const std::string &fileNa
 
 	while (!objFile.eof())
 	{
-		std::string line(readLine(objFile));
+		std::string line(ReadMultipleLines(objFile));
 		size_t commandEnd(line.find(' ', 0));
 		std::string command = line.substr(0, commandEnd);
 		std::string arguments = line.substr(commandEnd + 1, line.npos);
 
 		if (command == "mtllib")
 			currentMtllib = arguments;
-		else if (command == "g")
-			readingObject = (arguments == objName);
 		else if (command == "v")
 			vertices.push_back(Point3D(arguments));
 		else if (command == "vt")
 			texturePoints.push_back(Point2D(arguments));
 		else if (command == "vn")
 			normals.push_back(Point3D(arguments));
-		
-		if (command == "usemtl")
+		else if (command == "usemtl")
 			mtlObjName = arguments;
 		else if (command == "f")
 			faces.push_back(Face(arguments, mtlObjName));
-
-		if (readingObject)
-		{
-			
-		}
 	}
 
 	objFile.close();
@@ -185,8 +178,8 @@ DrawableObj::DrawableObj(const std::string& directory, const std::string &fileNa
 
 	while (!mtlFile.eof())
 	{
-		std::string line(readLine(mtlFile));
-		
+		std::string line = ReadMultipleLines(mtlFile);
+
 		size_t commandEnd(line.find(' ', 0));
 		std::string command = line.substr(0, commandEnd);
 		std::string arguments = line.substr(commandEnd + 1, line.npos);
@@ -196,6 +189,7 @@ DrawableObj::DrawableObj(const std::string& directory, const std::string &fileNa
 			if (!currentMtlObjName.empty())
 				mtlObjects.insert(std::pair<std::string, MtlObj>(currentMtlObjName, currentMtlObj));
 
+			currentMtlObj = MtlObj();
 			currentMtlObjName = arguments;
 		}
 		else if (command == "Ka")
@@ -217,42 +211,41 @@ DrawableObj::DrawableObj(const std::string& directory, const std::string &fileNa
 
 	mtlFile.close();
 
-	float sumOfMass[3], maxPoint[3], minPoint[3];
+	float sumOfMass[3] = {0, 0, 0};
+	
+	for (size_t v = 0; v < vertices.size(); v++)
+		for (int i = 0; i < 3; i++)
+			sumOfMass[i]+= vertices[v].Points[i];
 
 	for (int i = 0; i < 3; i++)
-	{
-		sumOfMass[i] = 0;
-		maxPoint[i] = std::numeric_limits<float>::min();
-		minPoint[i] = std::numeric_limits<float>::max();
-	}
+		sumOfMass[i] /= vertices.size();
+
+	float maxPoint[3] = {0, 0, 0}, minPoint[3] = {0, 0, 0};
 
 	for (std::list<Face>::const_iterator iter = faces.begin(); iter != faces.end(); iter++)
-	{
 		for (unsigned i = 0; i < (*iter).vertices.size(); i++)
 		{
-			for (int coordIndex = 0; coordIndex < 3; coordIndex++)
-			{
-				sumOfMass[coordIndex] += vertices[(*iter).vertices[i]].Points[coordIndex];
-				maxPoint[coordIndex] = std::max(maxPoint[coordIndex], vertices[(*iter).vertices[i]].Points[coordIndex]);
-				minPoint[coordIndex] = std::min(minPoint[coordIndex], vertices[(*iter).vertices[i]].Points[coordIndex]);
-			}
+			float a = cos(rotateX), c = cos(rotateY), e = cos(rotateZ);
+			float b = sin(rotateX), d = sin(rotateY), f = sin(rotateZ);
+			float x = vertices[(*iter).vertices[i]].Points[0] - sumOfMass[0];
+			float y = vertices[(*iter).vertices[i]].Points[1] - sumOfMass[1];
+			float z = vertices[(*iter).vertices[i]].Points[2] - sumOfMass[2];
+			float nx = e * c * x + (f * a + e * d * b) * y + (f * b - e * d * a) * z;
+			float ny = (-f * c) * x + (e * a - f * d * b) * y + (e * b - f * d * b) * z;
+			float nz = a * x + (-b * c) * y + a * c * z;
+			
+			maxPoint[0] = std::max(maxPoint[0], nx);
+			maxPoint[1] = std::max(maxPoint[1], ny);
+			maxPoint[2] = std::max(maxPoint[2], nz);
+
+			minPoint[0] = std::min(minPoint[0], nx);
+			minPoint[1] = std::min(minPoint[1], ny);
+			minPoint[2] = std::min(minPoint[2], nz);
 		}
-	}
+	
+	scale /= std::max(std::max(maxPoint[0] - minPoint[0], maxPoint[1] - minPoint[1]), maxPoint[2] - minPoint[2]);
 
-	float centerOfMass[3], size = 0;
-	for (int i = 0; i < 3; i++)
-	{
-		centerOfMass[i] = sumOfMass[i] / (faces.size() * 3);
-		size = std::max(size, maxPoint[i] - minPoint[i]);
-	}
-
-	_yMin = std::numeric_limits<float>::infinity();
-	for (std::list<Face>::const_iterator iter = faces.begin(); iter != faces.end(); iter++)
-		for (unsigned i = 0; i < (*iter).vertices.size(); i++)
-			_yMin = std::min(_yMin, (
-				  (vertices[(*iter).vertices[i]].Points[0] - centerOfMass[0]) * (scale / size) * (-DSin(rotateX) * DCos(rotateY) * DCos(rotateZ) - DSin(rotateY) * DSin(rotateZ))
-				+ (vertices[(*iter).vertices[i]].Points[1] - centerOfMass[1]) * (scale / size) * (DCos(rotateX) * DCos(rotateZ))
-				+ (vertices[(*iter).vertices[i]].Points[2] - centerOfMass[2]) * (scale / size) * (-DSin(rotateX) * DSin(rotateY) * DCos(rotateZ) + DCos(rotateY) * DSin(rotateZ))));
+	_yDistFromFloor = minPoint[1] * scale;
 
 	if (0 == (_listNum = glGenLists(1)))
 		throw std::exception("Can't generate display list while creating a drawable object.");
@@ -260,12 +253,11 @@ DrawableObj::DrawableObj(const std::string& directory, const std::string &fileNa
 	glNewList(_listNum, GL_COMPILE);
 		
 		glMatrixMode(GL_MODELVIEW);
-		
-		glRotatef(rotateX, 1.0f, 0.0f, 0.0f);
+		glScalef(scale, scale, scale);
 		glRotatef(rotateZ, 0.0f, 0.0f, 1.0f);
 		glRotatef(rotateY, 0.0f, 1.0f, 0.0f);
-		glScalef(scale / size, scale / size, scale / size);
-		glTranslatef(-centerOfMass[0], -centerOfMass[1], -centerOfMass[2]);
+		glRotatef(rotateX, 1.0f, 0.0f, 0.0f);
+		glTranslatef(-sumOfMass[0], -sumOfMass[1], -sumOfMass[2]);
 
 		for (std::list<Face>::const_iterator iter = faces.begin(); iter != faces.end(); iter++)
 		{
@@ -296,20 +288,18 @@ DrawableObj::DrawableObj(const std::string& directory, const std::string &fileNa
 			else
 			{
 				glDisable(GL_TEXTURE_2D);
+				glBindTexture(GL_TEXTURE_2D, 0);
 			}
 
-			if (vertices.size() == 3)
-				glBegin(GL_TRIANGLES);
-			else
-				glBegin(GL_QUADS);
+			glBegin(GL_POLYGON);
 
 			for (unsigned i = 0; i < (*iter).vertices.size(); i++)
 			{
 				normals[(*iter).normals[i]].Normalize();
 				glNormal3fv(normals[(*iter).normals[i]].Points);
-				
+
 				if ((*mtlObjIter).second.HasTexture)
-					glTexCoord2f(texturePoints[(*iter).texture[i]].Points[0], texturePoints[(*iter).texture[i]].Points[1]);
+					glTexCoord2f(Modulu(texturePoints[(*iter).texture[i]].Points[0]), Modulu(texturePoints[(*iter).texture[i]].Points[1]));
 				
 				glVertex3f(vertices[(*iter).vertices[i]].Points[0]
 						 , vertices[(*iter).vertices[i]].Points[1]
@@ -327,7 +317,7 @@ DrawableObj::DrawableObj(const std::string& directory, const std::string &fileNa
 void DrawableObj::Draw(float rotateX, float rotateY, float rotateZ, float scale)
 {
 	glPushMatrix();
-	glTranslatef(0, -_yMin, 0);
+	glTranslatef(0, -_yDistFromFloor, 0);
 	glRotatef(rotateX, 1.0f, 0.0f, 0.0f);
 	glRotatef(rotateZ, 0.0f, 0.0f, 1.0f);
 	glRotatef(rotateY, 0.0f, 1.0f, 0.0f);
