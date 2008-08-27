@@ -3,10 +3,11 @@
 #include <Windows.h>
 
 #include <vector>
+#include <map>
 
 #include "DrawableObj.h"
 #include "Model.h"
-#include "QbertControler.h"
+#include "SimpleControler.h"
 
 class QbertModel : public Model
 {
@@ -20,13 +21,20 @@ public:
 		int _face;
 		Point3D _upDirection;
 		QbertBox* _neibhors[5];
+		bool _isVisited;
 	public:
 		Point3D GetUp();
 		QbertBox(const std::string& name, const Point3D& upDirection, int face, 
 			float x, float y, float z, float xRotate = 0, float yRotate = 0, float zRotate = 0)
-			: GameObject(name, x, y, z, xRotate, yRotate, zRotate), _upDirection(upDirection), _face(face) 
+			: GameObject(name, x, y, z, xRotate, yRotate, zRotate), _upDirection(upDirection), _face(face), _isVisited(false)
 		{
 			_neibhors[None] = this;
+		}
+
+		Point3D GetUpDirection()
+		{
+
+			return _upDirection;
 		}
 	};
 
@@ -35,22 +43,19 @@ public:
 
 	class QbertGameObject : public GameObject
 	{
-	protected:
-		QbertGameObject(const std::string& name, QbertBox* box, QbertBox* nextBox, DWORD moveLength)
-			: GameObject(name, 0, 0, 0, 0, 0, 0), NowOn (box), AfterOn(nextBox), Progress(0), MoveLength(moveLength) {}
 	public:
 		float Progress;
 		DWORD MoveLength;
 		QbertBox * NowOn, * AfterOn;
 
 		QbertGameObject(const std::string& name ="", QbertBox* box = NULL, DWORD moveLength = 1)
-			: GameObject(name, 0, 0, 0, 0, 0, 0), NowOn(box), AfterOn(NULL), Progress(0), MoveLength(moveLength) 
+			: GameObject(name, 0, 0, 0, 0, 0, 0), NowOn(box), AfterOn(box), Progress(0), MoveLength(moveLength) 
 		{}
 
 		const QbertBox& WhereNow() const;
 		const QbertBox& WhereNext() const;
 
-		~QbertGameObject();
+		~QbertGameObject() {}
 	};
 
 	typedef boost::shared_ptr<QbertGameObject> QbertGameObject_ptr;
@@ -63,7 +68,7 @@ public:
 		AIFunction _AIfunc;
 	public:
 		QbertEnemyObj(const std::string& name ="", QbertBox* box = NULL, const std::string& type ="", DWORD moveLegth = 1) 
-			: QbertGameObject(name, box, NULL, moveLegth), _isFuncInit(false), _isMoveLengthInit(false), _type(type) {};
+			: QbertGameObject(name, box, moveLegth), _isFuncInit(false), _isMoveLengthInit(false), _type(type) {};
 
 		void Move(QbertModel& model, DWORD deltaTime)
 		{
@@ -110,26 +115,6 @@ public:
 	typedef boost::shared_ptr<QbertEnemyObj> QbertEnemyObj_ptr;
 
 
-	class ModelObjects;
-	class ModelObjectsIters
-	{
-	public:
-		std::list<QbertGameObject_ptr>::const_iterator QbertStart, QbertEnd;
-		std::list<QbertEnemyObj_ptr>::const_iterator EnemiesStart, EnemiesEnd;
-		std::list<QbertBox_ptr>::const_iterator BoxesStart, BoxesEnd;
-
-		ModelObjectsIters (const ModelObjects& objects) :
-			QbertStart(objects._qbertList.begin()),
-			QbertEnd(objects._qbertList.end()),
-			EnemiesStart(objects.Enemies.begin()),
-			EnemiesEnd(objects.Enemies.end()),
-			BoxesStart(objects.Boxes.begin()),
-			BoxesEnd(objects.Boxes.end())
-		{}
-		
-	};
-
-
 	class ModelObjects
 	{
 		friend class ModelObjectsIters;
@@ -138,6 +123,7 @@ public:
 		std::list<QbertEnemyObj_ptr> Enemies;
 		std::list<QbertBox_ptr> Boxes;
 		std::map<Point3D, QbertBox_ptr> BoxesMap;
+		std::list<GameObject_ptr> ObjectsList;
 
 		void SetQbertList() 
 		{
@@ -150,10 +136,10 @@ public:
 	};
 
 protected:
-	DWORD _lastTime;
-	bool _isQbertAlive, _isGameWon;
+	bool _isQbertAlive, _isFirstCall;
 	std::string _boxNameAfter, _boxNameBefore;
 	QbertBox* _startingBox;
+	int _boxesUnvisited;
 
 	ModelObjects _objects;
 
@@ -187,6 +173,24 @@ protected:
 		return (*box)._neibhors[direction];
 	}
 
+	void VisitBox (QbertBox& box)
+	{
+		if (box._isVisited)
+			return;
+		
+		box._isVisited = true;
+		_boxesUnvisited--;
+	}
+
+	void VisitBox (QbertBox* box)
+	{
+		if (box->_isVisited)
+			return;
+
+		box->_isVisited = true;
+		_boxesUnvisited--;
+	}
+
 	void InsertBox (Point3D point, QbertBox_ptr box)
 	{
 		_objects.BoxesMap.insert(std::pair<Point3D, QbertBox_ptr>(point, box));
@@ -200,11 +204,12 @@ protected:
 	}
 
 public:
-	QbertModel (std::string boxNameBefore, std::string boxNameAfter) : _boxNameBefore(boxNameBefore), _boxNameAfter(_boxNameAfter), _isQbertAlive(true) {}
-	virtual QbertModel::ModelObjectsIters GetObjectsToDraw() const = 0;
-	virtual void QbertMove(const QbertControler::InputData& inputdata, DWORD deltaTime) = 0;
+	QbertModel (std::string boxNameBefore, std::string boxNameAfter) : _boxNameBefore(boxNameBefore), _boxNameAfter(_boxNameAfter), _isQbertAlive(true), _boxesUnvisited(0), _isFirstCall(false) {}
+
+	QbertModel::ModelObjects& GetModelObjects() {return _objects;}
+	virtual void QbertMove(const SimpleControler::InputData& inputdata) = 0;
 	virtual void MakeEnemiesMove(DWORD deltaTime) = 0;
-	virtual void ReadInput(const QbertControler::InputData&) const = 0;		//Deals with time and decides whether to move or not.
+	virtual void ReadInput(const SimpleControler::InputData&) = 0;		//Deals with time and decides whether to move or not.
 	bool IsQbertAlive() {return _isQbertAlive;}
-	virtual void MakeMove() = 0;
+	bool IsGameWon() {return _boxesUnvisited == 0;}
 };

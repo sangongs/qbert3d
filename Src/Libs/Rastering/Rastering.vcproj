@@ -161,10 +161,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\QbertControler.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\SimpleControler.cpp"
 				>
 			</File>
@@ -216,10 +212,6 @@
 			</File>
 			<File
 				RelativePath=".\Model.h"
-				>
-			</File>
-			<File
-				RelativePath=".\QbertControler.h"
 				>
 			</File>
 			<File
