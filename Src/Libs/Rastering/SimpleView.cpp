@@ -58,9 +58,9 @@ void SimpleView::Init(unsigned int width, unsigned int height)
 	glMatrixMode( GL_MODELVIEW );
 	glEnable(GL_NORMALIZE);
 
-	_objects.insert(std::pair<std::string, DrawableObj_Ptr>("Qbert", DrawableObj_Ptr(new DrawableObj("D:\\Programing\\qbert3d\\Objects", "smurf_2.obj", 2, -90, 0, 0))));
-	_objects.insert(std::pair<std::string, DrawableObj_Ptr>("RedBox", DrawableObj_Ptr(new DrawableObj("D:\\Programing\\qbert3d\\Objects", "cube.obj", 2, 0, 0, 0))));
-	_objects.insert(std::pair<std::string, DrawableObj_Ptr>("BlueBox", DrawableObj_Ptr(new DrawableObj("D:\\Programing\\qbert3d\\Objects", "cube.obj", 2, 0, 0, 0))));
+	_objects.insert(std::pair<std::string, DrawableObj_Ptr>("Qbert", DrawableObj_Ptr(new DrawableObj("D:\\Programing\\qbert3d\\Objects", "smurf_2.obj", 1, -90, 0, 0))));
+	_objects.insert(std::pair<std::string, DrawableObj_Ptr>("RedBox", DrawableObj_Ptr(new DrawableObj("D:\\Programing\\qbert3d\\Objects", "cube.obj", 1, 0, 0, 0))));
+	_objects.insert(std::pair<std::string, DrawableObj_Ptr>("BlueBox", DrawableObj_Ptr(new DrawableObj("D:\\Programing\\qbert3d\\Objects", "cube.obj", 1, 0, 0, 0))));
 
 }
 
@@ -82,7 +82,7 @@ void SimpleView::Draw(bool clearScreen = true)
 			throw std::exception("Couldn't find object while trying to draw the model, (in the view function)");
 		glLoadIdentity();
 		glTranslatef((*iter)->X, (*iter)->Y, (*iter)->Z);
-		(*objToDraw).second->Draw((*iter)->XRotate, (*iter)->YRotate, (*iter)->ZRotate, 1.0f);
+		(*objToDraw).second->Draw((*iter)->XRotate, (*iter)->YRotate, (*iter)->ZRotate, 1.0f, true);
 	}
 
 	SDL_GL_SwapBuffers();
@@ -117,7 +117,7 @@ void SimpleView::Draw(QbertModel::ModelObjects& modelObjects)
 		glRotatef(_xRotate, 1.0f, 0.0f, 0.0f);		
 
 		glTranslatef((*iter)->X, (*iter)->Y, (*iter)->Z);
-		(*objToDraw).second->Draw((*iter)->XRotate, (*iter)->YRotate, (*iter)->ZRotate, 1.0f);
+		(*objToDraw).second->Draw((*iter)->XRotate, (*iter)->YRotate, (*iter)->ZRotate, 1.0f, false);
 	}
 
 
@@ -136,7 +136,7 @@ void SimpleView::Draw(QbertModel::ModelObjects& modelObjects)
 		glRotatef(_xRotate, 1.0f, 0.0f, 0.0f);	
 
 		glTranslatef(center.Points[0], center.Points[1], center.Points[2]);
-		(*objToDraw).second->Draw((*iter)->XRotate, (*iter)->YRotate, (*iter)->ZRotate, 1.0f);
+		(*objToDraw).second->Draw((*iter)->XRotate, (*iter)->YRotate, (*iter)->ZRotate, 1.0f, true);
 	}
 
 	Point3D center(modelObjects.Qbert->NowOn->X, modelObjects.Qbert->NowOn->Y, modelObjects.Qbert->NowOn->Z);
@@ -152,7 +152,7 @@ void SimpleView::Draw(QbertModel::ModelObjects& modelObjects)
 	glRotatef(_xRotate, 1.0f, 0.0f, 0.0f);	
 
 	glTranslatef(center.Points[0], center.Points[1], center.Points[2]);
-	(*objToDraw).second->Draw(modelObjects.Qbert->XRotate, modelObjects.Qbert->YRotate, modelObjects.Qbert->ZRotate, 1.0f);
+	(*objToDraw).second->Draw(modelObjects.Qbert->XRotate, modelObjects.Qbert->YRotate, modelObjects.Qbert->ZRotate, 1.0f, true);
 
 	SDL_GL_SwapBuffers();
 }
