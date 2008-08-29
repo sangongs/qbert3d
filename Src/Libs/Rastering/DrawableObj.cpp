@@ -331,3 +331,9 @@ DrawableObj::~DrawableObj()
 	if (_listNum > 0)
 		glDeleteLists(_listNum, 1);
 }
+
+
+Point3D operator* (float factor, const Point3D& point)
+{
+	return Point3D(point.Points[0] * factor, point.Points[1] * factor, point.Points[2] * factor);
+}

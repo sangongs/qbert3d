@@ -22,9 +22,14 @@ public:
 		bool _isVisited;
 		bool _isOnPerimeter;
 	public:
-		QbertBox(const std::string& name, int face, 
+		QbertBox(const std::string& name, int face, bool isPerimeter,
 			float x, float y, float z, float xRotate = 0, float yRotate = 0, float zRotate = 0)
-			: GameObject(name, x, y, z, xRotate, yRotate, zRotate), _face(face), _isVisited(false) {}
+			: GameObject(name, x, y, z, xRotate, yRotate, zRotate), _face(face), _isVisited(false), _isOnPerimeter(isPerimeter) {}
+
+		bool IsOnPerimeter()
+		{
+			return _isOnPerimeter;
+		}
 	};
 
 	typedef boost::shared_ptr<QbertBox> QbertBox_ptr;
@@ -36,16 +41,21 @@ public:
 		float Progress;
 		DWORD MoveLength;
 		QbertBox * NowOn, * AfterOn;
-		Point3D UpDirection, FaceDirection;
+		Point3D NowUpDirection, NowFaceDirection, AfterUpDirection, AfterFaceDirection;
 		Point3D RotationAxe;
 		Point3D RotationAngle;
 
-		QbertGameObject(const std::string& name ="", QbertBox* box = NULL, DWORD moveLength = 1)
+		QbertGameObject(const std::string& name ="", QbertBox* box = NULL, DWORD moveLength = 1000)
 			: GameObject(name, 0, 0, 0, 0, 0, 0), NowOn(box), AfterOn(box), Progress(0), MoveLength(moveLength) 
 		{}
 
 		const QbertBox& WhereNow() const;
 		const QbertBox& WhereNext() const;
+
+		Point3D GetRightDirection()
+		{
+			return NowFaceDirection.CrossProduct(NowUpDirection);
+		}
 
 		~QbertGameObject() {}
 	};
@@ -59,7 +69,7 @@ public:
 		bool _isFuncInit, _isMoveLengthInit;
 		AIFunction _AIfunc;
 	public:
-		QbertEnemyObj(const std::string& name ="", QbertBox* box = NULL, const std::string& type ="", DWORD moveLegth = 1) 
+		QbertEnemyObj(const std::string& name ="", QbertBox* box = NULL, const std::string& type ="", DWORD moveLegth = 1000) 
 			: QbertGameObject(name, box, moveLegth), _isFuncInit(false), _isMoveLengthInit(false), _type(type) {};
 
 		void Move(QbertModel& model, DWORD deltaTime)
