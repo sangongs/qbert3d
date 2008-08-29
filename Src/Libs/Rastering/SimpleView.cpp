@@ -60,7 +60,7 @@ void SimpleView::Init(unsigned int width, unsigned int height)
 
 	_objects.insert(std::pair<std::string, DrawableObj_Ptr>("Qbert", DrawableObj_Ptr(new DrawableObj("D:\\Programing\\qbert3d\\Objects", "smurf_2.obj", 1, -90, 0, 0))));
 	_objects.insert(std::pair<std::string, DrawableObj_Ptr>("RedBox", DrawableObj_Ptr(new DrawableObj("D:\\Programing\\qbert3d\\Objects", "cube.obj", 1, 0, 0, 0))));
-	_objects.insert(std::pair<std::string, DrawableObj_Ptr>("BlueBox", DrawableObj_Ptr(new DrawableObj("D:\\Programing\\qbert3d\\Objects", "cube.obj", 1, 0, 0, 0))));
+	_objects.insert(std::pair<std::string, DrawableObj_Ptr>("BlueBox", DrawableObj_Ptr(new DrawableObj("D:\\Programing\\qbert3d\\Objects", "cube2.obj", 1, 0, 0, 0))));
 
 }
 

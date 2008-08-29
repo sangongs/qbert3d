@@ -85,6 +85,27 @@ public:
 		Points[2] /= length;
 	}
 
+	float& X()
+	{
+		return Points[0];
+	}
+
+	float& Y()
+	{
+		return Points[1];
+	}
+
+	float& Z()
+	{
+		return Points[2];
+	}
+
+
+	Point3D CrossProduct (Point3D& point)
+	{
+		return Point3D (Y() * point.Z() - Z() * point.Y(), Z() * point.X() - X() * point.Z(), X() * point.Y() - Y() * point.X());
+	}
+
 	float Points[3];
 };
 
