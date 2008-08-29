@@ -50,7 +50,7 @@ DiamondQbertModel::DiamondQbertModel(int sizeOfDiamond, const std::string boxNam
 					upDirection.Points[1] = -1;
 				}
 
-				InsertBox(Point3D(x, y, z), QbertBox_ptr(new QbertBox(boxNameBefore, upDirection, face, x, y, z)));
+				InsertBox(Point3D(x, y, z), QbertBox_ptr(new QbertBox(boxNameBefore, face, x, y, z)));
 				_boxesUnvisited++;
 			}
 		}
@@ -71,16 +71,26 @@ void DiamondQbertModel::QbertMove(const SimpleControler::InputData& inputData)
 	_objects.Qbert->Progress += (float)(inputData.DeltaTime / _objects.Qbert->MoveLength);
 
 	if (_objects.Qbert->Progress > 1)
-	{
-		if (_objects.Qbert->NowOn != _objects.Qbert->AfterOn)				//if the Qbert had moved.
-		{
-			_objects.Qbert->NowOn = _objects.Qbert->AfterOn;
-			_objects.Qbert->NowOn->Name = _boxNameAfter;
-			VisitBox(_objects.Qbert->NowOn);
-		}
-		_objects.Qbert->AfterOn = GetBoxNeibhor(_objects.Qbert->NowOn, inputData.direction);
-		
+ 	{
 
+// 		if (_objects.Qbert->NowOn != _objects.Qbert->AfterOn)				//if the Qbert had moved.
+// 		{
+// 			_objects.Qbert->NowOn = _objects.Qbert->AfterOn;
+// 			_objects.Qbert->NowOn->Name = _boxNameAfter;
+// 			VisitBox(_objects.Qbert->NowOn);
+// 		}
+// 		_objects.Qbert->AfterOn = GetBoxNeibhor(_objects.Qbert->NowOn, inputData.direction);
+// 		
+
+		if (inputData.direction == Up)
+		{
+			Point3D tempCoordiante = _objects.Qbert->GetCoordinates();
+			tempCoordiante += _objects.Qbert.FaceDirection;
+
+			std::map<Point3D, QbertBox_ptr>::iterator box = _objects. BoxesMap.find(tempCoordiante);
+			if (box != _objects. BoxesMap.end())
+			
+		}
 		while (_objects.Qbert->Progress > 1)
 			_objects.Qbert->Progress--;
 	}
