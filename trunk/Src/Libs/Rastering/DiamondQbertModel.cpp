@@ -24,7 +24,7 @@ DiamondQbertModel::DiamondQbertModel(int sizeOfDiamond, const std::string boxNam
 					continue;
 
 				float x, y, z;
-				Point3D upDirection(1, 0, 0);
+				Point3D upDirection(0, 1, 0);
 				switch(face)
 				{
 				case (0):
@@ -41,13 +41,13 @@ DiamondQbertModel::DiamondQbertModel(int sizeOfDiamond, const std::string boxNam
 					x = (float)j;
 					y = (float)-i;
 					z = (float)(sizeOfDiamond - 1 - i - std::abs(j));
-					upDirection.Points[0] = -1;
+					upDirection.Points[1] = -1;
 					break;
 				default:				//case(3):
 					x = (float)j;
 					y = (float)-i;
 					z = -(float)(sizeOfDiamond - 1 - i - std::abs(j));
-					upDirection.Points[0] = -1;
+					upDirection.Points[1] = -1;
 				}
 
 				InsertBox(Point3D(x, y, z), QbertBox_ptr(new QbertBox(boxNameBefore, upDirection, face, x, y, z)));
@@ -56,6 +56,7 @@ DiamondQbertModel::DiamondQbertModel(int sizeOfDiamond, const std::string boxNam
 		}
 	}
 
+	_objects.BoxesMap.find(Point3D(0, (float)sizeOfDiamond - 1, 0))->second->Name = boxNameAfter;
 	SetQbert(qbertName, _startingBox = _objects.BoxesMap.find(Point3D(0, (float)sizeOfDiamond - 1, 0))->second.get());
 }
 

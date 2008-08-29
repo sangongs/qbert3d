@@ -23,7 +23,6 @@ public:
 		QbertBox* _neibhors[5];
 		bool _isVisited;
 	public:
-		Point3D GetUp();
 		QbertBox(const std::string& name, const Point3D& upDirection, int face, 
 			float x, float y, float z, float xRotate = 0, float yRotate = 0, float zRotate = 0)
 			: GameObject(name, x, y, z, xRotate, yRotate, zRotate), _upDirection(upDirection), _face(face), _isVisited(false)
