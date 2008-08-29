@@ -59,9 +59,9 @@ void SimpleView::Init(unsigned int width, unsigned int height)
 	glMatrixMode( GL_MODELVIEW );
 	glEnable(GL_NORMALIZE);
 
-	_objects.insert(std::pair<std::string, DrawableObj_Ptr>("Qbert", DrawableObj_Ptr(new DrawableObj("D:\\Programing\\qbert3d\\Objects", "smurf_2.obj", 1, -90, 0, 0))));
+	_objects.insert(std::pair<std::string, DrawableObj_Ptr>("Qbert", DrawableObj_Ptr(new DrawableObj("D:\\Programing\\qbert3d\\Objects", "smurf_2.obj", 1, -90, 180, 0))));
 	_objects.insert(std::pair<std::string, DrawableObj_Ptr>("RedBox", DrawableObj_Ptr(new DrawableObj("D:\\Programing\\qbert3d\\Objects", "cube.obj", 1, 0, 0, 0))));
-	_objects.insert(std::pair<std::string, DrawableObj_Ptr>("BlueBox", DrawableObj_Ptr(new DrawableObj("D:\\Programing\\qbert3d\\Objects", "cube2.obj", 1, 0, 0, 0))));
+	_objects.insert(std::pair<std::string, DrawableObj_Ptr>("BlueBox", DrawableObj_Ptr(new DrawableObj("D:\\Programing\\qbert3d\\Objects", "cube.obj", 1, 0, 0, 0))));
 
 }
 
@@ -140,13 +140,13 @@ void SimpleView::Draw(QbertModel::ModelObjects& modelObjects)
 		Point3D tempUpDirection = (2 * (rotationDirection.ScalarProduct(modelObjects.Qbert->NowUpDirection) / rotationDirection.ScalarProduct(rotationDirection)) * rotationDirection - 
 			modelObjects.Qbert->NowUpDirection).Normalize();
 
-		glRotatef(DCos(tempUpDirection.ScalarProduct(modelObjects.Qbert->NowUpDirection)), 0, 0, 1);
-		glRotatef(180, rotationDirection.X(), rotationDirection.Y(),rotationDirection.Z());
-
-
 		glRotatef(_zRotate, 0.0f, 0.0f, 1.0f);
 		glRotatef(_yRotate, 0.0f, 1.0f, 0.0f);
 		glRotatef(_xRotate, 1.0f, 0.0f, 0.0f);	
+
+
+		glRotatef(DCos(tempUpDirection.ScalarProduct(modelObjects.Qbert->NowUpDirection)), 0, 0, 1);
+		glRotatef(180, rotationDirection.X(), rotationDirection.Y(),rotationDirection.Z());
 
 		glTranslatef(center.Points[0], center.Points[1], center.Points[2]);
 		(*objToDraw).second->Draw((*iter)->XRotate, (*iter)->YRotate, (*iter)->ZRotate, 1.0f, true);
@@ -168,14 +168,16 @@ void SimpleView::Draw(QbertModel::ModelObjects& modelObjects)
 	Point3D tempUpDirection = (2 * (rotationDirection.ScalarProduct(modelObjects.Qbert->NowUpDirection) / rotationDirection.ScalarProduct(rotationDirection)) * rotationDirection - 
 		modelObjects.Qbert->NowUpDirection).Normalize();
 
-	glRotatef(DCos(tempUpDirection.ScalarProduct(modelObjects.Qbert->NowUpDirection)), 0, 0, 1);
-	glRotatef(180, rotationDirection.X(), rotationDirection.Y(),rotationDirection.Z());
-
 	glRotatef(_zRotate, 0.0f, 0.0f, 1.0f);
 	glRotatef(_yRotate, 0.0f, 1.0f, 0.0f);
 	glRotatef(_xRotate, 1.0f, 0.0f, 0.0f);	
 
 	glTranslatef(center.Points[0], center.Points[1], center.Points[2]);
+
+
+	glRotatef(DCos(tempUpDirection.Z()), 0, 0, 1);									//tempUpDirection.ScalarProduct(Point3D(0, 0, 1)) == tempUpDirection.Z()
+	glRotatef(180, rotationDirection.X(), rotationDirection.Y(),rotationDirection.Z());
+
 	(*objToDraw).second->Draw(modelObjects.Qbert->XRotate, modelObjects.Qbert->YRotate, modelObjects.Qbert->ZRotate, 1.0f, true);
 
 	SDL_GL_SwapBuffers();

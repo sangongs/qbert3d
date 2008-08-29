@@ -10,7 +10,7 @@
 
 int WINAPI WinMain(HINSTANCE /*hInst*/, HINSTANCE /*hPrev*/, LPSTR /*szCmdLine*/, int /*sw*/)
 	{
-	DiamondQbertModel model(20, "RedBox", "BlueBox", "Qbert");
+	DiamondQbertModel model(6, "RedBox", "BlueBox", "Qbert");
 	SimpleView view;
 	SimpleControler controler((View*)&view, (QbertModel*)&model);
 
