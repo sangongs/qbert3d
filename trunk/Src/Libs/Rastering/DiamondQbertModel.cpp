@@ -64,6 +64,12 @@ DiamondQbertModel::DiamondQbertModel(int sizeOfDiamond, const std::string boxNam
 
 	_objects.BoxesMap.find(Point3D(0, (float)sizeOfDiamond - 1, 0))->second->Name = boxNameAfter;
 	SetQbert(qbertName, _startingBox = _objects.BoxesMap.find(Point3D(0, (float)sizeOfDiamond - 1, 0))->second.get());
+
+
+	_objects.Qbert->NowUpDirection = Point3D(0, 1, 0);
+	_objects.Qbert->NowFaceDirection = Point3D(0, 0, 1);
+	_objects.Qbert->AfterUpDirection = Point3D(0, 1, 0);
+	_objects.Qbert->AfterFaceDirection = Point3D(0, 0, 1);
 }
 
 void DiamondQbertModel::ReadInput(const SimpleControler::InputData& inputData)			//Deals with time and decides whether to move or not.
