@@ -32,6 +32,11 @@ public:
 		return *this;
 	}
 
+	Point3D operator- ()
+	{
+		return Point3D(-Points[0], -Points[1], -Points[2]);
+	}
+
 	Point3D& operator+= (const Point3D& point)
 	{
 		Points[0] += point.Points[0];
@@ -46,6 +51,25 @@ public:
 		Points[1] -= point.Points[1];
 		Points[2] -= point.Points[2];
 		return *this;
+	}
+
+	Point3D operator+ (const Point3D& point)
+	{
+		return Point3D(Points[0] + point.Points[0],
+			Points[1] + point.Points[1],
+			Points[2] + point.Points[2]);
+	}
+
+	Point3D operator- (const Point3D& point)
+	{
+		return Point3D(Points[0] - point.Points[0],
+			Points[1] - point.Points[1],
+			Points[2] - point.Points[2]);
+	}
+
+	Point3D operator* (float factor)
+	{
+		return Point3D(Points[0] * factor, Points[1] * factor, Points[2] * factor);
 	}
 
 	void LoadFromArguments(const std::string& arguments)
@@ -81,16 +105,18 @@ public:
 		return (Points[0] == point.Points[0] && Points[1] == point.Points[1] && Points[2] == point.Points[2]);
 	}
 
-	void Normalize()
+	Point3D& Normalize()
 	{
 		float length = sqrt(Points[0]*Points[0] + Points[1]*Points[1] + Points[2]*Points[2]);
 
 		if (length == 0)
-			return; //can't devide by 0
+			throw std::exception("can't divide by '0' (in function Point3D::Normalize())"); //can't devide by 0
 
 		Points[0] /= length;
 		Points[1] /= length;
 		Points[2] /= length;
+
+		return *this;
 	}
 
 	float& X()
@@ -135,6 +161,8 @@ public:
 
 	float Points[2];
 };
+
+
 class DrawableObj
 {
 private:
@@ -149,3 +177,14 @@ public:
 };
 
 typedef boost::shared_ptr<DrawableObj> DrawableObj_Ptr;
+
+
+Point3D operator* (float factor, const Point3D&);
+
+float DSin(float degrees);
+
+float DCos(float degrees);
+
+float Modulu(float inp);
+
+

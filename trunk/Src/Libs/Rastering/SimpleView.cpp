@@ -4,11 +4,12 @@
 #include "SDL\SDL_opengl.h"
 #include "boost\shared_ptr.hpp"
 
+#include "DrawableObj.h"
 #include "GameObject.h"
 
-#include "SimpleView.h"
-
 #include "QbertModel.h"
+
+#include "SimpleView.h"
 
 
 SimpleView::SimpleView()
@@ -105,7 +106,7 @@ void SimpleView::Draw(QbertModel::ModelObjects& modelObjects)
 	glLightfv(GL_LIGHT0, GL_SPECULAR, lightParams + 10);
 	glLoadIdentity();
 
-	for (std::list<QbertModel::QbertBox_ptr>::const_iterator iter = modelObjects.Boxes.begin(); iter != modelObjects.Boxes.end(); iter++)
+	for (std::list<QbertModel::QbertBox_ptr>::const_iterator iter = modelObjects.Boxes.begin(); iter != modelObjects.Boxes.end(); iter++)			//Drawing Boxes
 	{	
 		std::map<std::string, DrawableObj_Ptr>::iterator objToDraw = _objects.find((*iter)->Name);
 		if (objToDraw == _objects.end())
@@ -121,18 +122,27 @@ void SimpleView::Draw(QbertModel::ModelObjects& modelObjects)
 	}
 
 
-	for (std::list<QbertModel::QbertEnemyObj_ptr>::iterator iter = modelObjects.Enemies.begin(); iter != modelObjects.Enemies.end(); iter++)
+	for (std::list<QbertModel::QbertEnemyObj_ptr>::iterator iter = modelObjects.Enemies.begin(); iter != modelObjects.Enemies.end(); iter++)		//Drawing Enemies
 	{
 		Point3D center((*iter)->NowOn->X, (*iter)->NowOn->Y, (*iter)->NowOn->Z);
-		center += (*iter)->UpDirection;
+		center += (*iter)->NowUpDirection;
 
 		std::map<std::string, DrawableObj_Ptr>::iterator objToDraw = _objects.find((*iter)->Name);
 		if (objToDraw == _objects.end())
 			throw std::exception("Couldn't find object while trying to draw the model, (in the view function)");
 		glLoadIdentity();
 
-		glRotatef(180, (*iter)->RotationAxe.X(), (*iter)->RotationAxe.Y(), (*iter)->RotationAxe.Z());
-		glRotatef((*iter)->RotationAngle, (*iter)->UpDirection.X(), (*iter)->UpDirection.Y(), (*iter)->UpDirection.Z());
+
+		Point3D rotationDirection = (Point3D (0, 0, 1) + modelObjects.Qbert->NowFaceDirection) * 0.5;
+		if ((rotationDirection.Points[0] == 0) && (rotationDirection.Points[1] == 0) && (rotationDirection.Points[2] == 0))
+			rotationDirection = modelObjects.Qbert->NowUpDirection;
+
+		Point3D tempUpDirection = (2 * (rotationDirection.ScalarProduct(modelObjects.Qbert->NowUpDirection) / rotationDirection.ScalarProduct(rotationDirection)) * rotationDirection - 
+			modelObjects.Qbert->NowUpDirection).Normalize();
+
+		glRotatef(DCos(tempUpDirection.ScalarProduct(modelObjects.Qbert->NowUpDirection)), 0, 0, 1);
+		glRotatef(180, rotationDirection.X(), rotationDirection.Y(),rotationDirection.Z());
+
 
 		glRotatef(_zRotate, 0.0f, 0.0f, 1.0f);
 		glRotatef(_yRotate, 0.0f, 1.0f, 0.0f);
@@ -142,13 +152,24 @@ void SimpleView::Draw(QbertModel::ModelObjects& modelObjects)
 		(*objToDraw).second->Draw((*iter)->XRotate, (*iter)->YRotate, (*iter)->ZRotate, 1.0f, true);
 	}
 
-	Point3D center(modelObjects.Qbert->NowOn->X, modelObjects.Qbert->NowOn->Y, modelObjects.Qbert->NowOn->Z);
-	center += modelObjects.Qbert->NowOn->GetUpDirection(); 
+	Point3D center(modelObjects.Qbert->NowOn->X, modelObjects.Qbert->NowOn->Y, modelObjects.Qbert->NowOn->Z);										//Drawing Qbert
+	center += modelObjects.Qbert->NowUpDirection; 
 
 	std::map<std::string, DrawableObj_Ptr>::iterator objToDraw = _objects.find(modelObjects.Qbert->Name);
 	if (objToDraw == _objects.end())
 		throw std::exception("Couldn't find object while trying to draw the model, (in the view function)");
 	glLoadIdentity();
+
+
+	Point3D rotationDirection = 0.5 * (Point3D (0, 0, 1) + modelObjects.Qbert->NowFaceDirection);
+	if ((rotationDirection.Points[0] == 0) && (rotationDirection.Points[1] == 0) && (rotationDirection.Points[2] == 0))
+		rotationDirection = modelObjects.Qbert->NowUpDirection;
+
+	Point3D tempUpDirection = (2 * (rotationDirection.ScalarProduct(modelObjects.Qbert->NowUpDirection) / rotationDirection.ScalarProduct(rotationDirection)) * rotationDirection - 
+		modelObjects.Qbert->NowUpDirection).Normalize();
+
+	glRotatef(DCos(tempUpDirection.ScalarProduct(modelObjects.Qbert->NowUpDirection)), 0, 0, 1);
+	glRotatef(180, rotationDirection.X(), rotationDirection.Y(),rotationDirection.Z());
 
 	glRotatef(_zRotate, 0.0f, 0.0f, 1.0f);
 	glRotatef(_yRotate, 0.0f, 1.0f, 0.0f);
