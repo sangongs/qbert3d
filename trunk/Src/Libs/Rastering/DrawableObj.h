@@ -40,6 +40,14 @@ public:
 		return *this;
 	}
 
+	Point3D& operator-= (const Point3D& point)
+	{
+		Points[0] -= point.Points[0];
+		Points[1] -= point.Points[1];
+		Points[2] -= point.Points[2];
+		return *this;
+	}
+
 	void LoadFromArguments(const std::string& arguments)
 	{
 		if (sscanf(arguments.c_str(), "%f %f %f", Points, Points + 1, Points + 2) != 3)
@@ -103,12 +111,16 @@ public:
 
 	Point3D CrossProduct (Point3D& point)
 	{
-		return Point3D (Y() * point.Z() - Z() * point.Y(), Z() * point.X() - X() * point.Z(), X() * point.Y() - Y() * point.X());
+		return Point3D(Y() * point.Z() - Z() * point.Y(), Z() * point.X() - X() * point.Z(), X() * point.Y() - Y() * point.X());
+	}
+
+	float ScalarProduct (Point3D& point)
+	{
+		return (Points[0] * point.Points[0] + Points[1] * point.Points[1] + Points[2] * point.Points[2]);
 	}
 
 	float Points[3];
 };
-
 
 class Point2D
 {

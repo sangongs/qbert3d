@@ -124,12 +124,15 @@ void SimpleView::Draw(QbertModel::ModelObjects& modelObjects)
 	for (std::list<QbertModel::QbertEnemyObj_ptr>::iterator iter = modelObjects.Enemies.begin(); iter != modelObjects.Enemies.end(); iter++)
 	{
 		Point3D center((*iter)->NowOn->X, (*iter)->NowOn->Y, (*iter)->NowOn->Z);
-		center += (*iter)->NowOn->GetUpDirection();
+		center += (*iter)->UpDirection;
 
 		std::map<std::string, DrawableObj_Ptr>::iterator objToDraw = _objects.find((*iter)->Name);
 		if (objToDraw == _objects.end())
 			throw std::exception("Couldn't find object while trying to draw the model, (in the view function)");
 		glLoadIdentity();
+
+		glRotatef(180, (*iter)->RotationAxe.X(), (*iter)->RotationAxe.Y(), (*iter)->RotationAxe.Z());
+		glRotatef((*iter)->RotationAngle, (*iter)->UpDirection.X(), (*iter)->UpDirection.Y(), (*iter)->UpDirection.Z());
 
 		glRotatef(_zRotate, 0.0f, 0.0f, 1.0f);
 		glRotatef(_yRotate, 0.0f, 1.0f, 0.0f);

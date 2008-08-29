@@ -19,22 +19,12 @@ public:
 		friend QbertModel;
 
 		int _face;
-		Point3D _upDirection;
-		QbertBox* _neibhors[5];
 		bool _isVisited;
+		bool _isOnPerimeter;
 	public:
-		QbertBox(const std::string& name, const Point3D& upDirection, int face, 
+		QbertBox(const std::string& name, int face, 
 			float x, float y, float z, float xRotate = 0, float yRotate = 0, float zRotate = 0)
-			: GameObject(name, x, y, z, xRotate, yRotate, zRotate), _upDirection(upDirection), _face(face), _isVisited(false)
-		{
-			_neibhors[None] = this;
-		}
-
-		Point3D GetUpDirection()
-		{
-
-			return _upDirection;
-		}
+			: GameObject(name, x, y, z, xRotate, yRotate, zRotate), _face(face), _isVisited(false) {}
 	};
 
 	typedef boost::shared_ptr<QbertBox> QbertBox_ptr;
@@ -46,6 +36,9 @@ public:
 		float Progress;
 		DWORD MoveLength;
 		QbertBox * NowOn, * AfterOn;
+		Point3D UpDirection, FaceDirection;
+		Point3D RotationAxe;
+		Point3D RotationAngle;
 
 		QbertGameObject(const std::string& name ="", QbertBox* box = NULL, DWORD moveLength = 1)
 			: GameObject(name, 0, 0, 0, 0, 0, 0), NowOn(box), AfterOn(box), Progress(0), MoveLength(moveLength) 
@@ -89,8 +82,7 @@ public:
 
 				Direction direction = _AIfunc(model);
 
-				NowOn = AfterOn;
-				AfterOn = model.GetBoxNeibhor(NowOn, direction);
+				//[todo] write implematation;
 
 				while (Progress > 1)
 					Progress--;
@@ -145,32 +137,6 @@ protected:
 	std::map<std::string, AIFunction> _AITypes;
 	std::map<std::string, DWORD> _enemiesMoveLengthes;
 
-	void SetBoxNeibhor(Direction direction, QbertBox& box, QbertBox& newNeibhor)		//Dosen't change None direction.
-	{
-		switch(direction)
-		{
-		case(Up) :
-			box._neibhors[Up] = &newNeibhor;
-		case(Down):
-			box._neibhors[Down] = &newNeibhor;
-		case(Left):
-			box._neibhors[Left] = &newNeibhor;
-		case(Right):
-			box._neibhors[Right] = &newNeibhor;
-		case(None) :
-			box._neibhors[None] = &box;
-		}
-	}
-
-	QbertBox* GetBoxNeibhor (QbertBox& box, Direction direction)
-	{
-		return box._neibhors[direction];
-	}
-
-	QbertBox* GetBoxNeibhor (QbertBox* box, Direction direction)
-	{
-		return (*box)._neibhors[direction];
-	}
 
 	void VisitBox (QbertBox& box)
 	{
