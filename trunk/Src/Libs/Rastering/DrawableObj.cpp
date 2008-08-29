@@ -225,14 +225,14 @@ DrawableObj::DrawableObj(const std::string& directory, const std::string &fileNa
 	for (std::list<Face>::const_iterator iter = faces.begin(); iter != faces.end(); iter++)
 		for (unsigned i = 0; i < (*iter).vertices.size(); i++)
 		{
-			float a = cos(rotateX), c = cos(rotateY), e = cos(rotateZ);
-			float b = sin(rotateX), d = sin(rotateY), f = sin(rotateZ);
+			float a = DCos(rotateX), c = DCos(rotateY), e = DCos(rotateZ);
+			float b = DSin(rotateX), d = DSin(rotateY), f = DSin(rotateZ);
 			float x = vertices[(*iter).vertices[i]].Points[0] - sumOfMass[0];
 			float y = vertices[(*iter).vertices[i]].Points[1] - sumOfMass[1];
 			float z = vertices[(*iter).vertices[i]].Points[2] - sumOfMass[2];
 			float nx = e * c * x + (f * a + e * d * b) * y + (f * b - e * d * a) * z;
 			float ny = (-f * c) * x + (e * a - f * d * b) * y + (e * b - f * d * b) * z;
-			float nz = a * x + (-b * c) * y + a * c * z;
+			float nz = d * x + (-b * c) * y + a * c * z;
 			
 			maxPoint[0] = std::max(maxPoint[0], nx);
 			maxPoint[1] = std::max(maxPoint[1], ny);
@@ -310,14 +310,14 @@ DrawableObj::DrawableObj(const std::string& directory, const std::string &fileNa
 		}
 	
 		glPopMatrix();
-		
 	glEndList();
 }
 
-void DrawableObj::Draw(float rotateX, float rotateY, float rotateZ, float scale)
+void DrawableObj::Draw(float rotateX, float rotateY, float rotateZ, float scale, bool OnYPlane)
 {
 	glPushMatrix();
-	glTranslatef(0, -_yDistFromFloor, 0);
+	if (OnYPlane)
+		glTranslatef(0, 0, 0);
 	glRotatef(rotateX, 1.0f, 0.0f, 0.0f);
 	glRotatef(rotateZ, 0.0f, 0.0f, 1.0f);
 	glRotatef(rotateY, 0.0f, 1.0f, 0.0f);
