@@ -10,8 +10,8 @@ public:
 		, float freeFallAcceleration);
 
 	std::list<GameObject_ptr>* GetObjects();
-	void ReadInput(const SimpleControler::InputData&);
-	void Move(QbertModel::QbertGameObject* object, const SimpleControler::InputData& inputData);
+	void ReciveInput(const SimpleControler::InputData&);
+	void Move(QbertModel::QbertGameObject_ptr object, const SimpleControler::InputData& inputData);
 	void MakeEnemiesMove(DWORD deltaTime);
 
 	~DiamondQbertModel();

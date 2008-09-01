@@ -44,7 +44,7 @@ SimpleControler::SimpleControler(View * view, QbertModel * model) : _view(view),
 {
 }
 
-void SimpleControler::Input(DWORD deltaTime)
+void SimpleControler::ReadInput(DWORD deltaTime)
 {
 	if (_leftMouseKeyDown)
 	{
@@ -54,16 +54,11 @@ void SimpleControler::Input(DWORD deltaTime)
 		_view->CameraMove(0, 0, 0, (float)newY / 4.0f, 0 , 0);
 	}
 
-
-	InputData inputData;
-	inputData.DeltaTime = deltaTime;
-	inputData.direction = None;
-
+	InputData inputData(deltaTime);
 
 	SDL_Event event;
 	while(SDL_PollEvent(&event)) 
 	{
-
 		switch(event.type)
 		{
 		case SDL_MOUSEBUTTONDOWN:
@@ -76,8 +71,6 @@ void SimpleControler::Input(DWORD deltaTime)
 		case SDL_MOUSEBUTTONUP:
 			if( event.button.button == SDL_BUTTON_LEFT ) 
 				_leftMouseKeyDown = false;
-			break;
-		case SDL_KEYDOWN:
 			break;
 		case SDL_KEYUP:
 			if (event.key.keysym.sym == SDLK_KP_PLUS)
@@ -96,7 +89,6 @@ void SimpleControler::Input(DWORD deltaTime)
 		case SDL_QUIT:
 			_running = false;
 			return;
-			break;
 		}
 	}
 
@@ -113,7 +105,7 @@ void SimpleControler::Run(unsigned startWidth, unsigned startHeight, unsigned de
 	while(_running)
 	{
 		DWORD tempTime = GetTickCount();
-		Input(tempTime - lastTime);
+		ReadInput(tempTime - lastTime);
 		lastTime = tempTime;
 
 		((SimpleView*)_view)->Draw(_model->GetModelObjects());

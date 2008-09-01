@@ -73,13 +73,19 @@ DiamondQbertModel::DiamondQbertModel(int sizeOfDiamond, const std::string boxNam
 	_objects.Qbert->SetMoveLength(1000, freeFallAccelatetion);
 }
 
-void DiamondQbertModel::ReadInput(const SimpleControler::InputData& inputData)
+void DiamondQbertModel::ReciveInput(const SimpleControler::InputData& inputData)
 {
-	Move(_objects.Qbert.get(), inputData);
+	/*
+		Redesign:
+			0] Each object has a shared_ptr to a model.
+			1] Enemy objects has a WhereToMove() function which returns input data.
+	*/
+
+	Move(_objects.Qbert, inputData);
 	MakeEnemiesMove(inputData.DeltaTime);
 }
 
-void DiamondQbertModel::Move(QbertModel::QbertGameObject* object, const SimpleControler::InputData& inputData)
+void DiamondQbertModel::Move(QbertModel::QbertGameObject_ptr object, const SimpleControler::InputData& inputData)
 {
 
 	Point3D center(object->LastBox->X, object->LastBox->Y, object->LastBox->Z);
@@ -280,7 +286,7 @@ void DiamondQbertModel::Move(QbertModel::QbertGameObject* object, const SimpleCo
 void DiamondQbertModel::MakeEnemiesMove(DWORD deltaTime)
 {
 	for (std::list<QbertEnemyObj_ptr>::iterator iter = _objects.Enemies.begin(); iter != _objects.Enemies.end(); iter++)
-		(*iter)->Move(*this, deltaTime);
+		(*iter)->Move(*this, deltaTime); //[todo] change this to WhereToMove or something... It should return input data.
 }
 
 std::list<GameObject_ptr>* DiamondQbertModel::GetObjects()

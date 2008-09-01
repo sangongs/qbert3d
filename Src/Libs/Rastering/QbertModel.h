@@ -11,6 +11,7 @@
 #include "Model.h"
 #include "SimpleControler.h"
 
+//[todo] remove all nested classes into different files.
 class QbertModel : public Model
 {
 public:
@@ -33,7 +34,6 @@ public:
 			return _isOnPerimeter;
 		}
 	};
-
 	typedef boost::shared_ptr<QbertBox> QbertBox_ptr;
 
 
@@ -42,14 +42,13 @@ public:
 	protected:
 		DWORD _moveLength;
 		float _verticalSpeed, _horizontalSpeed, _freeFallAcceleration;
+
 	public:
 		float Progress;
 		QbertBox_ptr LastBox, NextBox;
 		Point3D LastUpDirection, LastFaceDirection, NextUpDirection, NextFaceDirection, CurrentUpDirection, CurrentFaceDirection;
-		bool IsMovingUp, IsChangingBox;
+		bool IsMovingUp, IsChangingBox, IsMoving;
 		Direction MovingDirection;
-
-		bool IsMoving;
 
 		QbertGameObject(const std::string& name ="", QbertBox_ptr box = QbertBox_ptr(), DWORD moveLength = 1000, float freeFallAcceleration = 1)
 			: GameObject(name, 0, 0, 0, 0, 0, 0), LastBox(box), NextBox(box), Progress(0), _moveLength(moveLength) , IsMoving(false), _freeFallAcceleration(freeFallAcceleration)
@@ -57,36 +56,15 @@ public:
 			SetMoveLength(moveLength, _freeFallAcceleration);
 		}
 
-		const QbertBox& WhereNow() const;
-		const QbertBox& WhereNext() const;
-
-		Point3D GetRightDirection()
-		{
-			return LastFaceDirection.CrossProduct(LastUpDirection);
-		}
-
 		~QbertGameObject() {}
 
-		DWORD GetMoveLength() 
-		{
-			return _moveLength;
-		}
+		Point3D GetRightDirection() {return LastFaceDirection.CrossProduct(LastUpDirection);}
+		DWORD GetMoveLength() {return _moveLength;}
+		float GetHorizontalSpeed() {return _horizontalSpeed;}
+		float GetVerticalSpeed(){return _verticalSpeed;}
+		float GetFreeAcceleration(){return _freeFallAcceleration;}
 
-		float GetHorizontalSpeed()
-		{
-			return _horizontalSpeed;
-		}
-
-		float GetVerticalSpeed()
-		{
-			return _verticalSpeed;
-		}
-
-		float GetFreeAcceleration()
-		{
-			return _freeFallAcceleration;
-		}
-
+		//[todo] into cpp file.
 		void SetMoveLength(DWORD moveLength, float freeFallAcceleration)
 		{
 			_freeFallAcceleration = freeFallAcceleration;
@@ -96,20 +74,21 @@ public:
 			_verticalSpeed = std::abs(1.0f / _horizontalSpeed - 0.5f * _freeFallAcceleration * _horizontalSpeed);
 		}
 	};
-
 	typedef boost::shared_ptr<QbertGameObject> QbertGameObject_ptr;
 
 
 	class QbertEnemyObj : public QbertGameObject
 	{
+	private:
 		std::string _type;
 		bool _isFuncInit, _isMoveLengthInit;
 		AIFunction _AIfunc;
+
 	public:
 		QbertEnemyObj(const std::string& name ="", QbertBox_ptr box = QbertBox_ptr(), const std::string& type ="", DWORD moveLegth = 100) 
 			: QbertGameObject(name, box, moveLegth), _isFuncInit(false), _isMoveLengthInit(false), _type(type) {};
 
-		void Move(QbertModel& model, DWORD deltaTime)
+		void Move(QbertModel& model, DWORD deltaTime)//[todo] remove from header
 		{
 			if (!_isMoveLengthInit)
 			{
@@ -140,15 +119,15 @@ public:
 
 		~QbertEnemyObj(void);
 	};
-
 	typedef boost::shared_ptr<QbertEnemyObj> QbertEnemyObj_ptr;
 
 
 	class ModelObjects
 	{
+	private:
 		friend class QbertModel;
-
 		float _freeFallAcceleration;
+	
 	public:
 		QbertGameObject_ptr Qbert;
 		std::list<QbertEnemyObj_ptr> Enemies;
@@ -156,10 +135,7 @@ public:
 		std::map<Point3D, QbertBox_ptr> BoxesMap;
 		std::list<GameObject_ptr> ObjectsList;
 
-		float GetFreeFallAcceleration()
-		{
-			return _freeFallAcceleration;
-		}
+		float GetFreeFallAcceleration() {return _freeFallAcceleration;}
 	};
 
 protected:
@@ -167,13 +143,13 @@ protected:
 	std::string _boxNameAfter, _boxNameBefore;
 	QbertBox_ptr _startingBox;
 	int _boxesUnvisited;
-
 	ModelObjects _objects;
 
 	std::map<std::string, AIFunction> _AITypes;
 	std::map<std::string, DWORD> _enemiesMoveLengthes;
 
 
+	//[todo] remove code from here
 	void VisitBox (QbertBox_ptr box)
 	{
 		if (box->_isVisited)
@@ -194,6 +170,8 @@ protected:
 	{
 		_objects.Qbert = QbertGameObject_ptr(new QbertGameObject(qbertName, box));
 	}
+
+	//until here
 
 public:
 	QbertModel (std::string boxNameBefore, std::string boxNameAfter, float FreeFallAcceleration) :
