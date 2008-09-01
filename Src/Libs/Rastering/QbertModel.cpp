@@ -13,13 +13,13 @@ void QbertModel::VisitBox (QbertBox_ptr box)
 		return;
 
 	box->_isVisited = true;
-	box->Name = _boxNameAfter;
+	box->Name = _visitedBoxName;
 	_boxesUnvisited--;
 }
 
 void QbertModel::InsertBox (Point3D point, QbertBox_ptr box)
 {
-	_objects.BoxesMap.insert(std::pair<Point3D, QbertBox_ptr>(point, box));
+	_objects.BoxMap.insert(std::pair<Point3D, QbertBox_ptr>(point, box));
 	_objects.Boxes.push_back(box);
 }
 
