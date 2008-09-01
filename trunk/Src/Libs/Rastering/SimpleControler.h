@@ -2,7 +2,6 @@
 
 #include "View.h"
 #include "Model.h"
-/*#include "QbertModel.h"*/
 
 enum Direction {Right, Left, Up, Down, None};
 
@@ -13,12 +12,14 @@ class SimpleControler
 private:
 	View * _view;
 	QbertModel * _model;
-
 	bool _leftMouseKeyDown, _running;
 
-	void Input(DWORD deltaTime);
+	void ReadInput(DWORD deltaTime);
 
 public:
+	SimpleControler(View * view, QbertModel * model);
+	virtual void Run(unsigned startWidth, unsigned startHeight, unsigned depth);
+	
 	class InputData
 	{
 	public:
@@ -27,9 +28,4 @@ public:
 
 		InputData (DWORD deltaTime = 0, Direction direc = None) : DeltaTime(deltaTime), direction(direc) {}
 	};
-
-
-	SimpleControler(View * view, QbertModel * model);
-	
-	virtual void Run(unsigned startWidth, unsigned startHeight, unsigned depth);
 };
