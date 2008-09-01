@@ -44,14 +44,14 @@ public:
 		float _verticalSpeed, _horizontalSpeed, _freeFallAcceleration;
 	public:
 		float Progress;
-		QbertBox * LastBox, * NextBox;
+		QbertBox_ptr LastBox, NextBox;
 		Point3D LastUpDirection, LastFaceDirection, NextUpDirection, NextFaceDirection, CurrentUpDirection, CurrentFaceDirection;
 		bool IsMovingUp, IsChangingBox;
 		Direction MovingDirection;
 
 		bool IsMoving;
 
-		QbertGameObject(const std::string& name ="", QbertBox* box = NULL, DWORD moveLength = 1000, float freeFallAcceleration = 1)
+		QbertGameObject(const std::string& name ="", QbertBox_ptr box = QbertBox_ptr(), DWORD moveLength = 1000, float freeFallAcceleration = 1)
 			: GameObject(name, 0, 0, 0, 0, 0, 0), LastBox(box), NextBox(box), Progress(0), _moveLength(moveLength) , IsMoving(false), _freeFallAcceleration(freeFallAcceleration)
 		{
 			SetMoveLength(moveLength, _freeFallAcceleration);
@@ -106,7 +106,7 @@ public:
 		bool _isFuncInit, _isMoveLengthInit;
 		AIFunction _AIfunc;
 	public:
-		QbertEnemyObj(const std::string& name ="", QbertBox* box = NULL, const std::string& type ="", DWORD moveLegth = 100) 
+		QbertEnemyObj(const std::string& name ="", QbertBox_ptr box = QbertBox_ptr(), const std::string& type ="", DWORD moveLegth = 100) 
 			: QbertGameObject(name, box, moveLegth), _isFuncInit(false), _isMoveLengthInit(false), _type(type) {};
 
 		void Move(QbertModel& model, DWORD deltaTime)
@@ -156,25 +156,16 @@ public:
 		std::map<Point3D, QbertBox_ptr> BoxesMap;
 		std::list<GameObject_ptr> ObjectsList;
 
-		void SetQbertList() 
-		{
-			_qbertList = std::list<QbertGameObject_ptr>();
-			_qbertList.push_back(Qbert);
-		}
-
 		float GetFreeFallAcceleration()
 		{
 			return _freeFallAcceleration;
 		}
-
-	private:
-		std::list<QbertGameObject_ptr> _qbertList;					//for the Iterator;
 	};
 
 protected:
 	bool _isQbertAlive, _isFirstCall;
 	std::string _boxNameAfter, _boxNameBefore;
-	QbertBox* _startingBox;
+	QbertBox_ptr _startingBox;
 	int _boxesUnvisited;
 
 	ModelObjects _objects;
@@ -183,20 +174,11 @@ protected:
 	std::map<std::string, DWORD> _enemiesMoveLengthes;
 
 
-	void VisitBox (QbertBox& box)
-	{
-		if (box._isVisited)
-			return;
-		
-		box._isVisited = true;
-		_boxesUnvisited--;
-	}
-
-	void VisitBox (QbertBox* box)
+	void VisitBox (QbertBox_ptr box)
 	{
 		if (box->_isVisited)
 			return;
-
+		
 		box->_isVisited = true;
 		box->Name = _boxNameAfter;
 		_boxesUnvisited--;
@@ -208,10 +190,9 @@ protected:
 		_objects.Boxes.push_back(box);
 	}
 
-	void SetQbert (std::string qbertName, QbertBox* box)
+	void SetQbert (std::string qbertName, QbertBox_ptr box)
 	{
 		_objects.Qbert = QbertGameObject_ptr(new QbertGameObject(qbertName, box));
-		_objects.SetQbertList();
 	}
 
 public:
