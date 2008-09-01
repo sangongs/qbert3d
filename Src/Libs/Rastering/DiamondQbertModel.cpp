@@ -63,8 +63,7 @@ DiamondQbertModel::DiamondQbertModel(int sizeOfDiamond, const std::string boxNam
 		}
 	}
 
-	//_objects.BoxesMap.find(Point3D(0, (float)sizeOfDiamond - 1, 0))->second->Name = boxNameAfter;
-	SetQbert(qbertName, _startingBox = _objects.BoxesMap.find(Point3D(0, (float)sizeOfDiamond - 1, 0))->second.get());
+	SetQbert(qbertName, _startingBox = _objects.BoxesMap.find(Point3D(0, (float)sizeOfDiamond - 1, 0))->second);
 
 
 	_objects.Qbert->LastUpDirection = Point3D(0, 1, 0);
@@ -74,7 +73,7 @@ DiamondQbertModel::DiamondQbertModel(int sizeOfDiamond, const std::string boxNam
 	_objects.Qbert->SetMoveLength(1000, freeFallAccelatetion);
 }
 
-void DiamondQbertModel::ReadInput(const SimpleControler::InputData& inputData)			//Deals with time and decides whether to move or not.
+void DiamondQbertModel::ReadInput(const SimpleControler::InputData& inputData)
 {
 	Move(_objects.Qbert.get(), inputData);
 	MakeEnemiesMove(inputData.DeltaTime);
@@ -200,7 +199,7 @@ void DiamondQbertModel::Move(QbertModel::QbertGameObject* object, const SimpleCo
 				{
 					object->IsMovingUp = true;
 					object->IsChangingBox = true;
-					object->NextBox = box->second.get();
+					object->NextBox = box->second;
 
 					if((!object->LastUpDirection.Y()) && (!object->NextBox->IsOnPerimeter()))			//cant move like this, must stay on the same box
 						isStayingOnTheSameBox = true;
@@ -216,7 +215,7 @@ void DiamondQbertModel::Move(QbertModel::QbertGameObject* object, const SimpleCo
 				{
 					object->IsMovingUp = false;
 					object->IsChangingBox = true;
-					object->NextBox = box->second.get();
+					object->NextBox = box->second;
 
 					if((!object->LastUpDirection.Y()) && (!object->NextBox->IsOnPerimeter()))			//cant move like this, must stay on the same box
 						isStayingOnTheSameBox = true;
