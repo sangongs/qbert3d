@@ -1,11 +1,15 @@
 #include "StdAfx.h"
 
+#include "SDL\SDL.h"
+#include "SDL\SDL_opengl.h"
+
 #include "View.h"
 #include "QbertModel.h"
 #include "SimpleView.h"
 
-#include "SDL\SDL.h"
-#include "SDL\SDL_opengl.h"
+#include "QbertBox.h"
+#include "QbertGameObject.h"
+#include "QbertEnemyObj.h"
 
 #include "SimpleControler.h"
 
@@ -92,7 +96,7 @@ void SimpleControler::ReadInput(DWORD deltaTime)
 		}
 	}
 
-	_model->ReadInput(inputData);
+	_model->ReciveInput(inputData);
 }
 
 void SimpleControler::Run(unsigned startWidth, unsigned startHeight, unsigned depth)

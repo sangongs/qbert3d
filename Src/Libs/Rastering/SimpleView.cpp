@@ -8,8 +8,11 @@
 #include "GameObject.h"
 
 #include "QbertModel.h"
-
 #include "SimpleView.h"
+
+#include "QbertBox.h"
+#include "QbertGameObject.h"
+#include "QbertEnemyObj.h"
 
 
 SimpleView::SimpleView()
@@ -111,7 +114,7 @@ void SimpleView::Draw(QbertModel::ModelObjects& modelObjects)
 	/*
 	**/
 
-	for (std::list<QbertModel::QbertBox_ptr>::const_iterator iter = modelObjects.Boxes.begin(); iter != modelObjects.Boxes.end(); iter++)			//Drawing Boxes
+	for (std::list<QbertBox_ptr>::const_iterator iter = modelObjects.Boxes.begin(); iter != modelObjects.Boxes.end(); iter++)			//Drawing Boxes
 	{	
 		std::map<std::string, DrawableObj_Ptr>::iterator objToDraw = _objects.find((*iter)->Name);
 		if (objToDraw == _objects.end())
@@ -131,7 +134,7 @@ void SimpleView::Draw(QbertModel::ModelObjects& modelObjects)
 	/*
 	**/
 
-	for (std::list<QbertModel::QbertEnemyObj_ptr>::iterator iter = modelObjects.Enemies.begin(); iter != modelObjects.Enemies.end(); iter++)		//Drawing Enemies
+	for (std::list<QbertEnemyObj_ptr>::iterator iter = modelObjects.Enemies.begin(); iter != modelObjects.Enemies.end(); iter++)		//Drawing Enemies
 	{
 		std::map<std::string, DrawableObj_Ptr>::iterator objToDraw = _objects.find((*iter)->Name);
 		if (objToDraw == _objects.end())

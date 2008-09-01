@@ -5,11 +5,15 @@
 #include "QbertModel.h"
 #include "SimpleControler.h"
 
+#include "QbertBox.h"
+#include "QbertGameObject.h"
+#include "QbertEnemyObj.h"
+
 #include "DiamondQbertModel.h"
 
 
-DiamondQbertModel::DiamondQbertModel(int sizeOfDiamond, const std::string boxNameBefore, const std::string boxNameAfter, const std::string qbertName, float freeFallAccelatetion)
-	: QbertModel(boxNameBefore, boxNameAfter, freeFallAccelatetion)
+DiamondQbertModel::DiamondQbertModel(int sizeOfDiamond, const std::string boxNameBefore, const std::string boxNameAfter, const std::string qbertName, float freeFallAcceleration)
+	: QbertModel(boxNameBefore, boxNameAfter, freeFallAcceleration)
 {
 	this;
 	for (int i = 0, jBorder = sizeOfDiamond - 1; i < sizeOfDiamond; i++, jBorder--)
@@ -64,13 +68,14 @@ DiamondQbertModel::DiamondQbertModel(int sizeOfDiamond, const std::string boxNam
 	}
 
 	SetQbert(qbertName, _startingBox = _objects.BoxesMap.find(Point3D(0, (float)sizeOfDiamond - 1, 0))->second);
+	_objects.Qbert->SetModel(this);
 
 
 	_objects.Qbert->LastUpDirection = Point3D(0, 1, 0);
 	_objects.Qbert->LastFaceDirection = Point3D(0, 0, 1);
 	_objects.Qbert->NextUpDirection = Point3D(0, 1, 0);
 	_objects.Qbert->NextFaceDirection = Point3D(0, 0, 1);
-	_objects.Qbert->SetMoveLength(1000, freeFallAccelatetion);
+	_objects.Qbert->SetMoveLength(1000, _freeFallAcceleration);
 }
 
 void DiamondQbertModel::ReciveInput(const SimpleControler::InputData& inputData)
@@ -85,7 +90,7 @@ void DiamondQbertModel::ReciveInput(const SimpleControler::InputData& inputData)
 	MakeEnemiesMove(inputData.DeltaTime);
 }
 
-void DiamondQbertModel::Move(QbertModel::QbertGameObject_ptr object, const SimpleControler::InputData& inputData)
+void DiamondQbertModel::Move(QbertGameObject_ptr object, const SimpleControler::InputData& inputData)
 {
 
 	Point3D center(object->LastBox->X, object->LastBox->Y, object->LastBox->Z);
@@ -286,7 +291,11 @@ void DiamondQbertModel::Move(QbertModel::QbertGameObject_ptr object, const Simpl
 void DiamondQbertModel::MakeEnemiesMove(DWORD deltaTime)
 {
 	for (std::list<QbertEnemyObj_ptr>::iterator iter = _objects.Enemies.begin(); iter != _objects.Enemies.end(); iter++)
-		(*iter)->Move(*this, deltaTime); //[todo] change this to WhereToMove or something... It should return input data.
+	{
+		Move((*iter), SimpleControler::InputData(deltaTime, (*iter)->WhereToMove()));
+		if (_isQbertAlive)
+			_isQbertAlive = (*iter)->IsQbertStillAlive();
+	}
 }
 
 std::list<GameObject_ptr>* DiamondQbertModel::GetObjects()
