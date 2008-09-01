@@ -105,6 +105,11 @@ public:
 		return (Points[0] == point.Points[0] && Points[1] == point.Points[1] && Points[2] == point.Points[2]);
 	}
 
+	bool operator != (const Point3D point) const
+	{
+		return (Points[0] != point.Points[0] || Points[1] != point.Points[1] || Points[2] != point.Points[2]);
+	}
+
 	Point3D& Normalize()
 	{
 		float length = sqrt(Points[0]*Points[0] + Points[1]*Points[1] + Points[2]*Points[2]);
@@ -172,8 +177,8 @@ private:
 public:
 	DrawableObj::DrawableObj(const std::string& directory, const std::string &fileName, float scale, float rotateX, float rotateY, float rotateZ);
 	~DrawableObj();
-	
-	void Draw(float rotateX, float rotateY, float rotateZ, float scale, bool onYPlane);
+
+	void Draw(float rotateX, float rotateY, float rotateZ, float scale);
 };
 
 typedef boost::shared_ptr<DrawableObj> DrawableObj_Ptr;
@@ -182,8 +187,9 @@ typedef boost::shared_ptr<DrawableObj> DrawableObj_Ptr;
 Point3D operator* (float factor, const Point3D&);
 
 float DSin(float degrees);
-
 float DCos(float degrees);
+
+float Dacos(float value);
 
 float Modulu(float inp);
 

@@ -113,6 +113,11 @@ float DCos(float degrees)
 	return (float)cos(degrees * (M_PI / 180));
 }
 
+float Dacos(float value)
+{
+	return (float)(acos(value) * (180 / M_PI));
+}
+
 float Modulu(float inp)
 {
 	return inp - floor(inp);
@@ -313,16 +318,16 @@ DrawableObj::DrawableObj(const std::string& directory, const std::string &fileNa
 	glEndList();
 }
 
-void DrawableObj::Draw(float rotateX, float rotateY, float rotateZ, float scale, bool OnYPlane)
+void DrawableObj::Draw(float rotateX, float rotateY, float rotateZ, float scale)
 {
 	glPushMatrix();
-	if (OnYPlane)
-		glTranslatef(0, 0, 0);
+
 	glRotatef(rotateX, 1.0f, 0.0f, 0.0f);
 	glRotatef(rotateZ, 0.0f, 0.0f, 1.0f);
 	glRotatef(rotateY, 0.0f, 1.0f, 0.0f);
 	glScalef(scale, scale, scale);
 	glCallList(_listNum);
+
 	glPopMatrix();
 }
 

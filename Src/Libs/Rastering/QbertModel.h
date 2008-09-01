@@ -2,6 +2,8 @@
 
 #include <Windows.h>
 
+#include <cmath>
+
 #include <vector>
 #include <map>
 
@@ -37,27 +39,62 @@ public:
 
 	class QbertGameObject : public GameObject
 	{
+	protected:
+		DWORD _moveLength;
+		float _verticalSpeed, _horizontalSpeed, _freeFallAcceleration;
 	public:
 		float Progress;
-		DWORD MoveLength;
-		QbertBox * NowOn, * AfterOn;
-		Point3D NowUpDirection, NowFaceDirection, AfterUpDirection, AfterFaceDirection;
-		Point3D RotationAxe;
-		Point3D RotationAngle;
+		QbertBox * LastBox, * NextBox;
+		Point3D LastUpDirection, LastFaceDirection, NextUpDirection, NextFaceDirection, CurrentUpDirection, CurrentFaceDirection;
+		bool IsMovingUp, IsChangingBox;
+		Direction MovingDirection;
 
-		QbertGameObject(const std::string& name ="", QbertBox* box = NULL, DWORD moveLength = 1000)
-			: GameObject(name, 0, 0, 0, 0, 0, 0), NowOn(box), AfterOn(box), Progress(0), MoveLength(moveLength) 
-		{}
+		bool IsMoving;
+
+		QbertGameObject(const std::string& name ="", QbertBox* box = NULL, DWORD moveLength = 1000, float freeFallAcceleration = 1)
+			: GameObject(name, 0, 0, 0, 0, 0, 0), LastBox(box), NextBox(box), Progress(0), _moveLength(moveLength) , IsMoving(false), _freeFallAcceleration(freeFallAcceleration)
+		{
+			SetMoveLength(moveLength, _freeFallAcceleration);
+		}
 
 		const QbertBox& WhereNow() const;
 		const QbertBox& WhereNext() const;
 
 		Point3D GetRightDirection()
 		{
-			return NowFaceDirection.CrossProduct(NowUpDirection);
+			return LastFaceDirection.CrossProduct(LastUpDirection);
 		}
 
 		~QbertGameObject() {}
+
+		DWORD GetMoveLength() 
+		{
+			return _moveLength;
+		}
+
+		float GetHorizontalSpeed()
+		{
+			return _horizontalSpeed;
+		}
+
+		float GetVerticalSpeed()
+		{
+			return _verticalSpeed;
+		}
+
+		float GetFreeAcceleration()
+		{
+			return _freeFallAcceleration;
+		}
+
+		void SetMoveLength(DWORD moveLength, float freeFallAcceleration)
+		{
+			_freeFallAcceleration = freeFallAcceleration;
+			_moveLength = moveLength;
+			_horizontalSpeed = 1;
+
+			_verticalSpeed = std::abs(1.0f / _horizontalSpeed - 0.5f * _freeFallAcceleration * _horizontalSpeed);
+		}
 	};
 
 	typedef boost::shared_ptr<QbertGameObject> QbertGameObject_ptr;
@@ -69,14 +106,14 @@ public:
 		bool _isFuncInit, _isMoveLengthInit;
 		AIFunction _AIfunc;
 	public:
-		QbertEnemyObj(const std::string& name ="", QbertBox* box = NULL, const std::string& type ="", DWORD moveLegth = 1000) 
+		QbertEnemyObj(const std::string& name ="", QbertBox* box = NULL, const std::string& type ="", DWORD moveLegth = 100) 
 			: QbertGameObject(name, box, moveLegth), _isFuncInit(false), _isMoveLengthInit(false), _type(type) {};
 
 		void Move(QbertModel& model, DWORD deltaTime)
 		{
 			if (!_isMoveLengthInit)
 			{
-				MoveLength = model._enemiesMoveLengthes.find(_type)->second;
+				_moveLength = model._enemiesMoveLengthes.find(_type)->second;
 				_isMoveLengthInit = true;
 			}
 
@@ -86,27 +123,18 @@ public:
 				_isFuncInit = true;
 			}
 
-			Progress += (float)(deltaTime / MoveLength);
-			if (Progress > 1 )
-			{
 
-				Direction direction = _AIfunc(model);
-
-				//[todo] write implematation;
-
-				while (Progress > 1)
-					Progress--;
-			}
+			model.Move(this, SimpleControler::InputData(deltaTime, _AIfunc(model)));
 
 			if (!model._isQbertAlive)
 				return;
 
-			if (NowOn == model._objects.Qbert->AfterOn && AfterOn == model._objects.Qbert->NowOn)
+			if (LastBox == model._objects.Qbert->NextBox && NextBox == model._objects.Qbert->LastBox)
 			{
 				if (Progress + model._objects.Qbert->Progress > 1)
 					model._isQbertAlive = false;
 			}
-			else if (model._objects.Qbert->Progress > 0.3 && Progress > 0.8 && AfterOn == model._objects.Qbert->NowOn)
+			else if (model._objects.Qbert->Progress > 0.3 && Progress > 0.8 && NextBox == model._objects.Qbert->LastBox)
 				model._isQbertAlive = false;
 		}
 
@@ -118,7 +146,9 @@ public:
 
 	class ModelObjects
 	{
-		friend class ModelObjectsIters;
+		friend class QbertModel;
+
+		float _freeFallAcceleration;
 	public:
 		QbertGameObject_ptr Qbert;
 		std::list<QbertEnemyObj_ptr> Enemies;
@@ -130,6 +160,11 @@ public:
 		{
 			_qbertList = std::list<QbertGameObject_ptr>();
 			_qbertList.push_back(Qbert);
+		}
+
+		float GetFreeFallAcceleration()
+		{
+			return _freeFallAcceleration;
 		}
 
 	private:
@@ -163,6 +198,7 @@ protected:
 			return;
 
 		box->_isVisited = true;
+		box->Name = _boxNameAfter;
 		_boxesUnvisited--;
 	}
 
@@ -179,10 +215,12 @@ protected:
 	}
 
 public:
-	QbertModel (std::string boxNameBefore, std::string boxNameAfter) : _boxNameBefore(boxNameBefore), _boxNameAfter(_boxNameAfter), _isQbertAlive(true), _boxesUnvisited(0), _isFirstCall(false) {}
+	QbertModel (std::string boxNameBefore, std::string boxNameAfter, float FreeFallAcceleration) :
+	  _boxNameBefore(boxNameBefore), _boxNameAfter(boxNameAfter), _isQbertAlive(true), 
+		  _boxesUnvisited(0), _isFirstCall(false) {_objects._freeFallAcceleration = FreeFallAcceleration;}
 
 	QbertModel::ModelObjects& GetModelObjects() {return _objects;}
-	virtual void QbertMove(const SimpleControler::InputData& inputdata) = 0;
+	virtual void Move(QbertGameObject* ,const SimpleControler::InputData& inputdata) = 0;
 	virtual void MakeEnemiesMove(DWORD deltaTime) = 0;
 	virtual void ReadInput(const SimpleControler::InputData&) = 0;		//Deals with time and decides whether to move or not.
 	bool IsQbertAlive() {return _isQbertAlive;}

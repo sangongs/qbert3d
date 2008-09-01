@@ -59,9 +59,9 @@ void SimpleView::Init(unsigned int width, unsigned int height)
 	glMatrixMode( GL_MODELVIEW );
 	glEnable(GL_NORMALIZE);
 
-	_objects.insert(std::pair<std::string, DrawableObj_Ptr>("Qbert", DrawableObj_Ptr(new DrawableObj("D:\\Programing\\qbert3d\\Objects", "smurf_2.obj", 1, -90, 180, 0))));
+	_objects.insert(std::pair<std::string, DrawableObj_Ptr>("Qbert", DrawableObj_Ptr(new DrawableObj("D:\\Programing\\qbert3d\\Objects", "smurf_2.obj", 1, -90, 0, 0))));
 	_objects.insert(std::pair<std::string, DrawableObj_Ptr>("RedBox", DrawableObj_Ptr(new DrawableObj("D:\\Programing\\qbert3d\\Objects", "cube.obj", 1, 0, 0, 0))));
-	_objects.insert(std::pair<std::string, DrawableObj_Ptr>("BlueBox", DrawableObj_Ptr(new DrawableObj("D:\\Programing\\qbert3d\\Objects", "cube.obj", 1, 0, 0, 0))));
+	_objects.insert(std::pair<std::string, DrawableObj_Ptr>("BlueBox", DrawableObj_Ptr(new DrawableObj("D:\\Programing\\qbert3d\\Objects", "cube2.obj", 1, 0, 0, 0))));
 
 }
 
@@ -83,7 +83,7 @@ void SimpleView::Draw(bool clearScreen = true)
 			throw std::exception("Couldn't find object while trying to draw the model, (in the view function)");
 		glLoadIdentity();
 		glTranslatef((*iter)->X, (*iter)->Y, (*iter)->Z);
-		(*objToDraw).second->Draw((*iter)->XRotate, (*iter)->YRotate, (*iter)->ZRotate, 1.0f, true);
+		(*objToDraw).second->Draw((*iter)->XRotate, (*iter)->YRotate, (*iter)->ZRotate, 1.0f);
 	}
 
 	SDL_GL_SwapBuffers();
@@ -106,6 +106,11 @@ void SimpleView::Draw(QbertModel::ModelObjects& modelObjects)
 	glLightfv(GL_LIGHT0, GL_SPECULAR, lightParams + 10);
 	glLoadIdentity();
 
+	/**
+	/*	Drawing the Boxes 
+	/*
+	**/
+
 	for (std::list<QbertModel::QbertBox_ptr>::const_iterator iter = modelObjects.Boxes.begin(); iter != modelObjects.Boxes.end(); iter++)			//Drawing Boxes
 	{	
 		std::map<std::string, DrawableObj_Ptr>::iterator objToDraw = _objects.find((*iter)->Name);
@@ -118,67 +123,56 @@ void SimpleView::Draw(QbertModel::ModelObjects& modelObjects)
 		glRotatef(_xRotate, 1.0f, 0.0f, 0.0f);		
 
 		glTranslatef((*iter)->X, (*iter)->Y, (*iter)->Z);
-		(*objToDraw).second->Draw((*iter)->XRotate, (*iter)->YRotate, (*iter)->ZRotate, 1.0f, false);
+		(*objToDraw).second->Draw((*iter)->XRotate, (*iter)->YRotate, (*iter)->ZRotate, 1.0f);
 	}
 
+	/**
+	/*	Drawing the Enemies 
+	/*
+	**/
 
 	for (std::list<QbertModel::QbertEnemyObj_ptr>::iterator iter = modelObjects.Enemies.begin(); iter != modelObjects.Enemies.end(); iter++)		//Drawing Enemies
 	{
-		Point3D center((*iter)->NowOn->X, (*iter)->NowOn->Y, (*iter)->NowOn->Z);
-		center += (*iter)->NowUpDirection;
-
 		std::map<std::string, DrawableObj_Ptr>::iterator objToDraw = _objects.find((*iter)->Name);
 		if (objToDraw == _objects.end())
 			throw std::exception("Couldn't find object while trying to draw the model, (in the view function)");
 		glLoadIdentity();
 
-
-		Point3D rotationDirection = (Point3D (0, 0, 1) + modelObjects.Qbert->NowFaceDirection) * 0.5;
-		if ((rotationDirection.Points[0] == 0) && (rotationDirection.Points[1] == 0) && (rotationDirection.Points[2] == 0))
-			rotationDirection = modelObjects.Qbert->NowUpDirection;
-
-		Point3D tempUpDirection = (2 * (rotationDirection.ScalarProduct(modelObjects.Qbert->NowUpDirection) / rotationDirection.ScalarProduct(rotationDirection)) * rotationDirection - 
-			modelObjects.Qbert->NowUpDirection).Normalize();
-
 		glRotatef(_zRotate, 0.0f, 0.0f, 1.0f);
 		glRotatef(_yRotate, 0.0f, 1.0f, 0.0f);
 		glRotatef(_xRotate, 1.0f, 0.0f, 0.0f);	
 
+		glTranslatef((*iter)->X, (*iter)->Y, (*iter)->Z);
 
-		glRotatef(DCos(tempUpDirection.ScalarProduct(modelObjects.Qbert->NowUpDirection)), 0, 0, 1);
-		glRotatef(180, rotationDirection.X(), rotationDirection.Y(),rotationDirection.Z());
 
-		glTranslatef(center.Points[0], center.Points[1], center.Points[2]);
-		(*objToDraw).second->Draw((*iter)->XRotate, (*iter)->YRotate, (*iter)->ZRotate, 1.0f, true);
+		ChangeSystemCoordinate(std::pair<Point3D, Point3D>(Point3D(0, 0, 1), Point3D(0, 1, 0)),
+			std::pair<Point3D, Point3D>((*iter)->CurrentFaceDirection, (*iter)->CurrentUpDirection), false);
+
+		(*objToDraw).second->Draw((*iter)->XRotate, (*iter)->YRotate, (*iter)->ZRotate, 1.0f);
 	}
 
-	Point3D center(modelObjects.Qbert->NowOn->X, modelObjects.Qbert->NowOn->Y, modelObjects.Qbert->NowOn->Z);										//Drawing Qbert
-	center += modelObjects.Qbert->NowUpDirection; 
+	/**
+	/*	Drawing the Qbert 
+	/*
+	**/
+
 
 	std::map<std::string, DrawableObj_Ptr>::iterator objToDraw = _objects.find(modelObjects.Qbert->Name);
 	if (objToDraw == _objects.end())
 		throw std::exception("Couldn't find object while trying to draw the model, (in the view function)");
 	glLoadIdentity();
 
-
-	Point3D rotationDirection = 0.5 * (Point3D (0, 0, 1) + modelObjects.Qbert->NowFaceDirection);
-	if ((rotationDirection.Points[0] == 0) && (rotationDirection.Points[1] == 0) && (rotationDirection.Points[2] == 0))
-		rotationDirection = modelObjects.Qbert->NowUpDirection;
-
-	Point3D tempUpDirection = (2 * (rotationDirection.ScalarProduct(modelObjects.Qbert->NowUpDirection) / rotationDirection.ScalarProduct(rotationDirection)) * rotationDirection - 
-		modelObjects.Qbert->NowUpDirection).Normalize();
-
 	glRotatef(_zRotate, 0.0f, 0.0f, 1.0f);
 	glRotatef(_yRotate, 0.0f, 1.0f, 0.0f);
 	glRotatef(_xRotate, 1.0f, 0.0f, 0.0f);	
 
-	glTranslatef(center.Points[0], center.Points[1], center.Points[2]);
+	glTranslatef(modelObjects.Qbert->X, modelObjects.Qbert->Y, modelObjects.Qbert->Z);
 
 
-	glRotatef(DCos(tempUpDirection.Z()), 0, 0, 1);									//tempUpDirection.ScalarProduct(Point3D(0, 0, 1)) == tempUpDirection.Z()
-	glRotatef(180, rotationDirection.X(), rotationDirection.Y(),rotationDirection.Z());
+	ChangeSystemCoordinate(std::pair<Point3D, Point3D>(Point3D(0, 0, 1), Point3D(0, 1, 0)),
+		std::pair<Point3D, Point3D>(modelObjects.Qbert->CurrentFaceDirection, modelObjects.Qbert->CurrentUpDirection), false);
 
-	(*objToDraw).second->Draw(modelObjects.Qbert->XRotate, modelObjects.Qbert->YRotate, modelObjects.Qbert->ZRotate, 1.0f, true);
+	(*objToDraw).second->Draw(modelObjects.Qbert->XRotate, modelObjects.Qbert->YRotate, modelObjects.Qbert->ZRotate, 1.0f);
 
 	SDL_GL_SwapBuffers();
 }

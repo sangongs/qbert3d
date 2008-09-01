@@ -54,12 +54,15 @@ void SimpleControler::Input(DWORD deltaTime)
 		_view->CameraMove(0, 0, 0, (float)newY / 4.0f, 0 , 0);
 	}
 
+
+	InputData inputData;
+	inputData.DeltaTime = deltaTime;
+	inputData.direction = None;
+
+
 	SDL_Event event;
 	while(SDL_PollEvent(&event)) 
 	{
-		InputData inputData;
-		inputData.DeltaTime = deltaTime;
-		inputData.direction = None;
 
 		switch(event.type)
 		{
@@ -95,9 +98,9 @@ void SimpleControler::Input(DWORD deltaTime)
 			return;
 			break;
 		}
-
-		_model->ReadInput(inputData);
 	}
+
+	_model->ReadInput(inputData);
 }
 
 void SimpleControler::Run(unsigned startWidth, unsigned startHeight, unsigned depth)

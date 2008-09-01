@@ -8,9 +8,10 @@
 #include "DiamondQbertModel.h"
 
 
-DiamondQbertModel::DiamondQbertModel(int sizeOfDiamond, const std::string boxNameBefore, const std::string boxNameAfter, const std::string qbertName)
-	: QbertModel(boxNameBefore, boxNameAfter)
+DiamondQbertModel::DiamondQbertModel(int sizeOfDiamond, const std::string boxNameBefore, const std::string boxNameAfter, const std::string qbertName, float freeFallAccelatetion)
+	: QbertModel(boxNameBefore, boxNameAfter, freeFallAccelatetion)
 {
+	this;
 	for (int i = 0, jBorder = sizeOfDiamond - 1; i < sizeOfDiamond; i++, jBorder--)
 	{
 		for (int j = -jBorder; j <= jBorder; j++)
@@ -62,134 +63,218 @@ DiamondQbertModel::DiamondQbertModel(int sizeOfDiamond, const std::string boxNam
 		}
 	}
 
-	_objects.BoxesMap.find(Point3D(0, (float)sizeOfDiamond - 1, 0))->second->Name = boxNameAfter;
+	//_objects.BoxesMap.find(Point3D(0, (float)sizeOfDiamond - 1, 0))->second->Name = boxNameAfter;
 	SetQbert(qbertName, _startingBox = _objects.BoxesMap.find(Point3D(0, (float)sizeOfDiamond - 1, 0))->second.get());
 
 
-	_objects.Qbert->NowUpDirection = Point3D(0, 1, 0);
-	_objects.Qbert->NowFaceDirection = Point3D(0, 0, 1);
-	_objects.Qbert->AfterUpDirection = Point3D(0, 1, 0);
-	_objects.Qbert->AfterFaceDirection = Point3D(0, 0, 1);
+	_objects.Qbert->LastUpDirection = Point3D(0, 1, 0);
+	_objects.Qbert->LastFaceDirection = Point3D(0, 0, 1);
+	_objects.Qbert->NextUpDirection = Point3D(0, 1, 0);
+	_objects.Qbert->NextFaceDirection = Point3D(0, 0, 1);
+	_objects.Qbert->SetMoveLength(1000, freeFallAccelatetion);
 }
 
 void DiamondQbertModel::ReadInput(const SimpleControler::InputData& inputData)			//Deals with time and decides whether to move or not.
 {
-	QbertMove(inputData);
+	Move(_objects.Qbert.get(), inputData);
 	MakeEnemiesMove(inputData.DeltaTime);
 }
 
-void DiamondQbertModel::QbertMove(const SimpleControler::InputData& inputData)
+void DiamondQbertModel::Move(QbertModel::QbertGameObject* object, const SimpleControler::InputData& inputData)
 {
-	_objects.Qbert->Progress += (float)(inputData.DeltaTime / _objects.Qbert->MoveLength);
 
-	if (_objects.Qbert->Progress > 1)
- 	{
+	Point3D center(object->LastBox->X, object->LastBox->Y, object->LastBox->Z);
+	center += object->LastUpDirection;
 
-// 		if (_objects.Qbert->NowOn != _objects.Qbert->AfterOn)				//if the Qbert had moved.
-// 		{
-// 			_objects.Qbert->NowOn = _objects.Qbert->AfterOn;
-// 			_objects.Qbert->NowOn->Name = _boxNameAfter;
-// 			VisitBox(_objects.Qbert->NowOn);
-// 		}
-// 		_objects.Qbert->AfterOn = GetBoxNeibhor(_objects.Qbert->NowOn, inputData.direction);
-// 		
+	object->CurrentFaceDirection = object->LastFaceDirection;
+	object->CurrentUpDirection = object->LastUpDirection;
 
-		bool isNotFinished = true, isMovingFromPerimeterToPerimeter = false, isStayingOnTheSameBox = false;
 
-		_objects.Qbert->NowOn = _objects.Qbert->AfterOn;
-		_objects.Qbert->NowUpDirection = _objects.Qbert->AfterUpDirection;
-		_objects.Qbert->NowFaceDirection = _objects.Qbert->AfterFaceDirection;
-		
+	if (object->IsMoving)
+	{
+		object->Progress += (float)inputData.DeltaTime / (float)object->GetMoveLength();
 
-		Point3D tempCoordiante = _objects.Qbert->NowOn->GetCoordinates(), rightDirection = _objects.Qbert->GetRightDirection();
-
-		switch (inputData.direction)
+		if (object->IsChangingBox)
 		{
-		case None:
-			isNotFinished = false;
-			_objects.Qbert->AfterUpDirection = _objects.Qbert->NowUpDirection;
-			_objects.Qbert->AfterFaceDirection = _objects.Qbert->NowFaceDirection;
-			_objects.Qbert->AfterOn = _objects.Qbert->NowOn;
-			break;
-		case Up:
-			tempCoordiante += _objects.Qbert->NowFaceDirection;
-			break;
-		case Down:
-			tempCoordiante -=  _objects.Qbert->NowFaceDirection;
-			_objects.Qbert->AfterFaceDirection = _objects.Qbert->NowFaceDirection * (-1);
-			break;
-		case Right:
-			tempCoordiante += rightDirection;
-			_objects.Qbert->AfterFaceDirection = rightDirection;
-			break;
-		case Left:
-			tempCoordiante += rightDirection;
-			_objects.Qbert->AfterFaceDirection = -rightDirection;
-			break;
+			center += object->GetHorizontalSpeed() * object->Progress * object->NextFaceDirection;	
+
+			float progress = (object->IsMovingUp) ? 1 - object->Progress : object->Progress;
+
+
+			center += object->LastUpDirection * 
+				((object->IsMovingUp ? 1 : 0) +
+				object->GetVerticalSpeed() * progress - 
+				progress * progress * object->GetFreeAcceleration() * 0.5f);
+		}
+		else
+		{
+			center += object->NextUpDirection * (1 + DCos(180 + (270 * object->Progress)));
+			center += object->LastUpDirection * (DSin(270 * object->Progress));
 		}
 
-		if (isNotFinished)
+		float factor1 = DCos(90 * object->Progress);
+		float factor2 = DSin(90 * object->Progress);
+		if (object->IsChangingBox)
 		{
-			std::map<Point3D, QbertBox_ptr>::iterator box = _objects. BoxesMap.find(tempCoordiante + _objects.Qbert->NowUpDirection);
-			if (box != _objects. BoxesMap.end())
+			switch(object->MovingDirection)
 			{
-				_objects.Qbert->AfterOn = box->second.get();
-
-				if((!_objects.Qbert->NowUpDirection.Y()) && (!_objects.Qbert->AfterOn->IsOnPerimeter()))			//cant move like this, must stay on the same box
-					isStayingOnTheSameBox = true;
-
-				isNotFinished = false;
+			case Left:
+			case Right:
+				object->CurrentFaceDirection = object->LastFaceDirection * factor1 + 
+					object->NextFaceDirection * factor2;
+				break;
+			case Down:
+				factor1 = DCos(180 * object->Progress);
+				factor2 = DSin(180 * object->Progress);
+				object->CurrentFaceDirection = object->LastFaceDirection * factor1 + 
+					object->GetRightDirection() * factor2;
+				break;
 			}
 		}
-
-		if (isNotFinished)
+		else
 		{
-			std::map<Point3D, QbertBox_ptr>::iterator box = _objects. BoxesMap.find(tempCoordiante - _objects.Qbert->NowUpDirection);
-			if (box != _objects. BoxesMap.end())
+			object->CurrentUpDirection = object->LastUpDirection * factor1 + 
+				object->NextUpDirection * factor2;
+
+			switch(object->MovingDirection)
 			{
-				_objects.Qbert->AfterOn = box->second.get();
+			case Up:
+				object->CurrentFaceDirection = object->LastFaceDirection * factor1 + 
+					object->NextFaceDirection * factor2;
+				break;
+			case Down:
+				object->CurrentFaceDirection = object->LastFaceDirection * factor1 - 
+					object->NextFaceDirection * factor2;
 
-				if((!_objects.Qbert->NowUpDirection.Y()) && (!_objects.Qbert->AfterOn->IsOnPerimeter()))			//cant move like this, must stay on the same box
-					isStayingOnTheSameBox = true;
-
-				isNotFinished = false;
+				factor1 = DCos(180 * object->Progress);
+				factor2 = DSin(180 * object->Progress);
+				object->CurrentFaceDirection = object->CurrentFaceDirection * factor1 + 
+					object->CurrentFaceDirection.CrossProduct(object->CurrentUpDirection) * factor2;
+				break;
+			case Right:
+			case Left:
+				object->CurrentFaceDirection = object->CurrentFaceDirection * factor1 + ((object->MovingDirection == Right) ? 1.0f : -1.0f) *
+					object->CurrentFaceDirection.CrossProduct(object->CurrentUpDirection) * factor2;
+				break;
 			}
 		}
+	}
+	else
+	{
+		object->CurrentFaceDirection = object->LastFaceDirection;
+		object->CurrentUpDirection = object->LastUpDirection;
 
-		if (isNotFinished || isStayingOnTheSameBox)									//Staying on the same box on the perimeter;
+		if (inputData.direction != None)
 		{
-			if(!_objects.Qbert->NowOn->IsOnPerimeter())
-				throw std::exception("Not on perimeter and can't find a place to move on (in function DiamondQbertModel::QbertMove()");
+			object->IsMoving = true;
+			object->MovingDirection = inputData.direction;
 
-			_objects.Qbert->AfterOn = _objects.Qbert->NowOn;
+
+			bool isNotFinished = true, isStayingOnTheSameBox = false;			
+
+			Point3D tempCoordiante = object->LastBox->GetCoordinates(), rightDirection = object->GetRightDirection();
+
 			switch (inputData.direction)
 			{
 			case Up:
-				_objects.Qbert->AfterFaceDirection = -_objects.Qbert->NowUpDirection;
-				_objects.Qbert->AfterUpDirection = _objects.Qbert->NowFaceDirection;
+				tempCoordiante += object->LastFaceDirection;
 				break;
 			case Down:
-				_objects.Qbert->AfterFaceDirection = _objects.Qbert->NowUpDirection;
-				_objects.Qbert->AfterUpDirection = -_objects.Qbert->NowFaceDirection;
+				tempCoordiante -=  object->LastFaceDirection;
+				object->NextFaceDirection = object->LastFaceDirection * (-1);
 				break;
 			case Right:
-				_objects.Qbert->AfterFaceDirection = -_objects.Qbert->NowUpDirection;
-				_objects.Qbert->AfterUpDirection = rightDirection;
+				tempCoordiante += rightDirection;
+				object->NextFaceDirection = rightDirection;
 				break;
 			case Left:
-				_objects.Qbert->AfterFaceDirection = -_objects.Qbert->NowUpDirection;
-				_objects.Qbert->AfterUpDirection = rightDirection;
+				tempCoordiante -= rightDirection;
+				object->NextFaceDirection = -rightDirection;
 				break;
 			}
 
-			isNotFinished = false;
+			if (isNotFinished)
+			{
+				std::map<Point3D, QbertBox_ptr>::iterator box = _objects. BoxesMap.find(tempCoordiante + object->LastUpDirection);
+				if (box != _objects. BoxesMap.end())
+				{
+					object->IsMovingUp = true;
+					object->IsChangingBox = true;
+					object->NextBox = box->second.get();
+
+					if((!object->LastUpDirection.Y()) && (!object->NextBox->IsOnPerimeter()))			//cant move like this, must stay on the same box
+						isStayingOnTheSameBox = true;
+
+					isNotFinished = false;
+				}
+			}
+
+			if (isNotFinished)
+			{
+				std::map<Point3D, QbertBox_ptr>::iterator box = _objects. BoxesMap.find(tempCoordiante - object->LastUpDirection);
+				if (box != _objects. BoxesMap.end())
+				{
+					object->IsMovingUp = false;
+					object->IsChangingBox = true;
+					object->NextBox = box->second.get();
+
+					if((!object->LastUpDirection.Y()) && (!object->NextBox->IsOnPerimeter()))			//cant move like this, must stay on the same box
+						isStayingOnTheSameBox = true;
+
+					isNotFinished = false;
+				}
+			}
+
+			if (isNotFinished || isStayingOnTheSameBox)									//Staying on the same box on the perimeter;
+			{
+				if(!object->LastBox->IsOnPerimeter())
+					throw std::exception("Not on perimeter and can't find a place to move on (in function DiamondQbertModel::QbertMove()");
+
+				object->IsChangingBox = false;
+				object->NextBox = object->LastBox;
+				switch (inputData.direction)
+				{
+				case Up:
+					object->NextFaceDirection = -object->LastUpDirection;
+					object->NextUpDirection = object->LastFaceDirection;
+					break;
+				case Down:
+					object->NextFaceDirection = -object->LastUpDirection;
+					object->NextUpDirection = -object->LastFaceDirection;
+					break;
+				case Right:
+					object->NextFaceDirection = -object->LastUpDirection;
+					object->NextUpDirection = rightDirection;
+					break;
+				case Left:
+					object->NextFaceDirection = -object->LastUpDirection;
+					object->NextUpDirection = -rightDirection;
+					break;
+				}
+
+				isNotFinished = false;
+			}
+
+			object->IsMoving = true;
 		}
+	}
 
 
-		VisitBox(_objects.Qbert->NowOn);
+	object->X = center.X();
+	object->Y = center.Y();
+	object->Z = center.Z();
 
-		while (_objects.Qbert->Progress > 1)
-			_objects.Qbert->Progress--;
+
+	if (object->Progress > 1)
+	{	
+		object->LastBox = object->NextBox;
+		object->LastUpDirection = object->NextUpDirection;
+		object->LastFaceDirection = object->NextFaceDirection;
+
+		VisitBox(object->LastBox);
+
+		object->Progress = 0;
+		object->IsMoving = false;
 	}
 
 }

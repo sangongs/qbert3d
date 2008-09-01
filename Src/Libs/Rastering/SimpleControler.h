@@ -11,7 +11,6 @@ class QbertModel;
 class SimpleControler
 {
 private:
-
 	View * _view;
 	QbertModel * _model;
 
@@ -25,6 +24,8 @@ public:
 	public:
 		DWORD DeltaTime;
 		Direction direction;
+
+		InputData (DWORD deltaTime = 0, Direction direc = None) : DeltaTime(deltaTime), direction(direc) {}
 	};
 
 
