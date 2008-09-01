@@ -161,6 +161,18 @@
 				>
 			</File>
 			<File
+				RelativePath=".\QbertEnemyObj.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\QbertGameObject.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\QbertModel.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\SimpleControler.cpp"
 				>
 			</File>
@@ -216,6 +228,18 @@
 			</File>
 			<File
 				RelativePath=".\Model.h"
+				>
+			</File>
+			<File
+				RelativePath=".\QbertBox.h"
+				>
+			</File>
+			<File
+				RelativePath=".\QbertEnemyObj.h"
+				>
+			</File>
+			<File
+				RelativePath=".\QbertGameObject.h"
 				>
 			</File>
 			<File
