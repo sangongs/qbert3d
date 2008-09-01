@@ -14,6 +14,8 @@ private:
 	std::map<std::string, DrawableObj_Ptr> _objects;
 	std::list<GameObject_ptr> *_objList;
 
+	void SetupLights();
+
 public:
 	SimpleView();
 	void SetGameObjects(std::list<GameObject_ptr> *objList);

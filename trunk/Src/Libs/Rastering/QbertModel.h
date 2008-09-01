@@ -22,20 +22,18 @@ class QbertModel : public Model
 public:
 	class ModelObjects
 	{
-		friend class QbertModel;
-	
 	public:
 		QbertGameObject_ptr Qbert;
 		std::list<QbertEnemyObj_ptr> Enemies;
 		std::list<QbertBox_ptr> Boxes;
-		std::map<Point3D, QbertBox_ptr> BoxesMap;
+		std::map<Point3D, QbertBox_ptr> BoxMap;
 		std::list<GameObject_ptr> ObjectsList;
 	};
 
 protected:
 	float _freeFallAcceleration;
 	bool _isQbertAlive, _isFirstCall;
-	std::string _boxNameAfter, _boxNameBefore;
+	std::string _visitedBoxName, _unvisitedBoxName;
 	QbertBox_ptr _startingBox;
 	int _boxesUnvisited;
 	ModelObjects _objects;
@@ -50,7 +48,7 @@ protected:
 
 public:
 	QbertModel (std::string boxNameBefore, std::string boxNameAfter, float freeFallAcceleration) :
-	  _boxNameBefore(boxNameBefore), _boxNameAfter(boxNameAfter), _isQbertAlive(true), _freeFallAcceleration(freeFallAcceleration) ,
+	  _unvisitedBoxName(boxNameBefore), _visitedBoxName(boxNameAfter), _isQbertAlive(true), _freeFallAcceleration(freeFallAcceleration) ,
 		  _boxesUnvisited(0), _isFirstCall(false) {}
 
 	QbertModel::ModelObjects& GetModelObjects() {return _objects;}
