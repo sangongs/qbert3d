@@ -2,6 +2,7 @@
 
 #include <list>
 
+#include "Point3D.h"
 #include "GameObject.h"
 
 #include "SimpleModel.h"
@@ -9,9 +10,8 @@
 SimpleModel::SimpleModel()
 {
 	GameObject_ptr obj = boost::shared_ptr<GameObject>(new GameObject());
-	obj->X = 0;
-	obj->Y = 0;
-	obj->Z = -1;
+
+	obj->Center = Point3D(0, 0, -1);
 	obj->XRotate = 80;
 	obj->YRotate = 0;
 	obj->ZRotate = 0;

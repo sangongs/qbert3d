@@ -7,6 +7,5 @@
 class Model
 {
 public:
-	Model();
-	virtual std::list<GameObject_ptr>* GetObjects() = 0;
+	Model() {}
 };

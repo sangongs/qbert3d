@@ -22,7 +22,7 @@ public:
 	bool IsMovingUp, IsChangingBox, IsMoving;
 	Direction MovingDirection;
 
-	QbertGameObject(const std::string& name ="", QbertBox_ptr box = QbertBox_ptr(), DWORD moveLength = 1000, float freeFallAcceleration = 1)
+	QbertGameObject(const std::string& name ="", QbertBox_ptr box = QbertBox_ptr(), DWORD moveLength = 1000, float freeFallAcceleration = 10)
 		: GameObject(name, 0, 0, 0, 0, 0, 0), LastBox(box), NextBox(box), Progress(0), _moveLength(moveLength) , IsMoving(false), _freeFallAcceleration(freeFallAcceleration)
 	{
 		SetMoveLength(moveLength, _freeFallAcceleration);

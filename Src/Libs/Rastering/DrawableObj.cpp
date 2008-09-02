@@ -16,7 +16,24 @@
 #include "SDL\SDL.h"
 #include "SDL\SDL_opengl.h"
 
+#include "Point3D.h"
+
 #include "DrawableObj.h"
+
+
+class Point2D
+{
+public:
+	Point2D(const std::string& argument)
+	{
+		if (sscanf(argument.c_str(), "%f %f", Points, Points + 1) != 2)
+			throw std::exception("Couldn't read line into Point2D");
+	}
+
+	Point2D() {}
+
+	float Points[2];
+};
 
 class Face
 {
@@ -335,10 +352,4 @@ DrawableObj::~DrawableObj()
 {
 	if (_listNum > 0)
 		glDeleteLists(_listNum, 1);
-}
-
-
-Point3D operator* (float factor, const Point3D& point)
-{
-	return Point3D(point.Points[0] * factor, point.Points[1] * factor, point.Points[2] * factor);
 }
