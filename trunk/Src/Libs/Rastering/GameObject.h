@@ -4,21 +4,21 @@
 
 #include "boost/shared_ptr.hpp"
 
-#include "DrawableObj.h"
-
+class Point3D;
 class Model;
+
 class GameObject
 {
 protected:
 	Model* _model;
 
 public:
-	float X, Y, Z, XRotate, YRotate, ZRotate;
+	Point3D Center;
+	float XRotate, YRotate, ZRotate;
 	std::string Name;
 	GameObject (const std::string& name ="", float x = 0, float y = 0, float z = 0, float xRotate = 0, float yRotate = 0, float zRotate = 0)
-		: X(x), Y(y), Z(z), XRotate(xRotate), YRotate(yRotate), ZRotate(zRotate), Name(name) {}
+		: Center(Point3D(x, y, z)), XRotate(xRotate), YRotate(yRotate), ZRotate(zRotate), Name(name) {}
 	
-	Point3D GetCoordinates() {return Point3D(X, Y, Z);}
 	void SetModel(Model* model) {_model = model;}
 };
 

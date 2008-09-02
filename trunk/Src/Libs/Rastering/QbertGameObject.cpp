@@ -1,4 +1,7 @@
 #include "StdAfx.h"
+
+#include "Point3D.h"
+
 #include "QbertGameObject.h"
 
 void QbertGameObject::SetMoveLength(DWORD moveLength, float freeFallAcceleration)

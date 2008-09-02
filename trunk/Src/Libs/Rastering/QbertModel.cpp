@@ -1,11 +1,12 @@
 #include "stdafx.h"
 
-#include "QbertModel.h"
+#include "Point3D.h"
 
 #include "QbertBox.h"
 #include "QbertGameObject.h"
 #include "QbertEnemyObj.h"
 
+#include "QbertModel.h"
 
 void QbertModel::VisitBox (QbertBox_ptr box)
 {

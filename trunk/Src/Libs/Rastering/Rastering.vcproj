@@ -157,7 +157,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Model.cpp"
+				RelativePath=".\Point3D.cpp"
 				>
 			</File>
 			<File
@@ -228,6 +228,10 @@
 			</File>
 			<File
 				RelativePath=".\Model.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Point3D.h"
 				>
 			</File>
 			<File

@@ -1,6 +1,8 @@
 #include "StdAfx.h"
 
+#include "Point3D.h"
 #include "QbertModel.h"
+
 #include "QbertEnemyObj.h"
 
 

@@ -1,9 +1,12 @@
 #include "StdAfx.h"
 
+#include "boost\shared_ptr.hpp"
+#include "boost\foreach.hpp"
+
 #include "SDL\SDL.h"
 #include "SDL\SDL_opengl.h"
-#include "boost\shared_ptr.hpp"
 
+#include "Point3D.h"
 #include "DrawableObj.h"
 #include "GameObject.h"
 
@@ -85,7 +88,8 @@ void SimpleView::Draw(bool clearScreen = true)
 		if (objToDraw == _objects.end())
 			throw std::exception("Couldn't find object while trying to draw the model, (in the view function)");
 		glLoadIdentity();
-		glTranslatef((*iter)->X, (*iter)->Y, (*iter)->Z);
+
+		glTranslatef((*iter)->Center.X(), (*iter)->Center.Y(), (*iter)->Center.Z());
 		(*objToDraw).second->Draw((*iter)->XRotate, (*iter)->YRotate, (*iter)->ZRotate, 1.0f);
 	}
 
@@ -107,7 +111,7 @@ void SimpleView::SetupLights()
 	glLightfv(GL_LIGHT0, GL_SPECULAR, lightParams + 10);
 }
 
-void SimpleView::Draw(QbertModel::ModelObjects& modelObjects) //[todo] check out boost foreach http://www.boost.org/doc/libs/1_35_0/doc/html/foreach.html
+void SimpleView::Draw(QbertModel::ModelObjects& modelObjects)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
@@ -116,70 +120,41 @@ void SimpleView::Draw(QbertModel::ModelObjects& modelObjects) //[todo] check out
 	glMatrixMode( GL_MODELVIEW );
 	glLoadIdentity();
 
-	/**
-	/*	Drawing the Boxes 
-	/*
-	**/
+	BOOST_FOREACH(GameObject_ptr iter, modelObjects.Boxes)
+		DrawObj(iter);
 
-	for (std::list<QbertBox_ptr>::const_iterator iter = modelObjects.Boxes.begin(); iter != modelObjects.Boxes.end(); iter++)			//Drawing Boxes
-	{	
-		std::map<std::string, DrawableObj_Ptr>::iterator objToDraw = _objects.find((*iter)->Name);
-		if (objToDraw == _objects.end())
-			throw std::exception("Couldn't find object while trying to draw the model, (in the view function)");
-		
-		glLoadIdentity();
-		glRotatef(_zRotate, 0.0f, 0.0f, 1.0f);
-		glRotatef(_yRotate, 0.0f, 1.0f, 0.0f);
-		glRotatef(_xRotate, 1.0f, 0.0f, 0.0f);		
-		glTranslatef((*iter)->X, (*iter)->Y, (*iter)->Z);
+	BOOST_FOREACH(GameObject_ptr iter, modelObjects.Enemies)
+		DrawObj(iter, false);
 
-		(*objToDraw).second->Draw((*iter)->XRotate, (*iter)->YRotate, (*iter)->ZRotate, 1.0f);
-	}
+	DrawObj(boost::dynamic_pointer_cast<GameObject>(modelObjects.Qbert), false);
 
-	/**
-	/*	Drawing the Enemies 
-	/*
-	**/
 
-	for (std::list<QbertEnemyObj_ptr>::iterator iter = modelObjects.Enemies.begin(); iter != modelObjects.Enemies.end(); iter++)		//Drawing Enemies
-	{
-		std::map<std::string, DrawableObj_Ptr>::iterator objToDraw = _objects.find((*iter)->Name);
-		if (objToDraw == _objects.end())
-			throw std::exception("Couldn't find object while trying to draw the model, (in the view function)");
-		
-		glLoadIdentity();
-		glRotatef(_zRotate, 0.0f, 0.0f, 1.0f);
-		glRotatef(_yRotate, 0.0f, 1.0f, 0.0f);
-		glRotatef(_xRotate, 1.0f, 0.0f, 0.0f);	
-		glTranslatef((*iter)->X, (*iter)->Y, (*iter)->Z);
+	SDL_GL_SwapBuffers();
+}
 
-		ChangeCoordinateSystem(std::pair<Point3D, Point3D>(Point3D(0, 0, 1), Point3D(0, 1, 0)),
-			std::pair<Point3D, Point3D>((*iter)->CurrentFaceDirection, (*iter)->CurrentUpDirection), false);
-
-		(*objToDraw).second->Draw((*iter)->XRotate, (*iter)->YRotate, (*iter)->ZRotate, 1.0f);
-	}
-
-	/**
-	/*	Drawing the Qbert 
-	/*
-	**/
-
-	std::map<std::string, DrawableObj_Ptr>::iterator objToDraw = _objects.find(modelObjects.Qbert->Name);
+void SimpleView::DrawObj(const GameObject_ptr& obj, bool isBox)
+{
+	std::map<std::string, DrawableObj_Ptr>::iterator objToDraw = _objects.find(obj->Name);
 	if (objToDraw == _objects.end())
 		throw std::exception("Couldn't find object while trying to draw the model, (in the view function)");
-	
+
 	glLoadIdentity();
 	glRotatef(_zRotate, 0.0f, 0.0f, 1.0f);
 	glRotatef(_yRotate, 0.0f, 1.0f, 0.0f);
-	glRotatef(_xRotate, 1.0f, 0.0f, 0.0f);	
-	glTranslatef(modelObjects.Qbert->X, modelObjects.Qbert->Y, modelObjects.Qbert->Z);
+	glRotatef(_xRotate, 1.0f, 0.0f, 0.0f);
+	glTranslatef(obj->Center.X(), obj->Center.Y(), obj->Center.Z());
 
+	if (!isBox)
+		PerformAdditionalTransformations(obj);
+
+	(*objToDraw).second->Draw(obj->XRotate, obj->YRotate, obj->ZRotate, 1.0f);
+}
+
+void SimpleView::PerformAdditionalTransformations(const GameObject_ptr &obj)
+{
 	ChangeCoordinateSystem(std::pair<Point3D, Point3D>(Point3D(0, 0, 1), Point3D(0, 1, 0)),
-		std::pair<Point3D, Point3D>(modelObjects.Qbert->CurrentFaceDirection, modelObjects.Qbert->CurrentUpDirection), false);
-
-	(*objToDraw).second->Draw(modelObjects.Qbert->XRotate, modelObjects.Qbert->YRotate, modelObjects.Qbert->ZRotate, 1.0f);
-
-	SDL_GL_SwapBuffers();
+		std::pair<Point3D, Point3D>(boost::static_pointer_cast<QbertGameObject>(obj)->CurrentFaceDirection, 
+			boost::static_pointer_cast<QbertGameObject>(obj)->CurrentUpDirection), false);
 }
 
 void SimpleView::ChangeResolution(unsigned /*width*/, unsigned /*height*/){} //[todo] implement this... maybe H should do it.!

@@ -3,6 +3,8 @@
 #include "SDL\SDL.h"
 #include "SDL\SDL_opengl.h"
 
+#include "Point3D.h"
+
 #include "View.h"
 #include "QbertModel.h"
 #include "SimpleView.h"
@@ -114,6 +116,6 @@ void SimpleControler::Run(unsigned startWidth, unsigned startHeight, unsigned de
 
 		((SimpleView*)_view)->Draw(_model->GetModelObjects());
 
-		SDL_Delay(2); //[todo] maybe we don't need this
+		SDL_Delay(20); //[todo] maybe we don't need this
 	}
 }
