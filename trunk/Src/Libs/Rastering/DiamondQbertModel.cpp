@@ -196,9 +196,10 @@ void DiamondQbertModel::UpdateFaceAndUpDirections(QbertGameObject_ptr object)
 
 void DiamondQbertModel::ChangeBox(QbertGameObject_ptr object)
 {
-	bool isNotFinished = true, isStayingOnTheSameBox = false;			
-
+	bool isNotFinished = true;
 	Point3D newBoxCoordinate(object->LastBox->Center), rightDirection = object->GetRightDirection();
+
+	object->IsChangingBox = true;
 
 	switch (object->MovingDirection)
 	{
@@ -228,7 +229,7 @@ void DiamondQbertModel::ChangeBox(QbertGameObject_ptr object)
 			object->NextBox = box->second;
 
 			if((!object->LastUpDirection.Y()) && (!object->NextBox->IsOnPerimeter()))			//cant move like this, must stay on the same box
-				isStayingOnTheSameBox = true;
+				object->IsChangingBox = false;
 
 			isNotFinished = false;
 		}
@@ -244,29 +245,28 @@ void DiamondQbertModel::ChangeBox(QbertGameObject_ptr object)
 			object->NextBox = box->second;
 
 			if((!object->LastUpDirection.Y()) && (!object->NextBox->IsOnPerimeter()))			//cant move like this, must stay on the same box
-				isStayingOnTheSameBox = true;
+				object->IsChangingBox = false;
 
 			isNotFinished = false;
 		}
 	}
 
-	if (isNotFinished || isStayingOnTheSameBox)									//Staying on the same box on the perimeter;
+	if (isNotFinished || !object->IsChangingBox)									//Staying on the same box on the perimeter;
 	{
 		if(!object->LastBox->IsOnPerimeter())
 			throw std::exception("Not on perimeter and can't find a place to move on (in function DiamondQbertModel::QbertMove()");
 
 		object->IsChangingBox = false;
 		object->NextBox = object->LastBox;
+
+		object->NextFaceDirection = -object->LastUpDirection;
 		switch (object->MovingDirection)
 		{
 		case Up:
 		case Down:
-			object->NextFaceDirection = -object->LastUpDirection;
 			object->NextUpDirection = (object->MovingDirection == Up ? 1.0f : -1.0f) * object->LastFaceDirection;
 			break;
-		case Right:
-		case Left:
-			object->NextFaceDirection = -object->LastUpDirection;
+		default:										//can't be None.
 			object->NextUpDirection = (object->MovingDirection == Right ? 1.0f : -1.0f) *  rightDirection;
 		}
 	}

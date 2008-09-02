@@ -255,10 +255,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\SimpleModel.h"
-				>
-			</File>
-			<File
 				RelativePath=".\SimpleView.h"
 				>
 			</File>
