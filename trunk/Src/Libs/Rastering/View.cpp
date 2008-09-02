@@ -23,7 +23,7 @@ void View::ChangeCoordinateSystem(std::pair<Point3D,Point3D>& from, std::pair<Po
 	{
 		float firstScalar = from.first.ScalarProduct(from.second), secondScalar = to.first.ScalarProduct(to.second);
 
-		if (firstScalar == -1 || secondScalar == -1 || std::abs(firstScalar - secondScalar) > floatEquPrecision) //[todo] remove this 0.001 value from here, must be const somewhere else.
+		if (firstScalar == -1 || secondScalar == -1 || std::abs(firstScalar - secondScalar) > floatEquPrecision)
 			throw std::exception("Incompatible set of coordinate systems, can't match them (in function View::ChangeSystemCoordinate()");
 
 		if (firstScalar)
