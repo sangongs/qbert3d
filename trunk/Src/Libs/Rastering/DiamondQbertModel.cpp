@@ -194,9 +194,11 @@ void DiamondQbertModel::UpdateFaceAndUpDirections(QbertGameObject_ptr object)
 	}
 }
 
+/**	
+ *  @pre (object->MovingDirection != NULL)
+**/
 void DiamondQbertModel::ChangeBox(QbertGameObject_ptr object)
 {
-	bool isNotFinished = true;
 	Point3D newBoxCoordinate(object->LastBox->Center), rightDirection = object->GetRightDirection();
 
 	object->IsChangingBox = true;
@@ -210,65 +212,51 @@ void DiamondQbertModel::ChangeBox(QbertGameObject_ptr object)
 		newBoxCoordinate -=  object->LastFaceDirection;
 		object->NextFaceDirection = object->LastFaceDirection * (-1);
 		break;
-	case Right:
-		newBoxCoordinate += rightDirection;
-		object->NextFaceDirection = rightDirection;
-		break;
+	case Right:	
 	case Left:
-		newBoxCoordinate -= rightDirection;
-		object->NextFaceDirection = -rightDirection;
+		newBoxCoordinate += (object->MovingDirection == Right ? 1.0f : -1.0f) * rightDirection;
+		object->NextFaceDirection = (object->MovingDirection == Right ? 1.0f : -1.0f) * rightDirection;
 	}
 
-	if (isNotFinished)
+	std::map<Point3D, QbertBox_ptr>::iterator box = _objects.BoxMap.find(newBoxCoordinate + object->LastUpDirection);
+	if (box != _objects.BoxMap.end())
 	{
-		std::map<Point3D, QbertBox_ptr>::iterator box = _objects. BoxMap.find(newBoxCoordinate + object->LastUpDirection);
-		if (box != _objects. BoxMap.end())
-		{
-			object->IsMovingUp = true;
-			object->IsChangingBox = true;
-			object->NextBox = box->second;
+		object->IsMovingUp = true;
+		object->IsChangingBox = true;
+		object->NextBox = box->second;
 
-			if((!object->LastUpDirection.Y()) && (!object->NextBox->IsOnPerimeter()))			//cant move like this, must stay on the same box
-				object->IsChangingBox = false;
-
-			isNotFinished = false;
-		}
+		if((!object->LastUpDirection.Y()) && (!object->NextBox->IsOnPerimeter()))			//cant move like this, must stay on the same box
+			object->IsChangingBox = false;
+		else
+			return;
 	}
 
-	if (isNotFinished)
+	if (object->IsChangingBox &&
+		(box = _objects.BoxMap.find(newBoxCoordinate - object->LastUpDirection)) != _objects.BoxMap.end())
 	{
-		std::map<Point3D, QbertBox_ptr>::iterator box = _objects. BoxMap.find(newBoxCoordinate - object->LastUpDirection);
-		if (box != _objects. BoxMap.end())
-		{
-			object->IsMovingUp = false;
-			object->IsChangingBox = true;
-			object->NextBox = box->second;
+		object->IsMovingUp = false;
+		object->IsChangingBox = true;
+		object->NextBox = box->second;
 
-			if((!object->LastUpDirection.Y()) && (!object->NextBox->IsOnPerimeter()))			//cant move like this, must stay on the same box
-				object->IsChangingBox = false;
-
-			isNotFinished = false;
-		}
+		if((!object->LastUpDirection.Y()) && (!object->NextBox->IsOnPerimeter()))			//cant move like this, must stay on the same box
+			object->IsChangingBox = false;
+		else 
+			return;
 	}
 
-	if (isNotFinished || !object->IsChangingBox)									//Staying on the same box on the perimeter;
+	//Not Changing box!
+	object->IsChangingBox = false;
+	object->NextBox = object->LastBox;
+
+	object->NextFaceDirection = -object->LastUpDirection;
+	switch (object->MovingDirection)
 	{
-		if(!object->LastBox->IsOnPerimeter())
-			throw std::exception("Not on perimeter and can't find a place to move on (in function DiamondQbertModel::QbertMove()");
-
-		object->IsChangingBox = false;
-		object->NextBox = object->LastBox;
-
-		object->NextFaceDirection = -object->LastUpDirection;
-		switch (object->MovingDirection)
-		{
-		case Up:
-		case Down:
-			object->NextUpDirection = (object->MovingDirection == Up ? 1.0f : -1.0f) * object->LastFaceDirection;
-			break;
-		default:										//can't be None.
-			object->NextUpDirection = (object->MovingDirection == Right ? 1.0f : -1.0f) *  rightDirection;
-		}
+	case Up:
+	case Down:
+		object->NextUpDirection = (object->MovingDirection == Up ? 1.0f : -1.0f) * object->LastFaceDirection;
+		break;
+	default:										//can't be None.
+		object->NextUpDirection = (object->MovingDirection == Right ? 1.0f : -1.0f) *  rightDirection;
 	}
 }
 
