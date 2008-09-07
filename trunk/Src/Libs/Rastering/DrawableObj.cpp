@@ -157,6 +157,9 @@ std::string ReadMultipleLines(std::ifstream& inp)
 DrawableObj::DrawableObj(const std::string& directory, const std::string &fileName, float scale, float rotateX, float rotateY, float rotateZ) : _listNum(-1) // so that we wont accedently delete a list
 {
 	std::ifstream objFile((boost::format("%1%\\%2%") % directory % fileName).str().c_str());
+	
+	if (!objFile.is_open())
+		throw std::exception("Cant open obj file");
 
 	std::string currentMtllib;
 	std::string mtlObjName;
@@ -193,6 +196,9 @@ DrawableObj::DrawableObj(const std::string& directory, const std::string &fileNa
 		throw std::exception("Couldn't find object in file when trying to construct DrawableObj");
 
 	std::ifstream mtlFile((boost::format("%1%\\%2%") % directory % currentMtllib).str().c_str());
+
+	if (!mtlFile.is_open())
+		throw std::exception("Cant open obj's mtl file");
 
 	std::string currentMtlObjName;
 	std::map<std::string, MtlObj> mtlObjects;
