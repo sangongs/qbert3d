@@ -177,10 +177,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\SimpleModel.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\SimpleView.cpp"
 				>
 			</File>
