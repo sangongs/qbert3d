@@ -4,6 +4,7 @@
 
 #include <boost/shared_ptr.hpp>
 
+#include "Rastering/Point3D.h"
 #include "Rastering/SimpleControler.h"
 #include "Rastering/DiamondQbertModel.h"
 #include "Rastering/SimpleView.h"
