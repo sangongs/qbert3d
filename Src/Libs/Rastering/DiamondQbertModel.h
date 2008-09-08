@@ -10,8 +10,8 @@ private:
 	void SetupQbert(int sizeOfDiamond, const std::string& qbertName);
 
 public:
-	DiamondQbertModel(int sizeOfDiamond, const std::string boxNameBefore, const std::string boxNameAfter, const std::string qbertName
-		, float freeFallAcceleration); //[todo] referanceize the strings
+	DiamondQbertModel(int sizeOfDiamond, const std::string& boxNameBefore, const std::string& boxNameAfter, const std::string& qbertName
+		, float freeFallAcceleration);
 
 	void ReciveInput(const SimpleControler::InputData&);
 	void Move(QbertGameObject_ptr object, const SimpleControler::InputData& inputData);

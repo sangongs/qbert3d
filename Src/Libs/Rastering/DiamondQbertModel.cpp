@@ -14,7 +14,7 @@
 #include "DiamondQbertModel.h"
 
 
-DiamondQbertModel::DiamondQbertModel(int sizeOfDiamond, const std::string unvisitedBoxName, const std::string visitedBoxName, const std::string qbertName, float freeFallAcceleration)
+DiamondQbertModel::DiamondQbertModel(int sizeOfDiamond, const std::string& unvisitedBoxName, const std::string& visitedBoxName, const std::string& qbertName, float freeFallAcceleration)
 : QbertModel(unvisitedBoxName, visitedBoxName, freeFallAcceleration)
 {
 	CreateDiamondStructure(sizeOfDiamond);
@@ -112,15 +112,12 @@ void DiamondQbertModel::Move(QbertGameObject_ptr object, const SimpleControler::
 		UpdateCenterOfObject(object);
 		UpdateFaceAndUpDirections (object);
 	}
-	else
+	else if (inputData.direction != None)		//!object->IsMoving && inputData.direction != None
 	{
-		if (inputData.direction != None)
-		{
-			object->MovingDirection = inputData.direction;
-			ChangeBox(object);
+		object->MovingDirection = inputData.direction;
+		ChangeBox(object);
 
-			object->IsMoving = true;
-		}
+		object->IsMoving = true;
 	}
 
 	if (object->Progress > 1)
@@ -142,7 +139,7 @@ void DiamondQbertModel::UpdateCenterOfObject(QbertGameObject_ptr object)
 	}
 	else
 		object->Center += object->NextUpDirection * (1 + DCos(180 + (270 * object->Progress))) 
-		+ object->LastUpDirection * (DSin(270 * object->Progress));
+			+ object->LastUpDirection * (DSin(270 * object->Progress));
 }
 
 void DiamondQbertModel::UpdateFaceAndUpDirections(QbertGameObject_ptr object)
@@ -255,7 +252,7 @@ void DiamondQbertModel::ChangeBox(QbertGameObject_ptr object)
 	case Down:
 		object->NextUpDirection = (object->MovingDirection == Up ? 1.0f : -1.0f) * object->LastFaceDirection;
 		break;
-	default:										//can't be None.
+	default:				//can't be None.
 		object->NextUpDirection = (object->MovingDirection == Right ? 1.0f : -1.0f) *  rightDirection;
 	}
 }
