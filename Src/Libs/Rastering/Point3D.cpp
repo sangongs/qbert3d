@@ -57,6 +57,22 @@ namespace BGComplete
 			return *this;
 		}
 
+		Point3D& Point3D::operator*= (float factor)
+		{
+			Points[0] *= factor;
+			Points[1] *= factor;
+			Points[2] *= factor;
+			return *this;
+		}
+
+		Point3D& Point3D::operator/= (float factor)
+		{
+			Points[0] /= factor;
+			Points[1] /= factor;
+			Points[2] /= factor;
+			return *this;
+		}
+
 		Point3D Point3D::operator+ (const Point3D& point) const
 		{
 			return Point3D(Points[0] + point.Points[0],
@@ -74,6 +90,11 @@ namespace BGComplete
 		Point3D Point3D::operator* (float factor) const
 		{
 			return Point3D(Points[0] * factor, Points[1] * factor, Points[2] * factor);
+		}
+
+		Point3D Point3D::operator/ (float factor) const
+		{
+			return Point3D(Points[0] / factor, Points[1] / factor, Points[2] / factor);
 		}
 
 		bool Point3D::operator< (const Point3D& point) const   //for map compare.
@@ -129,6 +150,15 @@ namespace BGComplete
 			return (Points[0] * point.Points[0] + Points[1] * point.Points[1] + Points[2] * point.Points[2]);
 		}
 
+		Point3D Point3D::CrossProduct (float x, float y, float z) const
+		{
+			return Point3D(Y() * z - Z() * y, Z() * x - X() * z, X() * y - Y() * x);
+		}
+
+		float Point3D::ScalarProduct (float x, float y, float z) const
+		{
+			return (Points[0] * x + Points[1] * y + Points[2] * z);
+		}
 
 		Point3D operator* (float factor, const Point3D& point)
 		{

@@ -13,7 +13,7 @@ namespace BGComplete
 	const float View::_floatEquPrecision = 0.001f;
 	const float View::_point3DEquPrecision = 0.003f;
 
-	void View::ChangeCoordinateSystem(std::pair<Math::Point3D, Math::Point3D>& from, std::pair<Math::Point3D, Math::Point3D>& to, bool validate)
+	void View::ChangeCoordinateSystem(std::pair<Math::Point3D, Math::Point3D> from, std::pair<Math::Point3D, Math::Point3D> to, bool validate)
 	{
 		from.first.Normalize();
 		from.second.Normalize();
