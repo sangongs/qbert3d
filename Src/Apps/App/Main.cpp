@@ -13,7 +13,7 @@
 #include "Rastering/DoubleQbertView.h"
 
 int WINAPI WinMain(HINSTANCE /*hInst*/, HINSTANCE /*hPrev*/, LPSTR /*szCmdLine*/, int /*sw*/)
-	{
+{
 	using namespace BGComplete;
 	DiamondQbertModel model(4, "RedBox", "BlueBox", "Qbert", 10.0f);
 	
