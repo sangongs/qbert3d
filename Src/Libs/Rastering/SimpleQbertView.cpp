@@ -40,7 +40,7 @@ namespace BGComplete
 		glLightfv(GL_LIGHT0, GL_SPECULAR, lightParams + 10);
 	}
 
-	void SimpleQbertView::Draw(QbertModel::ModelObjects& modelObjects, bool clear, unsigned startX, unsigned startY, unsigned width, unsigned height)
+	void SimpleQbertView::Draw(QbertModel::ModelObjects& modelObjects, bool clearAndSwap, unsigned startX, unsigned startY, unsigned width, unsigned height)
 	{
 		glViewport(startX, startY, width, height );
 		glShadeModel(GL_SMOOTH);
@@ -51,7 +51,7 @@ namespace BGComplete
 		glLoadIdentity();
 		gluPerspective(45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 1000.0f);
 
-		if (clear)
+		if (clearAndSwap)
 		{
 			glClearDepth(1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -70,8 +70,9 @@ namespace BGComplete
 			DrawObj(iter, false);
 
 		DrawObj(boost::dynamic_pointer_cast<GameObject>(modelObjects.Qbert), false);
-
-		SDL_GL_SwapBuffers();
+		
+		if (clearAndSwap)
+			SDL_GL_SwapBuffers();
 	}
 
 	void SimpleQbertView::DrawObj(const GameObject_ptr& obj, bool isBox)
