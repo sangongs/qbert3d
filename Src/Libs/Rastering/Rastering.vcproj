@@ -157,6 +157,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DoubleQbertView.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\DrawableObj.cpp"
 				>
 			</File>
@@ -185,11 +189,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\QbertView.cpp"
+				RelativePath=".\SimpleControler.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\SimpleControler.cpp"
+				RelativePath=".\SimpleQbertView.cpp"
 				>
 			</File>
 			<File
@@ -212,10 +216,6 @@
 					/>
 				</FileConfiguration>
 			</File>
-			<File
-				RelativePath=".\View.cpp"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -228,6 +228,10 @@
 			</File>
 			<File
 				RelativePath=".\DiamondQbertModel.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DoubleQbertView.h"
 				>
 			</File>
 			<File
@@ -279,11 +283,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\stdafx.h"
+				RelativePath=".\SimpleQbertView.h"
 				>
 			</File>
 			<File
-				RelativePath=".\View.h"
+				RelativePath=".\stdafx.h"
 				>
 			</File>
 		</Filter>

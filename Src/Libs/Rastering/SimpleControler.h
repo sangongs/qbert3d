@@ -1,25 +1,23 @@
 #pragma once
 
-#include "View.h"
-#include "Model.h"
-
 namespace BGComplete
 {
 	enum Direction {Right, Left, Up, Down, None};
 
 	class QbertModel;
+	class QbertView;
 
 	class SimpleControler
 	{
 	private:
-		View * _view;
+		QbertView * _view;
 		QbertModel * _model;
 		bool _leftMouseKeyDown, _running;
 
 		void ReadInput(DWORD deltaTime);
 
 	public:
-		SimpleControler(View * view, QbertModel * model);
+		SimpleControler(QbertView * view, QbertModel * model);
 		virtual void Run(unsigned startWidth, unsigned startHeight, unsigned depth);
 		
 		class InputData

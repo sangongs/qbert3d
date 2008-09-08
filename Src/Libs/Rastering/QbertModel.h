@@ -28,16 +28,16 @@ namespace BGComplete
 			QbertGameObject_ptr Qbert;
 			std::list<QbertEnemyObj_ptr> Enemies;
 			std::list<QbertBox_ptr> Boxes;
-			std::map<Math::Point3D, QbertBox_ptr> BoxMap;
 			std::list<GameObject_ptr> ObjectsList;
+			std::map<Math::Point3D, QbertBox_ptr> BoxMap;
 		};
 
 	protected:
-		float _freeFallAcceleration;
 		bool _isQbertAlive, _isFirstCall;
+		int _boxesUnvisited;
+		float _freeFallAcceleration;
 		std::string _visitedBoxName, _unvisitedBoxName;
 		QbertBox_ptr _startingBox;
-		int _boxesUnvisited;
 		ModelObjects _objects;
 
 		std::map<std::string, AIFunction> _AITypes;

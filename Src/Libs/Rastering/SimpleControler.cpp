@@ -5,7 +5,6 @@
 
 #include "Point3D.h"
 
-#include "View.h"
 #include "QbertModel.h"
 #include "ArielView.h"
 
@@ -48,7 +47,7 @@ namespace BGComplete
 	};
 
 
-	SimpleControler::SimpleControler(View * view, QbertModel * model) : _view(view), _model(model), _leftMouseKeyDown(false), _running(true)
+	SimpleControler::SimpleControler(QbertView * view, QbertModel * model) : _view(view), _model(model), _leftMouseKeyDown(false), _running(true)
 	{
 	}
 
@@ -58,8 +57,8 @@ namespace BGComplete
 		{
 			int newX, newY;
 			SDL_GetRelativeMouseState(&newX, &newY);
-			_view->CameraMove(0, 0, 0, 0 , (float)newX / 4.0f , 0);
-			_view->CameraMove(0, 0, 0, (float)newY / 4.0f, 0 , 0);
+			_view->CameraMove(0, 0, 0, 0 , (float)newX / 4.0f , 0, false);
+			_view->CameraMove(0, 0, 0, (float)newY / 4.0f, 0 , 0, false);
 		}
 
 		InputData inputData(deltaTime);
@@ -82,9 +81,9 @@ namespace BGComplete
 				break;
 			case SDL_KEYUP:
 				if (event.key.keysym.sym == SDLK_KP_PLUS)
-					_view->CameraMove(0, 0, -1, 0, 0, 0);
+					_view->CameraMove(0, 0, -1, 0, 0, 0, false);
 				else if (event.key.keysym.sym == SDLK_KP_ENTER)
-					_view->CameraMove(0, 0, 1, 0, 0, 0);
+					_view->CameraMove(0, 0, 1, 0, 0, 0, false);
 				else if (event.key.keysym.sym == SDLK_UP)
 					inputData.direction = Up;
 				else if (event.key.keysym.sym == SDLK_DOWN)
@@ -93,6 +92,8 @@ namespace BGComplete
 					inputData.direction = Left;
 				else if (event.key.keysym.sym == SDLK_RIGHT)
 					inputData.direction = Right;
+				else if (event.key.keysym.sym == SDLK_v)
+					_view->CameraMove(0, 0, 0, 0, 0, 0, true);
 				break;
 			case SDL_QUIT:
 				_running = false;
@@ -106,7 +107,7 @@ namespace BGComplete
 	void SimpleControler::Run(unsigned startWidth, unsigned startHeight, unsigned depth)
 	{
 		SDLLayer sdl(startWidth, startHeight, depth);
-		_view->Init(startWidth, startHeight);
+		_view->Init();
 
 		DWORD lastTime = GetTickCount();
 
@@ -116,7 +117,7 @@ namespace BGComplete
 			ReadInput(tempTime - lastTime);
 			lastTime = tempTime;
 
-			((QbertView*)_view)->Draw(_model->GetModelObjects());
+			_view->Draw(_model->GetModelObjects(), true, 0, 0, startWidth, startHeight);
 
 			SDL_Delay(20); //[todo] maybe we don't need this
 		}
