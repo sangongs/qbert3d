@@ -18,13 +18,12 @@ private:
 
 public:
 	SimpleView();
-	void SetGameObjects(std::list<GameObject_ptr> *objList);
-	void Draw(bool clearScreen);
-	void Draw(QbertModel::ModelObjects&);
-	void DrawObj(const GameObject_ptr& obj, bool isBox = true);
-	void PerformAdditionalTransformations (const GameObject_ptr& obj);
 	void CameraMove(float deltaX, float deltaY, float deltaZ, float xRotate, float yRotate, float zRotate);
 	void ChangeResolution(unsigned width, unsigned height);
+	void Draw(QbertModel::ModelObjects&);
+	void Draw(bool clearScreen);
+	void DrawObj(const GameObject_ptr& obj, bool isBox = true);
 	void Init(unsigned width, unsigned height);
-
+	void PerformAdditionalTransformations (const GameObject_ptr& obj);
+	void SetGameObjects(std::list<GameObject_ptr> *objList);
 };
