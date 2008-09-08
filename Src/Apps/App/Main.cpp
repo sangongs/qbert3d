@@ -12,7 +12,7 @@
 
 int WINAPI WinMain(HINSTANCE /*hInst*/, HINSTANCE /*hPrev*/, LPSTR /*szCmdLine*/, int /*sw*/)
 	{
-	BGComplete::DiamondQbertModel model(2, "RedBox", "BlueBox", "Qbert", 10.0f);
+	BGComplete::DiamondQbertModel model(4, "RedBox", "BlueBox", "Qbert", 10.0f);
 	BGComplete::FPSView view;
 	BGComplete::SimpleControler controler((BGComplete::View*)&view, (BGComplete::QbertModel*)&model);
 
