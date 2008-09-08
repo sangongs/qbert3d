@@ -1,25 +1,21 @@
 #pragma once
 
-#include <math.h>
-
-class Point3D;
-
-class DrawableObj
+namespace BGComplete
 {
-private:
-	int _listNum;
-	float _yDistFromFloor;
+	class Point3D;
 
-public:
-	DrawableObj::DrawableObj(const std::string& directory, const std::string &fileName, float scale, float rotateX, float rotateY, float rotateZ);
-	~DrawableObj();
+	class DrawableObj
+	{
+	private:
+		int _listNum;
+		float _yDistFromFloor;
 
-	void Draw(float rotateX, float rotateY, float rotateZ, float scale);
-};
+	public:
+		DrawableObj::DrawableObj(const std::string& directory, const std::string &fileName, float scale, float rotateX, float rotateY, float rotateZ);
+		~DrawableObj();
 
-typedef boost::shared_ptr<DrawableObj> DrawableObj_Ptr;
+		void Draw(float rotateX, float rotateY, float rotateZ, float scale);
+	};
 
-float DSin(float degrees); //[todo] add everything under BGComplete namespace and add these functions under math namespace.
-float DCos(float degrees);
-float Dacos(float value);
-float Modulu(float inp);
+	typedef boost::shared_ptr<DrawableObj> DrawableObj_Ptr;
+}

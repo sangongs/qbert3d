@@ -8,23 +8,26 @@
 
 #include "QbertModel.h"
 
-void QbertModel::VisitBox (QbertBox_ptr box)
+namespace BGComplete
 {
-	if (box->_isVisited)
-		return;
+	void QbertModel::VisitBox (QbertBox_ptr box)
+	{
+		if (box->_isVisited)
+			return;
 
-	box->_isVisited = true;
-	box->Name = _visitedBoxName;
-	_boxesUnvisited--;
-}
+		box->_isVisited = true;
+		box->Name = _visitedBoxName;
+		_boxesUnvisited--;
+	}
 
-void QbertModel::InsertBox (Point3D point, QbertBox_ptr box)
-{
-	_objects.BoxMap.insert(std::pair<Point3D, QbertBox_ptr>(point, box));
-	_objects.Boxes.push_back(box);
-}
+	void QbertModel::InsertBox (Math::Point3D point, QbertBox_ptr box)
+	{
+		_objects.BoxMap.insert(std::pair<Math::Point3D, QbertBox_ptr>(point, box));
+		_objects.Boxes.push_back(box);
+	}
 
-void QbertModel::SetQbert (std::string qbertName, QbertBox_ptr box)
-{
-	_objects.Qbert = QbertGameObject_ptr(new QbertGameObject(qbertName, box));
+	void QbertModel::SetQbert (std::string qbertName, QbertBox_ptr box)
+	{
+		_objects.Qbert = QbertGameObject_ptr(new QbertGameObject(qbertName, box));
+	}
 }
