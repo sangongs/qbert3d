@@ -24,9 +24,9 @@ void DoubleQbertView::CameraMove(float deltaX, float deltaY, float deltaZ, float
 	_views[1]->CameraMove(deltaX, deltaY, deltaZ, xRotate, yRotate, zRotate, false);
 }
 
-void DoubleQbertView::Draw(QbertModel::ModelObjects& modelObjects, bool clear, unsigned startX, unsigned startY, unsigned width, unsigned height)
+void DoubleQbertView::Draw(QbertModel::ModelObjects& modelObjects, bool clearAndSwap, unsigned startX, unsigned startY, unsigned width, unsigned height)
 {
-	if (clear)
+	if (clearAndSwap)
 	{
 		glClearDepth(1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -36,6 +36,9 @@ void DoubleQbertView::Draw(QbertModel::ModelObjects& modelObjects, bool clear, u
 	_views[!_state]->Draw(modelObjects, false, 
 		(unsigned)(width * (1 - _ratio)), (unsigned)(height * (1 - _ratio)),
 		(unsigned)(width * _ratio), unsigned(height * _ratio));
+
+	if (clearAndSwap)
+		SDL_GL_SwapBuffers();
 }
 
 void DoubleQbertView::Init()
