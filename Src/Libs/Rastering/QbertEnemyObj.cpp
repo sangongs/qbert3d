@@ -9,18 +9,6 @@ namespace BGComplete
 {
 	Direction QbertEnemyObj::WhereToMove()
 	{
-		if (!_isMoveLengthInit)
-		{
-			_moveLength = (static_cast<QbertModel*>(_model))->_enemiesMoveLengthes.find(_type)->second;
-			_isMoveLengthInit = true;
-		}
-
-		if (!_isFuncInit)
-		{
-			_AIfunc = (static_cast<QbertModel*>(_model))->_AITypes.find(_type)->second;
-			_isFuncInit = true;
-		}
-
 		return  _AIfunc(static_cast<QbertModel*>(_model));
 	}
 
@@ -36,4 +24,6 @@ namespace BGComplete
 
 		return true;
 	}
+
+	QbertEnemyObj::~QbertEnemyObj(void) {}
 }
