@@ -24,7 +24,7 @@ namespace BGComplete
 		_zRotate += zRotate;
 	}
 
-	void ArielView::SetUpCamera(QbertModel::ModelObjects& modelObjects)
+	void ArielView::SetUpCamera(QbertModel::ModelObjects& /*modelObjects*/)
 	{
 		glTranslatef(-_x, -_y, -_z);
 		glRotatef(_xRotate, 1.0f, 0.0f, 0.0f);

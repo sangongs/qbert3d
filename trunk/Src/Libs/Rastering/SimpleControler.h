@@ -2,7 +2,7 @@
 
 namespace BGComplete
 {
-	enum Direction {Right, Left, Up, Down, None};
+	enum Direction {Right, Left, Up, Down, None, OutOfBox, IntoBox};
 
 	class QbertModel;
 	class QbertView;

@@ -10,14 +10,15 @@ namespace BGComplete
 
 	class QbertEnemyObj : public QbertGameObject
 	{
+		friend class QbertModel;
+
 	private:
 		std::string _type;
-		bool _isFuncInit, _isMoveLengthInit;
 		AIFunction _AIfunc;
 
 	public:
 		QbertEnemyObj(const std::string& name ="", QbertBox_ptr box = QbertBox_ptr(), const std::string& type ="", DWORD moveLegth = 100) 
-			: QbertGameObject(name, box, moveLegth), _isFuncInit(false), _isMoveLengthInit(false), _type(type) {};
+			: QbertGameObject(name, box, moveLegth), _type(type) {};
 
 		Direction WhereToMove();
 		bool IsQbertStillAlive();

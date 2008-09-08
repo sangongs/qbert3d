@@ -10,6 +10,8 @@
 #include <string>
 #include <fstream>
 #include <algorithm>
+#include <time.h>
 
-#include <boost/shared_ptr.hpp>
-#include "boost/foreach.hpp"
+#include <boost\shared_ptr.hpp>
+#include "boost\foreach.hpp"
+#include "boost\tuple\tuple.hpp"
