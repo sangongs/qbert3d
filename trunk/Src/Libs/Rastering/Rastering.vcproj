@@ -149,11 +149,19 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\ArielView.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\DiamondQbertModel.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\DrawableObj.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FPSView.cpp"
 				>
 			</File>
 			<File
@@ -178,10 +186,6 @@
 			</File>
 			<File
 				RelativePath=".\SimpleControler.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\SimpleView.cpp"
 				>
 			</File>
 			<File
@@ -215,11 +219,19 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath=".\ArielView.h"
+				>
+			</File>
+			<File
 				RelativePath=".\DiamondQbertModel.h"
 				>
 			</File>
 			<File
 				RelativePath=".\DrawableObj.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FPSView.h"
 				>
 			</File>
 			<File
@@ -256,10 +268,6 @@
 			</File>
 			<File
 				RelativePath=".\SimpleControler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SimpleView.h"
 				>
 			</File>
 			<File

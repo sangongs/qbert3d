@@ -1,5 +1,8 @@
 #include "StdAfx.h"
 
+#include "boost\shared_ptr.hpp"
+#include "boost\foreach.hpp"
+
 #include "SDL\SDL.h"
 #include "SDL\SDL_opengl.h"
 
@@ -8,7 +11,7 @@
 #include "GameObject.h"
 
 #include "QbertModel.h"
-#include "SimpleView.h"
+#include "ArielView.h"
 
 #include "QbertBox.h"
 #include "QbertGameObject.h"
@@ -17,7 +20,7 @@
 
 namespace BGComplete
 {
-	SimpleView::SimpleView()
+	ArielView::ArielView()
 	{
 		_x = 0;
 		_y = 0;
@@ -27,12 +30,12 @@ namespace BGComplete
 		_zRotate = 0;
 	}
 
-	void SimpleView::SetGameObjects(std::list<GameObject_ptr> *objList)
+	void ArielView::SetGameObjects(std::list<GameObject_ptr> *objList)
 	{
 		_objList = objList;
 	}
 
-	void SimpleView::CameraMove(float deltaX, float deltaY, float deltaZ, float xRotate, float yRotate, float zRotate)
+	void ArielView::CameraMove(float deltaX, float deltaY, float deltaZ, float xRotate, float yRotate, float zRotate)
 	{
 		_x += deltaX;
 		_y += deltaY;
@@ -40,16 +43,12 @@ namespace BGComplete
 		_xRotate += xRotate;
 		_yRotate += yRotate;
 		_zRotate += zRotate;
-
-		glMatrixMode( GL_PROJECTION );
-		glPopMatrix();
-		glPushMatrix();
-		
- 		glTranslatef(_x, _y, _z);
 	}
 
-	void SimpleView::Init(unsigned int width, unsigned int height)
+	void ArielView::Init(unsigned int width, unsigned int height)
 	{
+		_width = width;
+		_height = height;
 		glShadeModel(GL_SMOOTH);
 		glClearDepth(1.0f);
 		glEnable(GL_DEPTH_TEST);
@@ -70,7 +69,7 @@ namespace BGComplete
 
 	}
 
-	void SimpleView::Draw(bool clearScreen = true)
+	void ArielView::Draw(bool clearScreen = true) //[todo] figure out what to do with this.
 	{
 		if (clearScreen)
 		{
@@ -95,12 +94,8 @@ namespace BGComplete
 		SDL_GL_SwapBuffers();
 	}
 
-	void SimpleView::SetupLights()
+	void ArielView::SetupLights(QbertModel::ModelObjects& /*modelObjects*/)
 	{
-		glMatrixMode( GL_MODELVIEW );
-		glLoadIdentity();
-		glTranslatef(_x, _y, -_z);
-
 		glEnable(GL_LIGHTING);
 		glEnable(GL_LIGHT0);
 		float lightParams[] = {0.0f, 0.0f, 0.0f, 1.0f, 0.2f, 0.2f, 0.2f, 0.7f, 0.7f, 0.7f, 0.3f, 0.3f, 0.3f};
@@ -110,51 +105,53 @@ namespace BGComplete
 		glLightfv(GL_LIGHT0, GL_SPECULAR, lightParams + 10);
 	}
 
-	void SimpleView::Draw(QbertModel::ModelObjects& modelObjects)
+	void ArielView::SetUpCamera(QbertModel::ModelObjects& /*modelObjects*/)
+	{
+		glTranslatef(_x, _y, -_z);
+	}
+
+	void ArielView::Draw(QbertModel::ModelObjects& modelObjects)
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
-		SetupLights();
-
 		glMatrixMode( GL_MODELVIEW );
 		glLoadIdentity();
+
+		SetupLights(modelObjects);	
+		SetUpCamera(modelObjects);
 
 		BOOST_FOREACH(GameObject_ptr iter, modelObjects.Boxes)
 			DrawObj(iter);
 
-		BOOST_FOREACH(GameObject_ptr iter, modelObjects.Enemies)
+		BOOST_FOREACH(GameObject_ptr iter, modelObjects.Enemies) //[todo] use boost::foreach everywhere!!! yeay! yum yum
 			DrawObj(iter, false);
 
 		DrawObj(boost::dynamic_pointer_cast<GameObject>(modelObjects.Qbert), false);
 
-
 		SDL_GL_SwapBuffers();
 	}
 
-	void SimpleView::DrawObj(const GameObject_ptr& obj, bool isBox)
+	void ArielView::DrawObj(const GameObject_ptr& obj, bool isBox)
 	{
 		std::map<std::string, DrawableObj_Ptr>::iterator objToDraw = _objects.find(obj->Name);
 		if (objToDraw == _objects.end())
 			throw std::exception("Couldn't find object while trying to draw the model, (in the view function)");
 
-		glLoadIdentity();
-		glRotatef(_zRotate, 0.0f, 0.0f, 1.0f);
-		glRotatef(_yRotate, 0.0f, 1.0f, 0.0f);
-		glRotatef(_xRotate, 1.0f, 0.0f, 0.0f);
+		glPushMatrix();
 		glTranslatef(obj->Center.X(), obj->Center.Y(), obj->Center.Z());
 
 		if (!isBox)
-			PerformAdditionalTransformations(obj);
+			PerformAdditionalTransformations(obj, false);
 
 		(*objToDraw).second->Draw(obj->XRotate, obj->YRotate, obj->ZRotate, 1.0f);
+		glPopMatrix();
 	}
 
-	void SimpleView::PerformAdditionalTransformations(const GameObject_ptr &obj)
+	void ArielView::PerformAdditionalTransformations(const GameObject_ptr &obj, bool inverted)
 	{
 		ChangeCoordinateSystem(std::pair<Math::Point3D, Math::Point3D>(Math::Point3D(0, 0, 1), Math::Point3D(0, 1, 0)),
 			std::pair<Math::Point3D, Math::Point3D>(boost::static_pointer_cast<QbertGameObject>(obj)->CurrentFaceDirection, 
-				boost::static_pointer_cast<QbertGameObject>(obj)->CurrentUpDirection), false);
+				boost::static_pointer_cast<QbertGameObject>(obj)->CurrentUpDirection), inverted, false);
 	}
 
-	void SimpleView::ChangeResolution(unsigned /*width*/, unsigned /*height*/){} //[todo] implement this... maybe H should do it.!
+	void ArielView::ChangeResolution(unsigned /*width*/, unsigned /*height*/){} //[todo] implement this... maybe H should do it.!
 }
