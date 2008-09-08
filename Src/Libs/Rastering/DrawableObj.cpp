@@ -257,6 +257,7 @@ namespace BGComplete
 		if (0 == (_listNum = glGenLists(1)))
 			throw std::exception("Can't generate display list while creating a drawable object.");
 
+		glEnable(GL_NORMALIZE);
 		glNewList(_listNum, GL_COMPILE);
 			
 			glMatrixMode(GL_MODELVIEW);

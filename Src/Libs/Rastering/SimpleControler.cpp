@@ -116,7 +116,7 @@ namespace BGComplete
 			ReadInput(tempTime - lastTime);
 			lastTime = tempTime;
 
-			((ArielView*)_view)->Draw(_model->GetModelObjects());
+			((QbertView*)_view)->Draw(_model->GetModelObjects());
 
 			SDL_Delay(20); //[todo] maybe we don't need this
 		}
