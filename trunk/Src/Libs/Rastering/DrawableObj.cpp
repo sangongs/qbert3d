@@ -57,6 +57,7 @@ namespace BGComplete
 					arguments = arguments.substr(search, arguments.length() - search);
 			}
 			
+			//BOOST_FOREACH(unsigned i, vertices)
 			for (unsigned i = 0; i < vertices.size(); i++)
 			{
 				vertices[i]--;
@@ -219,28 +220,26 @@ namespace BGComplete
 
 		mtlFile.close();
 
-		float sumOfMass[3] = {0, 0, 0};
+		Math::Point3D sumOfMass(0, 0, 0);
 		
-		for (size_t v = 0; v < vertices.size(); v++)
-			for (int i = 0; i < 3; i++)
-				sumOfMass[i]+= vertices[v].Points[i];
+		BOOST_FOREACH(Math::Point3D vertix, vertices)
+			sumOfMass += vertix;
 
-		for (int i = 0; i < 3; i++)
-			sumOfMass[i] /= vertices.size();
+		sumOfMass /= (float)vertices.size();
 
 		float maxPoint[3] = {0, 0, 0}, minPoint[3] = {0, 0, 0};
 
-		for (std::list<Face>::const_iterator iter = faces.begin(); iter != faces.end(); iter++)
-			for (unsigned i = 0; i < (*iter).vertices.size(); i++)
+		BOOST_FOREACH(Face iter, faces)
+			for (unsigned i = 0; i < iter.vertices.size(); i++)
 			{
+				Math::Point3D center = vertices[iter.vertices[i]] - sumOfMass;
+
 				float a = Math::DCos(rotateX), c = Math::DCos(rotateY), e = Math::DCos(rotateZ);
 				float b = Math::DSin(rotateX), d = Math::DSin(rotateY), f = Math::DSin(rotateZ);
-				float x = vertices[(*iter).vertices[i]].Points[0] - sumOfMass[0];
-				float y = vertices[(*iter).vertices[i]].Points[1] - sumOfMass[1];
-				float z = vertices[(*iter).vertices[i]].Points[2] - sumOfMass[2];
-				float nx = e * c * x + (f * a + e * d * b) * y + (f * b - e * d * a) * z;
-				float ny = (-f * c) * x + (e * a - f * d * b) * y + (e * b - f * d * b) * z;
-				float nz = d * x + (-b * c) * y + a * c * z;
+
+				float nx = center.ScalarProduct(e * c, f * a + e * d * b, f * b - e * d * a);
+				float ny = center.ScalarProduct(-f * c, e * a - f * d * b, e * b - f * d * b);
+				float nz = center.ScalarProduct(d, -b * c, a * c);
 				
 				maxPoint[0] = std::max(maxPoint[0], nx);
 				maxPoint[1] = std::max(maxPoint[1], ny);
@@ -267,9 +266,9 @@ namespace BGComplete
 			glRotatef(rotateX, 1.0f, 0.0f, 0.0f);
 			glTranslatef(-sumOfMass[0], -sumOfMass[1], -sumOfMass[2]);
 
-			for (std::list<Face>::const_iterator iter = faces.begin(); iter != faces.end(); iter++)
+			BOOST_FOREACH(Face iter, faces)
 			{
-				std::map<std::string, MtlObj>::iterator mtlObjIter = mtlObjects.find((*iter).MtlObjName);
+				std::map<std::string, MtlObj>::iterator mtlObjIter = mtlObjects.find(iter.MtlObjName);
 				if (mtlObjIter == mtlObjects.end())
 					throw std::exception("Couldn't find mtlObj for a face I was trying to draw.");
 
@@ -301,17 +300,17 @@ namespace BGComplete
 
 				glBegin(GL_POLYGON);
 
-				for (unsigned i = 0; i < (*iter).vertices.size(); i++)
+				for (unsigned i = 0; i < iter.vertices.size(); i++)
 				{
-					normals[(*iter).normals[i]].Normalize();
-					glNormal3fv(normals[(*iter).normals[i]].Points);
+					normals[iter.normals[i]].Normalize();
+					glNormal3fv(normals[iter.normals[i]].Points);
 
 					if ((*mtlObjIter).second.HasTexture)
-						glTexCoord2f(Math::Modulu(texturePoints[(*iter).texture[i]].Points[0]), Math::Modulu(texturePoints[(*iter).texture[i]].Points[1]));
+						glTexCoord2f(Math::Modulu(texturePoints[iter.texture[i]].Points[0]), Math::Modulu(texturePoints[iter.texture[i]].Points[1]));
 					
-					glVertex3f(vertices[(*iter).vertices[i]].Points[0]
-							 , vertices[(*iter).vertices[i]].Points[1]
-							 , vertices[(*iter).vertices[i]].Points[2]);
+					glVertex3f(vertices[iter.vertices[i]].Points[0]
+							 , vertices[iter.vertices[i]].Points[1]
+							 , vertices[iter.vertices[i]].Points[2]);
 				}
 
 				glEnd();

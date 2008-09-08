@@ -1,8 +1,5 @@
 #include "StdAfx.h"
 
-#include "boost\shared_ptr.hpp"
-#include "boost\foreach.hpp"
-
 #include "SDL\SDL.h"
 #include "SDL\SDL_opengl.h"
 
@@ -125,7 +122,7 @@ namespace BGComplete
 		BOOST_FOREACH(GameObject_ptr iter, modelObjects.Boxes)
 			DrawObj(iter);
 
-		BOOST_FOREACH(GameObject_ptr iter, modelObjects.Enemies) //[todo] use boost::foreach everywhere!!! yeay! yum yum
+		BOOST_FOREACH(GameObject_ptr iter, modelObjects.Enemies)
 			DrawObj(iter, false);
 
 		DrawObj(boost::dynamic_pointer_cast<GameObject>(modelObjects.Qbert), false);

@@ -254,11 +254,11 @@ namespace BGComplete
 
 	void DiamondQbertModel::MoveEnemies(DWORD deltaTime)
 	{
-		for (std::list<QbertEnemyObj_ptr>::iterator iter = _objects.Enemies.begin(); iter != _objects.Enemies.end(); iter++)
+		BOOST_FOREACH(QbertEnemyObj_ptr iter, _objects.Enemies)
 		{
-			Move((*iter), SimpleControler::InputData(deltaTime, (*iter)->WhereToMove()));
+			Move(iter, SimpleControler::InputData(deltaTime, iter->WhereToMove()));
 			if (_isQbertAlive)
-				_isQbertAlive = (*iter)->IsQbertStillAlive();
+				_isQbertAlive = iter->IsQbertStillAlive();
 		}
 	}
 }
