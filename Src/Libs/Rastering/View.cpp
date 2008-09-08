@@ -13,6 +13,7 @@ namespace BGComplete
 	const float View::_floatEquPrecision = 0.001f;
 	const float View::_point3DEquPrecision = 0.003f;
 
+	void View::ChangeCoordinateSystem(std::pair<Math::Point3D, Math::Point3D>& from, std::pair<Math::Point3D, Math::Point3D>& to, bool inverted,  bool validate)
 	void View::ChangeCoordinateSystem(std::pair<Math::Point3D, Math::Point3D> from, std::pair<Math::Point3D, Math::Point3D> to, bool validate)
 	{
 		from.first.Normalize();
@@ -46,7 +47,7 @@ namespace BGComplete
 		if (!normalVector.IsEqual(Math::Point3D::Zero, _point3DEquPrecision) && !normalVector.Normalize().IsEqual(to.first, _point3DEquPrecision))
 				rotationAngle *= -1;
 
-		glRotatef(rotationAngle, to.first.X(), to.first.Y(), to.first.Z());
-		glRotatef(180, rotationDirection.X(), rotationDirection.Y(), rotationDirection.Z());
+		glRotatef(inverted ? -rotationAngle : rotationAngle, to.first.X(), to.first.Y(), to.first.Z());
+		glRotatef(inverted ? -180 : 180, rotationDirection.X(), rotationDirection.Y(), rotationDirection.Z());
 	}
 }

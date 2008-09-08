@@ -33,6 +33,7 @@ namespace BGComplete
 		~QbertGameObject() {}
 
 		Math::Point3D GetRightDirection() {return LastFaceDirection.CrossProduct(LastUpDirection);}
+		Math::Point3D GetCurrentRightDirection() {return CurrentFaceDirection.CrossProduct(CurrentUpDirection);}
 		DWORD GetMoveLength() {return _moveLength;}
 		float GetHorizontalSpeed() {return _horizontalSpeed;}
 		float GetVerticalSpeed(){return _verticalSpeed;}

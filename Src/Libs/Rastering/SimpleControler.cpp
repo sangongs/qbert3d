@@ -7,7 +7,7 @@
 
 #include "View.h"
 #include "QbertModel.h"
-#include "SimpleView.h"
+#include "ArielView.h"
 
 #include "QbertBox.h"
 #include "QbertGameObject.h"
@@ -116,7 +116,7 @@ namespace BGComplete
 			ReadInput(tempTime - lastTime);
 			lastTime = tempTime;
 
-			((SimpleView*)_view)->Draw(_model->GetModelObjects());
+			((ArielView*)_view)->Draw(_model->GetModelObjects());
 
 			SDL_Delay(20); //[todo] maybe we don't need this
 		}

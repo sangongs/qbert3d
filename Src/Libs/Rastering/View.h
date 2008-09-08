@@ -20,6 +20,7 @@ namespace BGComplete
 		virtual void CameraMove(float deltaX, float deltaY, float deltaZ, float xRotate, float yRotate, float zRotate) = 0;
 		virtual void ChangeResolution(unsigned width, unsigned height) = 0;
 		virtual void Init(unsigned width, unsigned height) = 0;
+		void ChangeCoordinateSystem (std::pair<Math::Point3D, Math::Point3D>& from, std::pair<Math::Point3D, Math::Point3D>& to, bool inverted, bool validate = true);
 		void ChangeCoordinateSystem (std::pair<Math::Point3D, Math::Point3D> from, std::pair<Math::Point3D, Math::Point3D> to, bool validate = true);
 	};
 }
