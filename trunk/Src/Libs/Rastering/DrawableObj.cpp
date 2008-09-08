@@ -156,6 +156,7 @@ std::string ReadMultipleLines(std::ifstream& inp)
 
 DrawableObj::DrawableObj(const std::string& directory, const std::string &fileName, float scale, float rotateX, float rotateY, float rotateZ) : _listNum(-1) // so that we wont accedently delete a list
 {
+	std::string string((boost::format("%1%\\%2%") % directory % fileName).str().c_str());
 	std::ifstream objFile((boost::format("%1%\\%2%") % directory % fileName).str().c_str());
 	
 	if (!objFile.is_open())
