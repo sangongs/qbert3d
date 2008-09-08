@@ -1,11 +1,11 @@
 #pragma once
 
-#include "ArielView.h"
+#include "QbertView.h"
 
 namespace BGComplete
 {
 
-class FPSView : public ArielView
+class FPSView : public QbertView
 {
 
 protected:
