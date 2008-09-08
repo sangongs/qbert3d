@@ -19,15 +19,11 @@ void FPSView::CameraMove(float /*deltaX*/, float /*deltaY*/, float /*deltaZ*/, f
 
 void FPSView::SetUpCamera(QbertModel::ModelObjects& modelObjects)
 {
-
-	Math::Point3D rightDirection(modelObjects.Qbert->GetCurrentRightDirection());
-
-	glRotatef(-30.0f, rightDirection.X(), rightDirection.Y(), rightDirection.Z());
+	glRotatef(60.0f, 1, 0, 0);
+	glTranslatef(0, -3, -1.5);
+	glRotatef(180.0f, 0, 1, 0);
 	PerformAdditionalTransformations(modelObjects.Qbert, true);
-	glTranslatef(
-		-modelObjects.Qbert->CurrentUpDirection.X() * 0.7f + modelObjects.Qbert->CurrentFaceDirection.X() * 0.2f -modelObjects.Qbert->Center.X(), 
-		-modelObjects.Qbert->CurrentUpDirection.Y() * 0.7f + modelObjects.Qbert->CurrentFaceDirection.Y() * 0.2f -modelObjects.Qbert->Center.Y(),
-		-modelObjects.Qbert->CurrentUpDirection.Z() * 0.7f + modelObjects.Qbert->CurrentFaceDirection.Z() * 0.2f -modelObjects.Qbert->Center.Z());
+	glTranslatef(-modelObjects.Qbert->Center.X(), -modelObjects.Qbert->Center.Y(), -modelObjects.Qbert->Center.Z());
 }
 
 }

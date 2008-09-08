@@ -272,13 +272,13 @@ namespace BGComplete
 				if (mtlObjIter == mtlObjects.end())
 					throw std::exception("Couldn't find mtlObj for a face I was trying to draw.");
 
-				glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, (*mtlObjIter).second.ka.Points);
-				glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, (*mtlObjIter).second.kd.Points);
+				glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mtlObjIter->second.ka.Points);
+				glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mtlObjIter->second.kd.Points);
 
-				if ((*mtlObjIter).second.illum == 2)
+				if (mtlObjIter->second.illum == 2)
 				{
-					glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, (*mtlObjIter).second.ks.Points);
-					glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, (GLfloat)(*mtlObjIter).second.ns);
+					glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mtlObjIter->second.ks.Points);
+					glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, (GLfloat)mtlObjIter->second.ns);
 				}
 				else
 				{
@@ -287,10 +287,10 @@ namespace BGComplete
 				}
 
 
-				if ((*mtlObjIter).second.HasTexture)
+				if (mtlObjIter->second.HasTexture)
 				{
 					glEnable(GL_TEXTURE_2D);
-					glBindTexture(GL_TEXTURE_2D, (*mtlObjIter).second.Texture);
+					glBindTexture(GL_TEXTURE_2D, mtlObjIter->second.Texture);
 				}
 				else
 				{
@@ -305,7 +305,7 @@ namespace BGComplete
 					normals[iter.normals[i]].Normalize();
 					glNormal3fv(normals[iter.normals[i]].Points);
 
-					if ((*mtlObjIter).second.HasTexture)
+					if (mtlObjIter->second.HasTexture)
 						glTexCoord2f(Math::Modulu(texturePoints[iter.texture[i]].Points[0]), Math::Modulu(texturePoints[iter.texture[i]].Points[1]));
 					
 					glVertex3f(vertices[iter.vertices[i]].Points[0]
