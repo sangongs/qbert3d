@@ -4,8 +4,11 @@
 
 #include "GameObject.h"
 
-class Model
+namespace BGComplete
 {
-public:
-	Model() {}
-};
+	class Model
+	{
+	public:
+		Model() {}
+	};
+}

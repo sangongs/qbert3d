@@ -11,9 +11,9 @@
 
 int WINAPI WinMain(HINSTANCE /*hInst*/, HINSTANCE /*hPrev*/, LPSTR /*szCmdLine*/, int /*sw*/)
 	{
-	DiamondQbertModel model(2, "RedBox", "BlueBox", "Qbert", 10.0f);
-	SimpleView view;
-	SimpleControler controler((View*)&view, (QbertModel*)&model);
+	BGComplete::DiamondQbertModel model(2, "RedBox", "BlueBox", "Qbert", 10.0f);
+	BGComplete::SimpleView view;
+	BGComplete::SimpleControler controler((BGComplete::View*)&view, (BGComplete::QbertModel*)&model);
 
 	controler.Run(1000, 1000, 8);
 		

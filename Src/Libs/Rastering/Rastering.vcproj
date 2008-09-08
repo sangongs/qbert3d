@@ -157,6 +157,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Math.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Point3D.cpp"
 				>
 			</File>
@@ -220,6 +224,10 @@
 			</File>
 			<File
 				RelativePath=".\GameObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Math.h"
 				>
 			</File>
 			<File
