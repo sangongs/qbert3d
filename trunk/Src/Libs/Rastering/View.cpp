@@ -9,8 +9,8 @@
 
 
 
-const float View::floatEquPrecision = 0.001f;
-const float View::point3DEquPrecision = 0.003f;
+const float View::_floatEquPrecision = 0.001f;
+const float View::_point3DEquPrecision = 0.003f;
 
 void View::ChangeCoordinateSystem(std::pair<Point3D,Point3D>& from, std::pair<Point3D,Point3D>& to, bool validate)
 {
@@ -23,7 +23,7 @@ void View::ChangeCoordinateSystem(std::pair<Point3D,Point3D>& from, std::pair<Po
 	{
 		float firstScalar = from.first.ScalarProduct(from.second), secondScalar = to.first.ScalarProduct(to.second);
 
-		if (firstScalar == -1 || secondScalar == -1 || std::abs(firstScalar - secondScalar) > floatEquPrecision)
+		if (firstScalar == -1 || secondScalar == -1 || std::abs(firstScalar - secondScalar) > _floatEquPrecision)
 			throw std::exception("Incompatible set of coordinate systems, can't match them (in function View::ChangeSystemCoordinate()");
 
 		if (firstScalar)
@@ -34,7 +34,7 @@ void View::ChangeCoordinateSystem(std::pair<Point3D,Point3D>& from, std::pair<Po
 	}
 
 	Point3D rotationDirection = 0.5 * (from.first + to.first);
-	if (rotationDirection.IsEqual(Point3D::Zero, point3DEquPrecision))
+	if (rotationDirection.IsEqual(Point3D::Zero, _point3DEquPrecision))
 		rotationDirection = to.second;
 
 	Point3D translatedSecondVector = (2 * (rotationDirection.ScalarProduct(from.second) / rotationDirection.ScalarProduct(rotationDirection)) * rotationDirection - 
@@ -42,7 +42,7 @@ void View::ChangeCoordinateSystem(std::pair<Point3D,Point3D>& from, std::pair<Po
 
 	float rotationAngle = Dacos(translatedSecondVector.ScalarProduct(to.second));
 	Point3D normalVector = translatedSecondVector.CrossProduct(to.second);
-	if (!normalVector.IsEqual(Point3D::Zero, point3DEquPrecision) && !normalVector.Normalize().IsEqual(to.first, point3DEquPrecision))
+	if (!normalVector.IsEqual(Point3D::Zero, _point3DEquPrecision) && !normalVector.Normalize().IsEqual(to.first, _point3DEquPrecision))
 			rotationAngle *= -1;
 
 	glRotatef(rotationAngle, to.first.X(), to.first.Y(), to.first.Z());

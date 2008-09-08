@@ -123,7 +123,7 @@ void SimpleView::Draw(QbertModel::ModelObjects& modelObjects)
 	BOOST_FOREACH(GameObject_ptr iter, modelObjects.Boxes)
 		DrawObj(iter);
 
-	BOOST_FOREACH(GameObject_ptr iter, modelObjects.Enemies)
+	BOOST_FOREACH(GameObject_ptr iter, modelObjects.Enemies) //[todo] use boost::foreach everywhere!!! yeay! yum yum
 		DrawObj(iter, false);
 
 	DrawObj(boost::dynamic_pointer_cast<GameObject>(modelObjects.Qbert), false);

@@ -45,7 +45,7 @@ void DiamondQbertModel::CreateDiamondStructure(int sizeOfDiamond)
 
 				float x, y, z;
 				Point3D upDirection(0, 1, 0);
-				switch(face)
+				switch(face) //[todo] make this into 3 lines.
 				{
 				case (0):
 					x = (float)j;
@@ -63,7 +63,7 @@ void DiamondQbertModel::CreateDiamondStructure(int sizeOfDiamond)
 					z = (float)(sizeOfDiamond - 1 - i - std::abs(j));
 					upDirection.Points[1] = -1;
 					break;
-				default:				//case(3):
+				case (3):
 					x = (float)j;
 					y = (float)-i;
 					z = -(float)(sizeOfDiamond - 1 - i - std::abs(j));
@@ -93,12 +93,11 @@ void DiamondQbertModel::SetupQbert(int sizeOfDiamond, const std::string& qbertNa
 void DiamondQbertModel::ReciveInput(const SimpleControler::InputData& inputData)
 {
 	Move(_objects.Qbert, inputData);
-	MakeEnemiesMove(inputData.DeltaTime);
+	MoveEnemies(inputData.DeltaTime);
 }
 
 void DiamondQbertModel::Move(QbertGameObject_ptr object, const SimpleControler::InputData& inputData)
 {
-
 	object->Center = object->LastBox->Center + object->LastUpDirection;
 
 	object->CurrentFaceDirection = object->LastFaceDirection;
@@ -121,7 +120,7 @@ void DiamondQbertModel::Move(QbertGameObject_ptr object, const SimpleControler::
 	}
 
 	if (object->Progress > 1)
-		EndMovment(object);
+		EndMovement(object);
 }
 
 void DiamondQbertModel::UpdateCenterOfObject(QbertGameObject_ptr object)
@@ -132,19 +131,18 @@ void DiamondQbertModel::UpdateCenterOfObject(QbertGameObject_ptr object)
 
 		float progress = (object->IsMovingUp) ? 1 - object->Progress : object->Progress;
 
-		object->Center += object->LastUpDirection * 
-			((object->IsMovingUp ? 1 : 0) +
-			object->GetVerticalSpeed() * progress - 
+		object->Center += ((object->IsMovingUp ? object->LastUpDirection : Point3D::Zero) //[todo] make this work, something to do with constiness
+			+ object->GetVerticalSpeed() * progress - 
 			progress * progress * object->GetFreeAcceleration() * 0.5f);
 	}
 	else
-		object->Center += object->NextUpDirection * (1 + DCos(180 + (270 * object->Progress))) 
-			+ object->LastUpDirection * (DSin(270 * object->Progress));
+		object->Center += object->NextUpDirection * (1 + DCos(180 + 270 * object->Progress)) 
+			+ object->LastUpDirection * DSin(270 * object->Progress);
 }
 
 void DiamondQbertModel::UpdateFaceAndUpDirections(QbertGameObject_ptr object)
 {
-	float factor1 = DCos(90 * object->Progress), factor2 = DSin(90 * object->Progress); //[todo] maybe, change name.
+	float factor1 = DCos(90 * object->Progress), factor2 = DSin(90 * object->Progress);
 	if (object->IsChangingBox)
 	{
 		switch(object->MovingDirection)
@@ -157,9 +155,8 @@ void DiamondQbertModel::UpdateFaceAndUpDirections(QbertGameObject_ptr object)
 		case Down:
 			factor1 = DCos(180 * object->Progress);
 			factor2 = DSin(180 * object->Progress);
-			object->CurrentFaceDirection = object->LastFaceDirection * factor1 + 
-				object->GetRightDirection() * factor2;
-			break;
+			object->CurrentFaceDirection = object->LastFaceDirection * factor1 
+				+ object->GetRightDirection() * factor2;
 		}
 	}
 	else
@@ -184,9 +181,8 @@ void DiamondQbertModel::UpdateFaceAndUpDirections(QbertGameObject_ptr object)
 			break;
 		case Right:
 		case Left:
-			object->CurrentFaceDirection = object->CurrentFaceDirection * factor1 + ((object->MovingDirection == Right) ? 1.0f : -1.0f) *
-				object->CurrentFaceDirection.CrossProduct(object->CurrentUpDirection) * factor2;
-			break;
+			object->CurrentFaceDirection = object->CurrentFaceDirection * factor1 + 
+				((object->MovingDirection == Right) ? factor2 : -factor2) * object->CurrentFaceDirection.CrossProduct(object->CurrentUpDirection);
 		}
 	}
 }
@@ -222,7 +218,7 @@ void DiamondQbertModel::ChangeBox(QbertGameObject_ptr object)
 		object->IsChangingBox = true;
 		object->NextBox = box->second;
 
-		if((!object->LastUpDirection.Y()) && (!object->NextBox->IsOnPerimeter()))			//cant move like this, must stay on the same box
+		if((!object->LastUpDirection.Y()) && (!object->NextBox->IsOnPerimeter()))			//cant move like this, must stay on the same box //[todo] unuselessfy comment
 			object->IsChangingBox = false;
 		else
 			return;
@@ -241,7 +237,7 @@ void DiamondQbertModel::ChangeBox(QbertGameObject_ptr object)
 			return;
 	}
 
-	//Not Changing box!
+	//Not Changing a box!
 	object->IsChangingBox = false;
 	object->NextBox = object->LastBox;
 
@@ -257,7 +253,7 @@ void DiamondQbertModel::ChangeBox(QbertGameObject_ptr object)
 	}
 }
 
-void DiamondQbertModel::EndMovment(QbertGameObject_ptr object)
+void DiamondQbertModel::EndMovement(QbertGameObject_ptr object)
 {
 	object->LastBox = object->NextBox;
 	object->LastUpDirection = object->NextUpDirection;
@@ -274,7 +270,7 @@ void DiamondQbertModel::EndMovment(QbertGameObject_ptr object)
 	object->IsMoving = false;
 }
 
-void DiamondQbertModel::MakeEnemiesMove(DWORD deltaTime)
+void DiamondQbertModel::MoveEnemies(DWORD deltaTime)
 {
 	for (std::list<QbertEnemyObj_ptr>::iterator iter = _objects.Enemies.begin(); iter != _objects.Enemies.end(); iter++)
 	{

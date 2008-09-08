@@ -2,7 +2,7 @@
 
 #include <string>
 
-class Point3D
+class Point3D //[todo] insert into Math namespace
 {
 public:
 	Point3D(float x = 0, float y = 0, float z = 0);
@@ -16,9 +16,9 @@ public:
 	Point3D operator- ();
 	Point3D& operator+= (const Point3D& point);
 	Point3D& operator-= (const Point3D& point);
-	Point3D operator+ (const Point3D& point);
-	Point3D operator- (const Point3D& point);
-	Point3D operator* (float factor);
+	Point3D operator+ (const Point3D& point) const;
+	Point3D operator- (const Point3D& point) const;
+	Point3D operator* (float factor) const;
 
 	bool operator == (const Point3D point) const {return (X() == point.X() && Y() == point.Y() && Z() == point.Z());}
 	bool operator != (const Point3D point) const {return (X() != point.X() || Y() != point.Y() || Z() != point.Z());}
