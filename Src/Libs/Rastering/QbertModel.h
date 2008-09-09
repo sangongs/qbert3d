@@ -41,14 +41,11 @@ public:
 	{
 		std::string Name, Type;
 		DWORD AppearanceFrequency, TimeSinceLastAppearance, MoveLength;
-		AIFunction Function;
-		std::vector<AppearanceBox> AppearanceBoxes;
 
-		EnemiesAppearanceData (const std::string& type, const std::string& name, DWORD appearanceFrequency, DWORD moveLength,
-			AIFunction function, std::vector<AppearanceBox> appearanceBoxes)
-			: Name(name), Type(type), AppearanceFrequency(appearanceFrequency), MoveLength(moveLength), TimeSinceLastAppearance(0),
-			Function(function), AppearanceBoxes(appearanceBoxes) {}
+		EnemiesAppearanceData (const std::string& type, const std::string& name, DWORD appearanceFrequency, DWORD moveLength)
+			: Name(name), Type(type), AppearanceFrequency(appearanceFrequency), MoveLength(moveLength), TimeSinceLastAppearance(0) {}
 		EnemiesAppearanceData() {}
+		~EnemiesAppearanceData() {}
 	};
 
 protected:
@@ -59,13 +56,14 @@ protected:
 	QbertBox_ptr _startingBox;
 	ModelObjects _objects;
 	std::list<EnemiesAppearanceData> _enemiesAppearanceData; //The point3D is upDirection.
+	std::list<QbertEnemyObj_ptr> _enemiesToDelete;
 
 	void VisitBox (QbertBox_ptr box);
 	void InsertBox (Math::Point3D point, QbertBox_ptr box);
 	void SetQbert (std::string qbertName, QbertBox_ptr box);
 
-	void SetEnemysFunction (QbertEnemyObj_ptr enemy, AIFunction function) {enemy->_AIfunc = function;}
 	void SetEnemysMoveLength (QbertEnemyObj_ptr enemy, DWORD MoveLength) {enemy->_moveLength = MoveLength;}
+	void SetEnemysModelToThis (QbertEnemyObj_ptr enemy) {enemy->_model = this;}
 
 public:
 	QbertModel (std::string boxNameBefore, std::string boxNameAfter, float freeFallAcceleration) :
@@ -75,14 +73,14 @@ public:
 	QbertModel::ModelObjects& GetModelObjects() {return _objects;}
 	virtual void Move(QbertGameObject_ptr ,const SimpleControler::InputData& inputdata) = 0;
 	virtual void MoveEnemies(DWORD deltaTime) = 0;
-	virtual void AddNewEnemyType(const std::string& type, const std::string& name, AIFunction function, DWORD appearanceFrequency, 
-		DWORD moveLength, std::vector<AppearanceBox> appearanceBoxes) = 0;
+	virtual void AddNewEnemyType(const std::string& type, const std::string& name, DWORD appearanceFrequency, 
+		DWORD moveLength) = 0;
 	virtual void CreateEnemies (DWORD deltaTime) = 0;
 	virtual void ReciveInput(const SimpleControler::InputData&) = 0;
 	bool IsQbertAlive() {return _isQbertAlive;}
 	bool IsGameWon() {return _boxesUnvisited == 0;}
-	QbertBox_ptr GetBoxAt(const Math::Point3D&);
-	QbertBox_ptr GetBoxAt(int x, int y, int z);
+	QbertBox_ptr GetBoxAt(const Math::Point3D&) const;
+	QbertBox_ptr GetBoxAt(int x, int y, int z) const;
 };
 
 }	//namespace BGComplete

@@ -16,6 +16,7 @@ int WINAPI WinMain(HINSTANCE /*hInst*/, HINSTANCE /*hPrev*/, LPSTR /*szCmdLine*/
 {
 	using namespace BGComplete;
 	DiamondQbertModel model(4, "RedBox", "BlueBox", "Qbert", 10.0f);
+	model.AddNewEnemyType("ball", "ball", 6000, 500);
 	
 	DoubleQbertView view(QbertView_Ptr(new ArielView()), QbertView_Ptr(new FPSView()), 0.3f);
 	SimpleControler controler((QbertView*)&view, (QbertModel*)&model);

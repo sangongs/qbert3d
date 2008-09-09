@@ -28,18 +28,18 @@ namespace BGComplete
 
 	void QbertModel::SetQbert (std::string qbertName, QbertBox_ptr box)
 	{
-		_objects.Qbert = QbertGameObject_ptr(new QbertGameObject(qbertName, box));
+		_objects.Qbert = QbertGameObject_ptr(new QbertGameObject(qbertName, this, box));
 	}
 
-	QbertBox_ptr QbertModel::GetBoxAt(const Math::Point3D& point)
+	QbertBox_ptr QbertModel::GetBoxAt(const Math::Point3D& point) const
 	{
-		std::map<Math::Point3D, QbertBox_ptr>::iterator box = _objects.BoxMap.find(point);
+		std::map<Math::Point3D, QbertBox_ptr>::const_iterator box = _objects.BoxMap.find(point);
 		return (box != _objects.BoxMap.end()) ? box->second : QbertBox_ptr();
 	}
 
-	QbertBox_ptr QbertModel::GetBoxAt(int x, int y, int z)
+	QbertBox_ptr QbertModel::GetBoxAt(int x, int y, int z) const
 	{
-		std::map<Math::Point3D, QbertBox_ptr>::iterator box = _objects.BoxMap.find(Math::Point3D((float)x, (float)y, (float)z));
+		std::map<Math::Point3D, QbertBox_ptr>::const_iterator box = _objects.BoxMap.find(Math::Point3D((float)x, (float)y, (float)z));
 		return (box != _objects.BoxMap.end()) ? box->second : QbertBox_ptr();
 	}
 }
