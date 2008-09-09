@@ -13,7 +13,7 @@
 namespace BGComplete
 {
 
-void FPSView::CameraMove(float /*deltaX*/, float /*deltaY*/, float /*deltaZ*/, float /*xRotate*/, float /*yRotate*/, float /*zRotate*/, bool /*viewChange*/)
+void FPSView::CameraMove(float /*deltaX*/, float /*deltaY*/, float /*deltaZ*/, float /*xRotate*/, float /*yRotate*/, float /*zRotate*/, char /*viewKey*/)
 {
 }
 

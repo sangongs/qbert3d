@@ -24,7 +24,7 @@ namespace BGComplete
 	public:
 		SimpleQbertView() : _floatEquPrecision(0.001f), _point3DEquPrecision(0.003f){};
 
-		virtual void CameraMove(float deltaX, float deltaY, float deltaZ, float xRotate, float yRotate, float zRotate, bool viewChange) = 0;
+		virtual void CameraMove(float deltaX, float deltaY, float deltaZ, float xRotate, float yRotate, float zRotate, char viewKey) = 0;
 		virtual void Draw(QbertModel::ModelObjects& modelObjects, bool clearAndSwap, unsigned startX, unsigned startY, unsigned width, unsigned height);
 		virtual void DrawObj(const GameObject_ptr& obj, bool isBox = true);
 		virtual void Init();

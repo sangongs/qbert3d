@@ -173,6 +173,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\LayeredQbertView.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Math.cpp"
 				>
 			</File>
@@ -252,6 +256,10 @@
 			</File>
 			<File
 				RelativePath=".\GameObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\LayeredQbertView.h"
 				>
 			</File>
 			<File

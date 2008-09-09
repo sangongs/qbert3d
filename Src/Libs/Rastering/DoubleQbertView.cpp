@@ -17,11 +17,13 @@ DoubleQbertView::DoubleQbertView(QbertView_Ptr view1, QbertView_Ptr view2, float
 	_views[1] = view2;
 }
 
-void DoubleQbertView::CameraMove(float deltaX, float deltaY, float deltaZ, float xRotate, float yRotate, float zRotate, bool viewChanged)
+void DoubleQbertView::CameraMove(float deltaX, float deltaY, float deltaZ, float xRotate, float yRotate, float zRotate, char viewKey)
 {
-	_state ^= viewChanged;
-	_views[0]->CameraMove(deltaX, deltaY, deltaZ, xRotate, yRotate, zRotate, false);
-	_views[1]->CameraMove(deltaX, deltaY, deltaZ, xRotate, yRotate, zRotate, false);
+	if (viewKey == 'v')
+		_state = !_state;
+
+	_views[0]->CameraMove(deltaX, deltaY, deltaZ, xRotate, yRotate, zRotate, 0);
+	_views[1]->CameraMove(deltaX, deltaY, deltaZ, xRotate, yRotate, zRotate, 0);
 }
 
 void DoubleQbertView::Draw(QbertModel::ModelObjects& modelObjects, bool clearAndSwap, unsigned startX, unsigned startY, unsigned width, unsigned height)
@@ -36,7 +38,7 @@ void DoubleQbertView::Draw(QbertModel::ModelObjects& modelObjects, bool clearAnd
 	glClear(GL_DEPTH_BUFFER_BIT);
 	_views[!_state]->Draw(modelObjects, false, 
 		startX + (unsigned)(width * (1 - _ratio)), startY + (unsigned)(height * (1 - _ratio)),
-		startX + (unsigned)(width * _ratio), startY + unsigned(height * _ratio));
+		startX + (unsigned)(width * _ratio), startY + (unsigned)(height * _ratio));
 
 	if (clearAndSwap)
 		SDL_GL_SwapBuffers();
