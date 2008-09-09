@@ -17,14 +17,14 @@ public:
 	DiamondQbertModel(int sizeOfDiamond, const std::string& boxNameBefore, const std::string& boxNameAfter, const std::string& qbertName
 		, float freeFallAcceleration);
 
-	int Size() {return _size;}
+
+	int Size() const {return _size;}
 
 	void ReciveInput(const SimpleControler::InputData&);
 	void Move(QbertGameObject_ptr object, const SimpleControler::InputData& inputData);
 	void MoveEnemies(DWORD deltaTime);
 
-	void AddNewEnemyType(const std::string& type, const std::string& name, AIFunction function, DWORD appearanceFrequency, 
-		DWORD moveLength, std::vector<AppearanceBox> appearanceBoxes);
+	void AddNewEnemyType(const std::string& type, const std::string& name, DWORD appearanceFrequency, DWORD moveLength);
 	void CreateEnemies (DWORD deltaTime);
 
 	void UpdateCenterOfObject(QbertGameObject_ptr object);

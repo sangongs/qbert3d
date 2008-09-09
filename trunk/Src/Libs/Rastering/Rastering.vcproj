@@ -153,11 +153,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DiamondQbertEnemiesFactory.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\DiamondQbertModel.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\DiamondQbertModelEnemies.cpp"
+				RelativePath=".\DiamondQbertModelEnemyBall.cpp"
 				>
 			</File>
 			<File
@@ -235,11 +239,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DiamondQbertEnemiesFactory.h"
+				>
+			</File>
+			<File
 				RelativePath=".\DiamondQbertModel.h"
 				>
 			</File>
 			<File
-				RelativePath=".\DiamondQbertModelEnemies.h"
+				RelativePath=".\DiamondQbertModelEnemyBall.h"
 				>
 			</File>
 			<File

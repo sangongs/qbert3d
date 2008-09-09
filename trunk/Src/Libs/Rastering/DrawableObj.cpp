@@ -57,7 +57,6 @@ namespace BGComplete
 					arguments = arguments.substr(search, arguments.length() - search);
 			}
 			
-			//BOOST_FOREACH(unsigned i, vertices)
 			for (unsigned i = 0; i < vertices.size(); i++)
 			{
 				vertices[i]--;
@@ -222,14 +221,14 @@ namespace BGComplete
 
 		Math::Point3D sumOfMass(0, 0, 0);
 		
-		BOOST_FOREACH(Math::Point3D vertix, vertices)
+		BOOST_FOREACH(const Math::Point3D& vertix, vertices)
 			sumOfMass += vertix;
 
 		sumOfMass /= (float)vertices.size();
 
 		float maxPoint[3] = {0, 0, 0}, minPoint[3] = {0, 0, 0};
 
-		BOOST_FOREACH(Face iter, faces)
+		BOOST_FOREACH(const Face& iter, faces)
 			for (unsigned i = 0; i < iter.vertices.size(); i++)
 			{
 				Math::Point3D center = vertices[iter.vertices[i]] - sumOfMass;
@@ -267,7 +266,7 @@ namespace BGComplete
 			glRotatef(rotateX, 1.0f, 0.0f, 0.0f);
 			glTranslatef(-sumOfMass[0], -sumOfMass[1], -sumOfMass[2]);
 
-			BOOST_FOREACH(Face iter, faces)
+			BOOST_FOREACH(const Face& iter, faces)
 			{
 				std::map<std::string, MtlObj>::iterator mtlObjIter = mtlObjects.find(iter.MtlObjName);
 				if (mtlObjIter == mtlObjects.end())

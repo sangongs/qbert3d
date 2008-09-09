@@ -14,6 +14,7 @@ namespace BGComplete
 	class QbertGameObject : public GameObject
 	{
 	protected:
+		bool _isQbert;
 		DWORD _moveLength;
 		float _verticalSpeed, _horizontalSpeed, _freeFallAcceleration;
 
@@ -24,8 +25,8 @@ namespace BGComplete
 		bool IsMovingUp, IsChangingBox, IsMoving;
 		Direction MovingDirection;
 
-		QbertGameObject(const std::string& name ="", QbertBox_ptr box = QbertBox_ptr(), DWORD moveLength = 1000, float freeFallAcceleration = 10)
-			: GameObject(name, 0, 0, 0, 0, 0, 0), LastBox(box), NextBox(box), Progress(0), _moveLength(moveLength) , IsMoving(false), _freeFallAcceleration(freeFallAcceleration)
+		QbertGameObject(const std::string& name ="", Model* model = NULL, QbertBox_ptr box = QbertBox_ptr(), DWORD moveLength = 1000, float freeFallAcceleration = 10, bool isQbert = true)
+			: GameObject(name, model, 0, 0, 0, 0, 0, 0), LastBox(box), NextBox(box), Progress(0), _isQbert(isQbert), _moveLength(moveLength) , IsMoving(false), _freeFallAcceleration(freeFallAcceleration)
 		{
 			SetMoveLength(moveLength, _freeFallAcceleration);
 		}
@@ -39,6 +40,7 @@ namespace BGComplete
 		float GetVerticalSpeed(){return _verticalSpeed;}
 		float GetFreeAcceleration(){return _freeFallAcceleration;}
 		void SetMoveLength(DWORD moveLength, float freeFallAcceleration);
+		bool IsQbert() {return _isQbert;}
 	};
 	typedef boost::shared_ptr<QbertGameObject> QbertGameObject_ptr;
 }

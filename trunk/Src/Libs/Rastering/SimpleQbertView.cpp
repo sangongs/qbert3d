@@ -27,6 +27,7 @@ namespace BGComplete
 		_objects.insert(std::pair<std::string, DrawableObj_Ptr>("Qbert", DrawableObj_Ptr(new DrawableObj("Objects", "smurf_2.obj", 1, -90, 0, 0))));
 		_objects.insert(std::pair<std::string, DrawableObj_Ptr>("RedBox", DrawableObj_Ptr(new DrawableObj("Objects", "cube.obj", 1, 0, 0, 0))));
 		_objects.insert(std::pair<std::string, DrawableObj_Ptr>("BlueBox", DrawableObj_Ptr(new DrawableObj("Objects", "cube2.obj", 1, 0, 0, 0))));
+		_objects.insert(std::pair<std::string, DrawableObj_Ptr>("ball", DrawableObj_Ptr(new DrawableObj("Objects", "Q-bert.obj", 1, -90, -100, 0))));
 	}
 
 	void SimpleQbertView::SetupLights(QbertModel::ModelObjects& /*modelObjects*/)
@@ -63,10 +64,10 @@ namespace BGComplete
 		SetupLights(modelObjects);	
 		SetUpCamera(modelObjects);
 
-		BOOST_FOREACH(GameObject_ptr iter, modelObjects.Boxes)
+		BOOST_FOREACH(const GameObject_ptr& iter, modelObjects.Boxes)
 			DrawObj(iter);
 
-		BOOST_FOREACH(GameObject_ptr iter, modelObjects.Enemies) //[todo] use boost::foreach everywhere!!! yeay! yum yum
+		BOOST_FOREACH(const GameObject_ptr& iter, modelObjects.Enemies) //[todo] use boost::foreach everywhere!!! yeay! yum yum
 			DrawObj(iter, false);
 
 		DrawObj(boost::dynamic_pointer_cast<GameObject>(modelObjects.Qbert), false);
@@ -138,6 +139,7 @@ namespace BGComplete
 
 	void SimpleQbertView::PerformAdditionalTransformations(const GameObject_ptr &obj, bool inverted)
 	{
+		QbertGameObject_ptr temp = boost::static_pointer_cast<QbertGameObject>(obj);
 		ChangeCoordinateSystem(
 			std::pair<Math::Point3D, Math::Point3D>(
 				Math::Point3D(0, 0, 1),

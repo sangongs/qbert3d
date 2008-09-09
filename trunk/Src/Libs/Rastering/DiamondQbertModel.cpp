@@ -11,6 +11,7 @@
 #include "QbertBox.h"
 #include "QbertGameObject.h"
 #include "QbertEnemyObj.h"
+#include "DiamondQbertEnemiesFactory.h"
 
 #include "DiamondQbertModel.h"
 
@@ -199,6 +200,12 @@ void DiamondQbertModel::ChangeBox(QbertGameObject_ptr object)
 	case Left:
 		newBoxCoordinate += (object->MovingDirection == Right ? 1.0f : -1.0f) * rightDirection;
 		object->NextFaceDirection = (object->MovingDirection == Right ? 1.0f : -1.0f) * rightDirection;
+		break;
+	case IntoBox:
+	case OutOfBox:
+		object->IsChangingBox = false;
+		object->NextBox = object->LastBox;
+		return;
 	}
 
 	std::map<Math::Point3D, QbertBox_ptr>::iterator box = _objects.BoxMap.find(newBoxCoordinate + object->LastUpDirection);
@@ -245,11 +252,22 @@ void DiamondQbertModel::ChangeBox(QbertGameObject_ptr object)
 
 void DiamondQbertModel::EndMovement(QbertGameObject_ptr object)
 {
+	if (object->MovingDirection == IntoBox)
+	{
+		if (object->IsQbert())
+			throw std::exception("Qbert can't be removed from the model! (in function 'DiamondQbertModel::EndMovement()'");
+
+		_enemiesToDelete.push_back(boost::static_pointer_cast<QbertEnemyObj>(object));
+		//_objects.Enemies.remove(boost::static_pointer_cast<QbertEnemyObj>(object));
+		return;
+	}
+
 	object->LastBox = object->NextBox;
 	object->LastUpDirection = object->NextUpDirection;
 	object->LastFaceDirection = object->NextFaceDirection;
 
-	VisitBox(object->LastBox);
+	if (object->IsQbert())
+		VisitBox(object->LastBox);
 
 	object->Center = object->LastBox->Center + object->LastUpDirection;
 
@@ -268,35 +286,43 @@ void DiamondQbertModel::MoveEnemies(DWORD deltaTime)
 		if (_isQbertAlive)
 			_isQbertAlive = iter->IsQbertStillAlive();
 	}
+
+	BOOST_FOREACH(QbertEnemyObj_ptr iter, _enemiesToDelete)
+		_objects.Enemies.remove(iter);
+	_enemiesToDelete.erase(_enemiesToDelete.begin(), _enemiesToDelete.end());
 }
 
-void DiamondQbertModel::AddNewEnemyType(const std::string& type, const std::string& name, AIFunction function, DWORD appearanceFrequency, 
-	DWORD moveLength, std::vector<AppearanceBox> appearanceBoxes)
+void DiamondQbertModel::AddNewEnemyType(const std::string& type, const std::string& name, DWORD appearanceFrequency, DWORD moveLength)
 {
-	_enemiesAppearanceData.push_back(EnemiesAppearanceData(type, name, appearanceFrequency, moveLength, function, appearanceBoxes));
+	_enemiesAppearanceData.push_back(EnemiesAppearanceData (type, name, appearanceFrequency, moveLength));
 }
 
 void DiamondQbertModel::CreateEnemies (DWORD deltaTime)
 {
-	BOOST_FOREACH (EnemiesAppearanceData data, _enemiesAppearanceData)
+	BOOST_FOREACH (EnemiesAppearanceData& data, _enemiesAppearanceData)
 	{
 		data.TimeSinceLastAppearance += deltaTime;
 		if (data.TimeSinceLastAppearance > data.AppearanceFrequency)
 		{
 			srand ( (unsigned)time(NULL) );
-			
-			int index = (int)(rand() % data.AppearanceBoxes.size());
-			QbertEnemyObj_ptr newEnemy(new QbertEnemyObj(data.Name, data.AppearanceBoxes[index].get<0>(), data.Type));
-			newEnemy->LastUpDirection = data.AppearanceBoxes[index].get<1>();
-			newEnemy->LastFaceDirection = data.AppearanceBoxes[index].get<2>();
-			newEnemy->NextUpDirection = data.AppearanceBoxes[index].get<1>();
-			newEnemy->NextFaceDirection = data.AppearanceBoxes[index].get<2>();
+		
+			QbertEnemyObj_ptr newEnemy = DiamondQbertEnemiesFactory::GetNewEnemy(data.Type, data.Name, this);
+
+			SetEnemysMoveLength(newEnemy, data.MoveLength);
+
+			VecOfAppearanceBox_ptr vectorOfBoxes = newEnemy->GetAppearanceBoxes();
+			int index = (int)(rand() % vectorOfBoxes->size());
 
 			newEnemy->IsMoving = true;
 			newEnemy->IsChangingBox = false;
 			newEnemy->MovingDirection = OutOfBox;
-			SetEnemysMoveLength(newEnemy, data.MoveLength);
-			SetEnemysFunction(newEnemy, data.Function);
+			newEnemy->LastBox = (*vectorOfBoxes)[index].get<0>();
+			newEnemy->LastUpDirection = (*vectorOfBoxes)[index].get<1>();
+			newEnemy->LastFaceDirection = (*vectorOfBoxes)[index].get<2>();
+			newEnemy->NextBox = newEnemy->LastBox;
+			newEnemy->NextUpDirection = newEnemy->LastUpDirection;
+			newEnemy->NextFaceDirection = newEnemy->LastFaceDirection;
+
 
 			data.TimeSinceLastAppearance = 0;
 

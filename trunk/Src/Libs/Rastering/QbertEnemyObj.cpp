@@ -8,22 +8,16 @@
 namespace BGComplete
 {
 
-Direction QbertEnemyObj::WhereToMove()
-{
-	return  _AIfunc(_selfSharedPtr, static_cast<QbertModel*>(_model));
-}
+	std::map<std::string, VecOfAppearanceBox_ptr> QbertEnemyObj::_apperanceMap;
 
 bool QbertEnemyObj::IsQbertStillAlive()
 {
-	if (LastBox == (static_cast<QbertModel*>(_model))->_objects.Qbert->NextBox && 
-		NextBox == (static_cast<QbertModel*>(_model))->_objects.Qbert->LastBox)
-		return false;
-	
-	if (((QbertModel*)_model)->_objects.Qbert->Progress > 0.3 && Progress > 0.8 && 
-		NextBox == (static_cast<QbertModel*>(_model))->_objects.Qbert->LastBox)
-		return false;
+	return Center.IsEqual((static_cast<QbertModel*>(_model))->_objects.Qbert->Center, 0.2f);
+}
 
-	return true;
+VecOfAppearanceBox_ptr QbertEnemyObj::GetAppearanceBoxes()
+{
+	return _apperanceMap.find(_type)->second;
 }
 
 QbertEnemyObj::~QbertEnemyObj(void) {}

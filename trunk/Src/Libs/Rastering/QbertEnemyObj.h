@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include "SimpleControler.h"
 #include "QbertGameObject.h"
 
@@ -9,25 +11,28 @@ namespace BGComplete
 class QbertModel; 
 class QbertEnemyObj;
 
-typedef Direction (*AIFunction)(boost::shared_ptr<QbertEnemyObj>, QbertModel*);
-
 class QbertEnemyObj : public QbertGameObject
 {
 	friend class QbertModel;
-	
-	boost::shared_ptr<QbertEnemyObj> _selfSharedPtr;
-private:
+
+protected:
+	static std::map<std::string, VecOfAppearanceBox_ptr> _apperanceMap;
+
 	std::string _type;
-	AIFunction _AIfunc;
+
+	virtual void SetListOfBoxes() = 0;
 
 public:
-	QbertEnemyObj(const std::string& name ="", QbertBox_ptr box = QbertBox_ptr(), const std::string& type ="", DWORD moveLegth = 100) 
-		: QbertGameObject(name, box, moveLegth), _type(type) {_selfSharedPtr = boost::shared_ptr<QbertEnemyObj>(this);}
+	QbertEnemyObj(const std::string& name = "", Model* model = NULL, QbertBox_ptr box = QbertBox_ptr(), const std::string& type ="", DWORD moveLegth = 100) 
+		: QbertGameObject(name, model, box, moveLegth), _type(type) {_isQbert = false;}
 
-	Direction WhereToMove();
+	virtual Direction WhereToMove() = 0;
 	bool IsQbertStillAlive();
 
+	VecOfAppearanceBox_ptr GetAppearanceBoxes();
+
 	~QbertEnemyObj(void);
+
 };
 typedef boost::shared_ptr<QbertEnemyObj> QbertEnemyObj_ptr;
 
