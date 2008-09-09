@@ -157,6 +157,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DiamondQbertModelEnemies.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\DoubleQbertView.cpp"
 				>
 			</File>
@@ -228,6 +232,10 @@
 			</File>
 			<File
 				RelativePath=".\DiamondQbertModel.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DiamondQbertModelEnemies.h"
 				>
 			</File>
 			<File

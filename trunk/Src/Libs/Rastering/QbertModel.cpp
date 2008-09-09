@@ -30,4 +30,16 @@ namespace BGComplete
 	{
 		_objects.Qbert = QbertGameObject_ptr(new QbertGameObject(qbertName, box));
 	}
+
+	QbertBox_ptr QbertModel::GetBoxAt(const Math::Point3D& point)
+	{
+		std::map<Math::Point3D, QbertBox_ptr>::iterator box = _objects.BoxMap.find(point);
+		return (box != _objects.BoxMap.end()) ? box->second : QbertBox_ptr();
+	}
+
+	QbertBox_ptr QbertModel::GetBoxAt(int x, int y, int z)
+	{
+		std::map<Math::Point3D, QbertBox_ptr>::iterator box = _objects.BoxMap.find(Math::Point3D((float)x, (float)y, (float)z));
+		return (box != _objects.BoxMap.end()) ? box->second : QbertBox_ptr();
+	}
 }

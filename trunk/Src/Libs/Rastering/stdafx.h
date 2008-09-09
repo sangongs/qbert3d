@@ -11,6 +11,7 @@
 #include <fstream>
 #include <algorithm>
 #include <time.h>
+#include <Windows.h>
 
 #include <boost\shared_ptr.hpp>
 #include "boost\foreach.hpp"

@@ -5,25 +5,30 @@
 
 namespace BGComplete
 {
-	class QbertModel; 
-	typedef Direction (*AIFunction)(QbertModel*);
 
-	class QbertEnemyObj : public QbertGameObject
-	{
-		friend class QbertModel;
+class QbertModel; 
+class QbertEnemyObj;
 
-	private:
-		std::string _type;
-		AIFunction _AIfunc;
+typedef Direction (*AIFunction)(boost::shared_ptr<QbertEnemyObj>, QbertModel*);
 
-	public:
-		QbertEnemyObj(const std::string& name ="", QbertBox_ptr box = QbertBox_ptr(), const std::string& type ="", DWORD moveLegth = 100) 
-			: QbertGameObject(name, box, moveLegth), _type(type) {};
+class QbertEnemyObj : public QbertGameObject
+{
+	friend class QbertModel;
+	
+	boost::shared_ptr<QbertEnemyObj> _selfSharedPtr;
+private:
+	std::string _type;
+	AIFunction _AIfunc;
 
-		Direction WhereToMove();
-		bool IsQbertStillAlive();
+public:
+	QbertEnemyObj(const std::string& name ="", QbertBox_ptr box = QbertBox_ptr(), const std::string& type ="", DWORD moveLegth = 100) 
+		: QbertGameObject(name, box, moveLegth), _type(type) {_selfSharedPtr = boost::shared_ptr<QbertEnemyObj>(this);}
 
-		~QbertEnemyObj(void);
-	};
-	typedef boost::shared_ptr<QbertEnemyObj> QbertEnemyObj_ptr;
-}
+	Direction WhereToMove();
+	bool IsQbertStillAlive();
+
+	~QbertEnemyObj(void);
+};
+typedef boost::shared_ptr<QbertEnemyObj> QbertEnemyObj_ptr;
+
+}	//namespace BGComplete
