@@ -32,10 +32,11 @@ void DoubleQbertView::Draw(QbertModel::ModelObjects& modelObjects, bool clearAnd
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
-	_views[_state]->Draw(modelObjects, false, startX, startY, (unsigned)(width * (1 - _ratio)), (unsigned)(height * (1 - _ratio)));
+	_views[_state]->Draw(modelObjects, false, startX, startY, startX + width, startY + height);
+	glClear(GL_DEPTH_BUFFER_BIT);
 	_views[!_state]->Draw(modelObjects, false, 
-		(unsigned)(width * (1 - _ratio)), (unsigned)(height * (1 - _ratio)),
-		(unsigned)(width * _ratio), unsigned(height * _ratio));
+		startX + (unsigned)(width * (1 - _ratio)), startY + (unsigned)(height * (1 - _ratio)),
+		startX + (unsigned)(width * _ratio), startY + unsigned(height * _ratio));
 
 	if (clearAndSwap)
 		SDL_GL_SwapBuffers();

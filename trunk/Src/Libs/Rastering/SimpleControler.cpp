@@ -95,6 +95,10 @@ namespace BGComplete
 				else if (event.key.keysym.sym == SDLK_v)
 					_view->CameraMove(0, 0, 0, 0, 0, 0, true);
 				break;
+			case SDL_VIDEORESIZE:
+				_width = event.resize.w;
+				_height = event.resize.h;
+				break;
 			case SDL_QUIT:
 				_running = false;
 				return;
@@ -108,6 +112,9 @@ namespace BGComplete
 	{
 		SDLLayer sdl(startWidth, startHeight, depth);
 		_view->Init();
+		_width = startWidth;
+		_height = startHeight;
+		
 
 		DWORD lastTime = GetTickCount();
 
@@ -117,7 +124,7 @@ namespace BGComplete
 			ReadInput(tempTime - lastTime);
 			lastTime = tempTime;
 
-			_view->Draw(_model->GetModelObjects(), true, 0, 0, startWidth, startHeight);
+			_view->Draw(_model->GetModelObjects(), true, 0, 0, _width, _height);
 
 			SDL_Delay(20); //[todo] maybe we don't need this
 		}

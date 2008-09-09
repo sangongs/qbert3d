@@ -13,6 +13,7 @@ namespace BGComplete
 		QbertView * _view;
 		QbertModel * _model;
 		bool _leftMouseKeyDown, _running;
+		unsigned _width, _height;
 
 		void ReadInput(DWORD deltaTime);
 
