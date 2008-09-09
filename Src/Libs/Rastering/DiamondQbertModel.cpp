@@ -18,7 +18,7 @@ namespace BGComplete
 {
 
 DiamondQbertModel::DiamondQbertModel(int sizeOfDiamond, const std::string& unvisitedBoxName, const std::string& visitedBoxName, const std::string& qbertName, float freeFallAcceleration)
-	: QbertModel(unvisitedBoxName, visitedBoxName, freeFallAcceleration)
+	: QbertModel(unvisitedBoxName, visitedBoxName, freeFallAcceleration), _size(sizeOfDiamond)
 {
 	CreateDiamondStructure(sizeOfDiamond);
 	SetupQbert(sizeOfDiamond, qbertName);
@@ -273,32 +273,32 @@ void DiamondQbertModel::MoveEnemies(DWORD deltaTime)
 void DiamondQbertModel::AddNewEnemyType(const std::string& type, const std::string& name, AIFunction function, DWORD appearanceFrequency, 
 	DWORD moveLength, std::vector<AppearanceBox> appearanceBoxes)
 {
-	_enemiesAppearanceData.push_back(EnemiesAppearanceData(type, name, appearanceFrequency, 0, moveLength, function, appearanceBoxes));
+	_enemiesAppearanceData.push_back(EnemiesAppearanceData(type, name, appearanceFrequency, moveLength, function, appearanceBoxes));
 }
 
 void DiamondQbertModel::CreateEnemies (DWORD deltaTime)
 {
 	BOOST_FOREACH (EnemiesAppearanceData data, _enemiesAppearanceData)
 	{
-		data.get<3>() += deltaTime;
-		if (data.get<3>() > data.get<2>())
+		data.TimeSinceLastAppearance += deltaTime;
+		if (data.TimeSinceLastAppearance > data.AppearanceFrequency)
 		{
 			srand ( (unsigned)time(NULL) );
 			
-			int index = (int)(rand() % data.get<6>().size());
-			QbertEnemyObj_ptr newEnemy(new QbertEnemyObj(data.get<0>(), data.get<6>()[index].get<0>(), data.get<1>()));
-			newEnemy->LastUpDirection = data.get<6>()[index].get<1>();
-			newEnemy->LastFaceDirection = data.get<6>()[index].get<2>();
-			newEnemy->NextUpDirection = data.get<6>()[index].get<1>();
-			newEnemy->NextFaceDirection = data.get<6>()[index].get<2>();
+			int index = (int)(rand() % data.AppearanceBoxes.size());
+			QbertEnemyObj_ptr newEnemy(new QbertEnemyObj(data.Name, data.AppearanceBoxes[index].get<0>(), data.Type));
+			newEnemy->LastUpDirection = data.AppearanceBoxes[index].get<1>();
+			newEnemy->LastFaceDirection = data.AppearanceBoxes[index].get<2>();
+			newEnemy->NextUpDirection = data.AppearanceBoxes[index].get<1>();
+			newEnemy->NextFaceDirection = data.AppearanceBoxes[index].get<2>();
 
 			newEnemy->IsMoving = true;
 			newEnemy->IsChangingBox = false;
 			newEnemy->MovingDirection = OutOfBox;
-			SetEnemysMoveLength(newEnemy, data.get<4>());
-			SetEnemysFunction(newEnemy, data.get<5>());
+			SetEnemysMoveLength(newEnemy, data.MoveLength);
+			SetEnemysFunction(newEnemy, data.Function);
 
-			data.get<3>() = 0;
+			data.TimeSinceLastAppearance = 0;
 
 			_objects.Enemies.push_back(newEnemy);
 		}

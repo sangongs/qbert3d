@@ -1,6 +1,8 @@
 #pragma once
 
 #include "boost/shared_ptr.hpp"
+#include "boost/tuple/tuple.hpp"
+
 #include "GameObject.h"
 
 namespace BGComplete
@@ -20,4 +22,6 @@ namespace BGComplete
 		bool IsOnPerimeter() {return _isOnPerimeter;}
 	};
 	typedef boost::shared_ptr<QbertBox> QbertBox_ptr;
+
+	typedef boost::tuple<QbertBox_ptr, Math::Point3D, Math::Point3D> AppearanceBox;  //Point3D upDIrection, Point3D faceDirection;
 }
