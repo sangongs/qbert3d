@@ -57,8 +57,8 @@ namespace BGComplete
 		{
 			int newX, newY;
 			SDL_GetRelativeMouseState(&newX, &newY);
-			_view->CameraMove(0, 0, 0, 0 , (float)newX / 4.0f , 0, false);
-			_view->CameraMove(0, 0, 0, (float)newY / 4.0f, 0 , 0, false);
+			_view->CameraMove(0, 0, 0, 0 , (float)newX / 4.0f , 0, 0);
+			_view->CameraMove(0, 0, 0, (float)newY / 4.0f, 0 , 0, 0);
 		}
 
 		InputData inputData(deltaTime);
@@ -81,9 +81,9 @@ namespace BGComplete
 				break;
 			case SDL_KEYUP:
 				if (event.key.keysym.sym == SDLK_KP_PLUS)
-					_view->CameraMove(0, 0, -1, 0, 0, 0, false);
+					_view->CameraMove(0, 0, -1, 0, 0, 0, 0);
 				else if (event.key.keysym.sym == SDLK_KP_ENTER)
-					_view->CameraMove(0, 0, 1, 0, 0, 0, false);
+					_view->CameraMove(0, 0, 1, 0, 0, 0, 0);
 				else if (event.key.keysym.sym == SDLK_UP)
 					inputData.direction = Up;
 				else if (event.key.keysym.sym == SDLK_DOWN)
@@ -93,7 +93,7 @@ namespace BGComplete
 				else if (event.key.keysym.sym == SDLK_RIGHT)
 					inputData.direction = Right;
 				else if (event.key.keysym.sym == SDLK_v)
-					_view->CameraMove(0, 0, 0, 0, 0, 0, true);
+					_view->CameraMove(0, 0, 0, 0, 0, 0, 'v');
 				break;
 			case SDL_VIDEORESIZE:
 				_width = event.resize.w;

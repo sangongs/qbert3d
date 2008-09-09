@@ -13,7 +13,7 @@ class DoubleQbertView : public QbertView
 		bool _state;
 
 	protected:
-		void CameraMove(float deltaX, float deltaY, float deltaZ, float xRotate, float yRotate, float zRotate, bool viewChanged);
+		void CameraMove(float deltaX, float deltaY, float deltaZ, float xRotate, float yRotate, float zRotate, char viewKey);
 
 	public:
 		DoubleQbertView(QbertView_Ptr view1, QbertView_Ptr view2, float ratio);
