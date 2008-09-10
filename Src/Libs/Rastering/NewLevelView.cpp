@@ -25,7 +25,7 @@ namespace BGComplete
 
 	void NewLevelView::SetUpDrawModel(QbertModel::ModelObjects_Ptr modelObjects)
 	{
-		if (modelObjects->Level > _lastLevel)
+		if (modelObjects->Level != _lastLevel)
 		{
 			_lastLevelTime = GetTickCount();
 			_lastLevel = modelObjects->Level;

@@ -18,6 +18,8 @@
 #include "Rastering/ScoreView.h"
 #include "Rastering/GameOverView.h"
 #include "Rastering/NewLevelView.h"
+#include "Rastering/LifesView.h"
+#include "Rastering/GameStartView.h"
 
 #include "Rastering/QbertGameModel.h"
 
@@ -55,10 +57,25 @@ int WINAPI WinMain(HINSTANCE /*hInst*/, HINSTANCE /*hPrev*/, LPSTR /*szCmdLine*/
 
 	listOfQbertViews.push_back(
 		LayeredQbertView::CoordinatedQbertView(
+			QbertView_Ptr(new GameStartView()),
+		LayeredQbertView::QuadCoords(
+			Math::Point2D(0.4, 0.4), 
+			Math::Point2D(0.4, 0.2))));
+
+
+	listOfQbertViews.push_back(
+		LayeredQbertView::CoordinatedQbertView(
 			QbertView_Ptr(new NewLevelView()),
 		LayeredQbertView::QuadCoords(
 			Math::Point2D(0.4, 0.4), 
 			Math::Point2D(0.2, 0.2))));
+
+	listOfQbertViews.push_back(
+		LayeredQbertView::CoordinatedQbertView(
+			QbertView_Ptr(new LifesView()),
+		LayeredQbertView::QuadCoords(
+			Math::Point2D(0.05, 0.8), 
+			Math::Point2D(0.1, 0.05))));
 
 	std::list<LayeredQbertView::CoordinatedSimpleView> listOfSimpleViews;
 	listOfSimpleViews.push_back(
