@@ -16,6 +16,10 @@ class QbertEnemyObj : public QbertGameObject
 	friend class QbertModel;
 
 protected:
+	static const float _floatEquPrecision;
+	static const float _point3DEquPrecision;
+	static const float _killingDist;
+
 	static std::map<std::string, VecOfAppearanceBox_ptr> _apperanceMap;
 
 	std::string _type;

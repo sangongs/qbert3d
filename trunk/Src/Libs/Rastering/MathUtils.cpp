@@ -26,6 +26,11 @@ namespace BGComplete
 			return inp - floor(inp);
 		}
 
+		int Round(float inp)
+		{
+			return (int)(floor(inp) + ((Modulu(inp) < 0.5) ? 0 : 1));
+		}
+
 		int NextPowerOfTwo(int x)
 		{
 			double logbase2 = log((float)x) / log((float)2);

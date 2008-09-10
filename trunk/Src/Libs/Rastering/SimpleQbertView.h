@@ -12,8 +12,8 @@ namespace BGComplete
 	class SimpleQbertView : public QbertView
 	{
 	private:
-		const float _floatEquPrecision;
-		const float _point3DEquPrecision;
+		static const float _floatEquPrecision;
+		static const float _point3DEquPrecision;
 		std::map<std::string, DrawableObj_Ptr> _objects;
 
 	protected:
@@ -22,8 +22,10 @@ namespace BGComplete
 		virtual void SetupLights();
 		virtual void PerformAdditionalTransformations (const GameObject_ptr& obj, bool inverted);
 
+		void AddNewObject (const std::string&, const std::string&, const std::string&, float, float, float, float);
+
 	public:
-		SimpleQbertView() : _floatEquPrecision(0.001f), _point3DEquPrecision(0.003f){}
+		SimpleQbertView() {}
 
 		virtual void CameraMove(float deltaX, float deltaY, float deltaZ, float xRotate, float yRotate, float zRotate, char viewKey) = 0;
 		virtual void SetUpDrawModel(QbertModel::ModelObjects_Ptr modelObjects);

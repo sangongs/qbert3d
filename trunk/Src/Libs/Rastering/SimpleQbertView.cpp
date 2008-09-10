@@ -22,12 +22,21 @@
 
 namespace BGComplete
 {
+	const float SimpleQbertView::_floatEquPrecision = 0.001f;
+	const float SimpleQbertView::_point3DEquPrecision = 0.003f;
+
+	void SimpleQbertView::AddNewObject(const std::string& name, const std::string& folder, const std::string& fileName, float scale, float xRotate, float yRotate, float zRotate)
+	{
+		_objects.insert(std::pair<std::string, DrawableObj_Ptr>(name, DrawableObj_Ptr(new DrawableObj(folder, fileName, scale, xRotate, yRotate, zRotate))));
+	}
+
 	void SimpleQbertView::Init()
 	{
-		_objects.insert(std::pair<std::string, DrawableObj_Ptr>("Qbert", DrawableObj_Ptr(new DrawableObj("Objects", "smurf_2.obj", 1, -90, 0, 0))));
-		_objects.insert(std::pair<std::string, DrawableObj_Ptr>("RedBox", DrawableObj_Ptr(new DrawableObj("Objects", "cube.obj", 1, 0, 0, 0))));
-		_objects.insert(std::pair<std::string, DrawableObj_Ptr>("BlueBox", DrawableObj_Ptr(new DrawableObj("Objects", "cube2.obj", 1, 0, 0, 0))));
-		_objects.insert(std::pair<std::string, DrawableObj_Ptr>("ball", DrawableObj_Ptr(new DrawableObj("Objects", "Q-bert.obj", 1, -90, -100, 0))));
+		AddNewObject("Qbert", "Objects", "kirby.obj", 1, -90, 0, 0);
+		AddNewObject("RedBox", "Objects", "cube.obj", 1, 0, 0, 0);
+		AddNewObject("BlueBox", "Objects", "cube2.obj", 1, 0, 0, 0);
+		AddNewObject("ball", "Objects", "Q-bert.obj", 1, -90, -100, 0);
+		AddNewObject("directEnemy", "Objects", "kirby.obj", 1, -90, 0 , 0);
 	}
 
 	void SimpleQbertView::SetupLights()

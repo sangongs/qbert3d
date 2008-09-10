@@ -20,7 +20,8 @@ int WINAPI WinMain(HINSTANCE /*hInst*/, HINSTANCE /*hPrev*/, LPSTR /*szCmdLine*/
 {
 	using namespace BGComplete;
 	DiamondQbertModel model(5, "RedBox", "BlueBox", "Qbert", 10.0f);
-	model.AddNewEnemyType("ball", "ball", 6000, 500);
+	//model.AddNewEnemyType("ball", "ball", 1000, 500);
+	model.AddNewEnemyType("directEnemy", "directEnemy", 1500, 1200);
 	
 	std::list<QbertView_Ptr> listOfQbertViews;
 	listOfQbertViews.push_back(

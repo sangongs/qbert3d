@@ -304,14 +304,18 @@ void DiamondQbertModel::CreateEnemies (DWORD deltaTime)
 		data.TimeSinceLastAppearance += deltaTime;
 		if (data.TimeSinceLastAppearance > data.AppearanceFrequency)
 		{
-			srand ( (unsigned)time(NULL) );
 		
 			QbertEnemyObj_ptr newEnemy = DiamondQbertEnemiesFactory::GetNewEnemy(data.Type, data.Name, this);
 
 			SetEnemysMoveLength(newEnemy, data.MoveLength);
 
 			VecOfAppearanceBox_ptr vectorOfBoxes = newEnemy->GetAppearanceBoxes();
-			int index = (int)(rand() % vectorOfBoxes->size());
+
+			boost::mt19937 generator((boost::uint32_t)std::time(0));
+			boost::uniform_int<> uni_dist(0, (int)vectorOfBoxes->size() - 1);
+			boost::variate_generator<boost::mt19937, boost::uniform_int<>> uniRand(generator, uni_dist);
+
+			int index = uniRand();
 
 			newEnemy->IsMoving = true;
 			newEnemy->IsChangingBox = false;
