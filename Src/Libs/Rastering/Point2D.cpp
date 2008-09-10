@@ -10,5 +10,11 @@ Point2D::Point2D(const std::string& arguments)
 		throw std::exception("Couldn't read line into Point2D");
 }
 
+Point2D::Point2D(float x, float y)
+{
+	Points[0] = x;
+	Points[1] = y;
+}
+
 }
 }
