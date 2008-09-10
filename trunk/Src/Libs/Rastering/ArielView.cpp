@@ -12,7 +12,7 @@
 
 namespace BGComplete
 {
-	ArielView::ArielView()	: _x(0), _y(0), _z(0), _xRotate(0), _yRotate(0), _zRotate(0){}
+	ArielView::ArielView(unsigned z)	: _x(0), _y(0), _z(z), _xRotate(0), _yRotate(0), _zRotate(0){}
 
 	void ArielView::CameraMove(float deltaX, float deltaY, float deltaZ, float xRotate, float yRotate, float zRotate, char /*viewKey*/)
 	{

@@ -14,6 +14,6 @@ namespace BGComplete
 		void CameraMove(float deltaX, float deltaY, float deltaZ, float xRotate, float yRotate, float zRotate, char viewKey);
 	
 	public:
-		ArielView::ArielView();
+		ArielView::ArielView(unsigned z);
 	};
 }

@@ -28,7 +28,7 @@ int WINAPI WinMain(HINSTANCE /*hInst*/, HINSTANCE /*hPrev*/, LPSTR /*szCmdLine*/
 		LayeredQbertView::CoordinatedQbertView(
 			QbertView_Ptr
 				(new DoubleQbertView(
-					QbertView_Ptr(new ArielView()), 
+					QbertView_Ptr(new ArielView(16)), 
 					QbertView_Ptr(new FPSView()), 
 					0.3f)),
 			LayeredQbertView::QuadCoords(
