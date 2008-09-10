@@ -99,6 +99,12 @@ namespace BGComplete
 					inputData.direction = Right;
 				else if (event.key.keysym.sym == SDLK_v)
 					_view->CameraMove(0, 0, 0, 0, 0, 0, 'v');
+				if (event.key.keysym.sym == SDLK_SLASH)
+					_view->CameraMove(0, 0, 0, 0, 0, 0, '/');
+				break;
+			case SDL_KEYDOWN:
+				if (event.key.keysym.sym == SDLK_SLASH)
+					_view->CameraMove(0, 0, 0, 0, 0, 0, '/');
 				break;
 			case SDL_VIDEORESIZE:
 				_width = event.resize.w;

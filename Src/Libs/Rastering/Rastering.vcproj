@@ -288,6 +288,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ControlKeysView.h"
+					>
+				</File>
+				<File
 					RelativePath=".\DoubleQbertView.h"
 					>
 				</File>
@@ -325,6 +329,10 @@
 				>
 				<File
 					RelativePath=".\ArielView.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ControlKeysView.cpp"
 					>
 				</File>
 				<File
