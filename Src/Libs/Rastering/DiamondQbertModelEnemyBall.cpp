@@ -1,7 +1,9 @@
 #include "StdAfx.h"
-#include "DiamondQbertModelEnemyBall.h"
 
 #include "DiamondQbertModel.h"
+
+#include "DiamondQbertModelEnemyBall.h"
+
 
 namespace BGComplete
 {
@@ -26,17 +28,21 @@ void DiamondQbertModelEnemyBall::SetListOfBoxes()
 
 Direction DiamondQbertModelEnemyBall::WhereToMove()
 {
-	srand( (unsigned)time(NULL) );
+	//[todo] make random work! every where!
+	boost::mt19937 generator((boost::uint32_t)std::time(0));
+	boost::uniform_int<> uni_dist(0, 11);
+	boost::variate_generator<boost::mt19937, boost::uniform_int<>> uniRand(generator, uni_dist);
+
 	if (LastBox->IsOnPerimeter())
 		return IntoBox;
 	if (MovingDirection == OutOfBox)
-		return Direction(rand() % 4);
+		return Direction(uniRand() % 4);
 	if (MovingDirection == Left)
-		return ((rand() % 2) ? Right: Up);
+		return ((uniRand() % 2) ? Right: Up);
 	if (MovingDirection == Right)
-		return ((rand() % 2) ? Left: Up);
+		return ((uniRand() % 2) ? Left: Up);
 
-	return Direction(rand() % 3);
+	return Direction(uniRand() % 3);
 }
 
 
