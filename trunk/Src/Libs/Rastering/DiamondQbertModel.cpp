@@ -105,7 +105,7 @@ void DiamondQbertModel::Move(QbertGameObject_ptr object, const SimpleControler::
 		UpdateCenterOfObject(object);
 		UpdateFaceAndUpDirections (object);
 	}
-	else if (inputData.direction != None)		//!object->IsMoving && inputData.direction != None
+	else if (inputData.direction != None)		//object in not moving and there is a command to move
 	{
 		object->MovingDirection = inputData.direction;
 		ChangeBox(object);
@@ -303,7 +303,7 @@ void DiamondQbertModel::MoveEnemies(DWORD deltaTime)
 			BOOST_FOREACH (EnemiesAppearanceData& data, _enemiesAppearanceData)
 				data.IsAppearedOnce = false;
 
-			Sleep(1000);				//[todo] decide whether we need this delay or not.
+			Sleep(1000);
 			break;
 		}
 
