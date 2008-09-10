@@ -10,8 +10,8 @@ namespace BGComplete
 
 const float  DiamondQbertModelEnemyDirect::_luckFactor = 0.075f;
 
-DiamondQbertModelEnemyDirect::DiamondQbertModelEnemyDirect(const std::string& name, Model* model, QbertBox_ptr box, DWORD moveLegth)
-	: QbertEnemyObj(name, model, box, "directEnemy", moveLegth), _movesToChase(0), _movesOfLuckLeft(0)
+DiamondQbertModelEnemyDirect::DiamondQbertModelEnemyDirect(const std::string& name, Model* model, int score, QbertBox_ptr box, DWORD moveLegth)
+	: QbertEnemyObj(name, model, score, box, "directEnemy", moveLegth), _movesToChase(0), _movesOfLuckLeft(0)
 {
 	if (_apperanceMap.find("directEnemy") == _apperanceMap.end())
 		SetListOfBoxes();

@@ -14,7 +14,7 @@ private:
 	void SetListOfBoxes();
 
 public:
-	DiamondQbertModelEnemyBall(const std::string& name = "", Model* model = NULL, QbertBox_ptr box = QbertBox_ptr(), DWORD moveLegth = 100);
+	DiamondQbertModelEnemyBall(const std::string& name = "", Model* model = NULL, int score = 0, QbertBox_ptr box = QbertBox_ptr(), DWORD moveLegth = 100);
 
 	~DiamondQbertModelEnemyBall(void) {}
 

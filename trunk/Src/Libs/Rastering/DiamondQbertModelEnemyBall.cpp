@@ -8,8 +8,8 @@
 namespace BGComplete
 {
 
-DiamondQbertModelEnemyBall::DiamondQbertModelEnemyBall(const std::string& name, Model* model, QbertBox_ptr box, DWORD moveLegth)
-	: QbertEnemyObj(name, model, box, "ball", moveLegth) 
+DiamondQbertModelEnemyBall::DiamondQbertModelEnemyBall(const std::string& name, Model* model, int score, QbertBox_ptr box, DWORD moveLegth)
+	: QbertEnemyObj(name, model, score, box, "ball", moveLegth) 
 {
 	SetListOfBoxes();
 }

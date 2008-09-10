@@ -10,7 +10,7 @@ class QbertEnemyObj;
 class DiamondQbertEnemiesFactory
 {
 public:
-	static boost::shared_ptr<QbertEnemyObj> GetNewEnemy (const std::string& type, const std::string& name, Model*);
+	static boost::shared_ptr<QbertEnemyObj> GetNewEnemy (const std::string& type, const std::string& name, Model*, int score);
 };
 
 }	//namespace BGComplete

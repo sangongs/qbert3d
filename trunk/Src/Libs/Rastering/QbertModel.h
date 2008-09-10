@@ -46,11 +46,12 @@ public:
 		std::string Name, Type;
 		DWORD AppearanceFrequency, TimeSinceLastAppearance, MoveLength, FirstDelay;
 		bool IsAppearedOnce;
-		int MaxAppearances, TotalAmount;
+		int MaxAppearances, TotalAmount, Score;
 
-		EnemiesAppearanceData (const std::string& type, const std::string& name, DWORD firstDelay, DWORD appearanceFrequency, DWORD moveLength, int maxAppearances)
-			: Name(name), Type(type), FirstDelay(firstDelay), AppearanceFrequency(appearanceFrequency), MoveLength(moveLength),
-			TimeSinceLastAppearance(0), MaxAppearances(maxAppearances), TotalAmount(0), IsAppearedOnce(false) {}
+		EnemiesAppearanceData (const std::string& type, const std::string& name, DWORD firstDelay,
+			DWORD appearanceFrequency, DWORD moveLength, int maxAppearances, int score)
+				: Name(name), Type(type), FirstDelay(firstDelay), AppearanceFrequency(appearanceFrequency), MoveLength(moveLength),
+				TimeSinceLastAppearance(0), MaxAppearances(maxAppearances), TotalAmount(0), Score(score), IsAppearedOnce(false) {}
 		EnemiesAppearanceData() {}
 		~EnemiesAppearanceData() {}
 	};
@@ -89,7 +90,7 @@ public:
 	void StartGame();
 
 	virtual void AddNewEnemyType(const std::string& type, const std::string& name, DWORD firstDelay, DWORD appearanceFrequency, DWORD moveLength, 
-		int maxAppearances) = 0;
+		int maxAppearances, int score) = 0;
 
 	virtual void ReciveInput(const SimpleControler::InputData&) = 0;
 

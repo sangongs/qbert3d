@@ -33,7 +33,8 @@ public:
 
 	int Size() const {return _size;}
 	void ReciveInput(const SimpleControler::InputData&);
-	void AddNewEnemyType(const std::string& type, const std::string& name, DWORD firstDelay, DWORD appearanceFrequency, DWORD moveLength, int maxAppearances);
+	void AddNewEnemyType(const std::string& type, const std::string& name, DWORD firstDelay, DWORD appearanceFrequency, 
+		DWORD moveLength, int maxAppearances, int score);
 
 	~DiamondQbertModel();
 };
