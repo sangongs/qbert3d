@@ -11,21 +11,21 @@
 namespace BGComplete
 {
 
-	LayeredQbertView::LayeredQbertView(std::list<QbertView_Ptr>& qbertViews, std::list<View_Ptr>& simpleViews) : _qbertViews(qbertViews) , _simpleViews(simpleViews)
+	LayeredQbertView::LayeredQbertView(std::list<CoordinatedQbertView>& qbertViews, std::list<CoordinatedSimpleView>& simpleViews) : _qbertViews(qbertViews) , _simpleViews(simpleViews)
 	{}
 
 	void LayeredQbertView::CameraMove(float deltaX, float deltaY, float deltaZ, float xRotate, float yRotate, float zRotate, char viewKey)
 	{
-		BOOST_FOREACH(QbertView_Ptr iter, _qbertViews)
-			iter->CameraMove(deltaX, deltaY, deltaZ, xRotate, yRotate, zRotate, viewKey);
-		BOOST_FOREACH(View_Ptr iter, _simpleViews)
-			iter->CameraMove(deltaX, deltaY, deltaZ, xRotate, yRotate, zRotate, viewKey);
+		BOOST_FOREACH(CoordinatedQbertView iter, _qbertViews)
+			iter.first->CameraMove(deltaX, deltaY, deltaZ, xRotate, yRotate, zRotate, viewKey);
+		BOOST_FOREACH(CoordinatedSimpleView iter, _simpleViews)
+			iter.first->CameraMove(deltaX, deltaY, deltaZ, xRotate, yRotate, zRotate, viewKey);
 	}
 
 	void LayeredQbertView::SetUpDrawModel(QbertModel::ModelObjects_Ptr modelObjects)
 	{
-		BOOST_FOREACH(QbertView_Ptr iter, _qbertViews)
-			iter->SetUpDrawModel(modelObjects);
+		BOOST_FOREACH(CoordinatedQbertView iter, _qbertViews)
+			iter.first->SetUpDrawModel(modelObjects);
 	}
 
 	void LayeredQbertView::Draw(bool clearAndSwap, unsigned startX, unsigned startY, unsigned width, unsigned height)
@@ -36,15 +36,23 @@ namespace BGComplete
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		}
 
-		BOOST_FOREACH(QbertView_Ptr iter, _qbertViews)
+		BOOST_FOREACH(CoordinatedQbertView iter, _qbertViews)
 		{
-			iter->Draw(false, startX, startY, width, height);
+			iter.first->Draw(false,
+				(unsigned)((float)startX + width * iter.second.first.Points[0]),
+				(unsigned)((float)startY + height * iter.second.first.Points[1]),
+				(unsigned)((float)startX + width * iter.second.second.Points[0]),
+				(unsigned)((float)startY + height * iter.second.second.Points[1]));
 			glClear(GL_DEPTH_BUFFER_BIT);
 		}
 		
-		BOOST_FOREACH(View_Ptr iter, _simpleViews)
+		BOOST_FOREACH(CoordinatedSimpleView iter, _simpleViews)
 		{
-			iter->Draw(false, startX, startY, width, height);
+			iter.first->Draw(false,
+				(unsigned)((float)startX + width * iter.second.first.Points[0]),
+				(unsigned)((float)startY + height * iter.second.first.Points[1]),
+				(unsigned)((float)startX + width * iter.second.second.Points[0]),
+				(unsigned)((float)startY + height * iter.second.second.Points[1]));
 			glClear(GL_DEPTH_BUFFER_BIT);	
 		}
 
@@ -54,10 +62,10 @@ namespace BGComplete
 
 	void LayeredQbertView::Init()
 	{
-		BOOST_FOREACH(QbertView_Ptr iter, _qbertViews)
-			iter->Init();
-		BOOST_FOREACH(View_Ptr iter, _simpleViews)
-			iter->Init();
+		BOOST_FOREACH(CoordinatedQbertView iter, _qbertViews)
+			iter.first->Init();
+		BOOST_FOREACH(CoordinatedSimpleView iter, _simpleViews)
+			iter.first->Init();
 	}
 
 }

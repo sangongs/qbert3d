@@ -23,21 +23,28 @@ int WINAPI WinMain(HINSTANCE /*hInst*/, HINSTANCE /*hPrev*/, LPSTR /*szCmdLine*/
 	//model.AddNewEnemyType("ball", "ball", 1000, 500);
 	model.AddNewEnemyType("directEnemy", "directEnemy", 1500, 1200);
 	
-	std::list<QbertView_Ptr> listOfQbertViews;
+	std::list<LayeredQbertView::CoordinatedQbertView> listOfQbertViews;
 	listOfQbertViews.push_back(
-		QbertView_Ptr
-			(new DoubleQbertView(
-				QbertView_Ptr(new ArielView()), 
-				QbertView_Ptr(new FPSView()), 
-				0.3f)));
+		LayeredQbertView::CoordinatedQbertView(
+			QbertView_Ptr
+				(new DoubleQbertView(
+					QbertView_Ptr(new ArielView()), 
+					QbertView_Ptr(new FPSView()), 
+					0.3f)),
+			LayeredQbertView::QuadCoords(
+				Math::Point2D(0, 0), 
+				Math::Point2D(1, 1))));
 
-	std::list<View_Ptr> listOfSimpleViews;
+	std::list<LayeredQbertView::CoordinatedSimpleView> listOfSimpleViews;
 	float fpsHudPoints[] = 
-		{-5.0f, -3.0f, -10.0f,
-		-4.0f, -3.0f, -10.0f,
-		-4.0f, -4.0f, -10.0f,
-		-5.0f, -4.0f, -10.0f};
-	listOfSimpleViews.push_back(View_Ptr(new FPSHud("Fonts//CALIBRI.TTF", 30, fpsHudPoints)));
+		{-2.0f, 2.0f, -5.0f,
+		2.0f, 2.0f, -5.0f,
+		2.0f, -2.0f, -5.0f,
+		-2.0f, -2.0f, -5.0f};
+	listOfSimpleViews.push_back(
+		LayeredQbertView::CoordinatedSimpleView(
+			View_Ptr(new FPSHud("Fonts//CALIBRI.TTF", 24, fpsHudPoints)),
+			LayeredQbertView::QuadCoords(Math::Point2D(0.0f, 0.0f), Math::Point2D(0.1f, 0.1f))));
 
 	LayeredQbertView view(listOfQbertViews, listOfSimpleViews);
 	SimpleControler controler((QbertView*)&view, (QbertModel*)&model);
