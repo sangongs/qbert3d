@@ -259,7 +259,7 @@ void DiamondQbertModel::EndMovement(QbertGameObject_ptr object)
 			throw std::exception("Qbert can't be removed from the model! (in function 'DiamondQbertModel::EndMovement()'");
 
 		_enemiesToDelete.push_back(boost::static_pointer_cast<QbertEnemyObj>(object));
-		_score += 75;
+		*_score += 75;
 		return;
 	}
 
@@ -287,15 +287,21 @@ void DiamondQbertModel::MoveEnemies(DWORD deltaTime)
 		if (iter->IsQbertStillDies())
 		{
 			_enemiesToDelete = _objects->Enemies;
-			_livesLeft--;
+			(*_livesLeft)--;
+			if (*_livesLeft <= 0)
+				_gameStage = GameOver;
+
+			BOOST_FOREACH (EnemiesAppearanceData& data, _enemiesAppearanceData)
+				data.IsAppearedOnce = false;
+
+			//Sleep(1500);				//[todo] decide whether we need this delay or not.
 			break;
 		}
 	}
 
 	BOOST_FOREACH(QbertEnemyObj_ptr iter, _enemiesToDelete)
-	{
 		RemoveEnemy(iter);
-	}
+
 	_enemiesToDelete.erase(_enemiesToDelete.begin(), _enemiesToDelete.end());
 }
 

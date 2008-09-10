@@ -19,6 +19,7 @@
 #include "QbertGameObject.h"
 #include "QbertEnemyObj.h"
 
+enum GameStage {DidntStart, GoingOn, GameOver};
 namespace BGComplete
 {
 
@@ -30,6 +31,8 @@ public:
 	class ModelObjects
 	{
 	public:
+		int Score, LivesLeft;
+		GameStage gameStage;
 		QbertGameObject_ptr Qbert;
 		std::list<QbertEnemyObj_ptr> Enemies;
 		std::list<QbertBox_ptr> Boxes;
@@ -50,7 +53,6 @@ public:
 			TimeSinceLastAppearance(0), MaxAppearances(maxAppearances), TotalAmount(0), IsAppearedOnce(false) {}
 		EnemiesAppearanceData() {}
 		~EnemiesAppearanceData() {}
-		bool operator==(const std::string& type) {return type == Type;}
 	};
 
 protected:
@@ -59,6 +61,7 @@ protected:
 	std::string _visitedBoxName, _unvisitedBoxName;
 	QbertBox_ptr _startingBox;
 	ModelObjects_Ptr _objects;
+	GameStage _gameStage;
 	std::list<EnemiesAppearanceData> _enemiesAppearanceData;
 	std::list<QbertEnemyObj_ptr> _enemiesToDelete;
 
@@ -71,26 +74,31 @@ protected:
 
 	virtual void RemoveEnemy(const QbertEnemyObj_ptr iter) = 0;
 
-public:
-	QbertModel (std::string boxNameBefore, std::string boxNameAfter, int * score, int * livesLeft, float freeFallAcceleration) :
-	  _unvisitedBoxName(boxNameBefore), _visitedBoxName(boxNameAfter), _score(score), _livesLeft(livesLeft),
-		  _freeFallAcceleration(freeFallAcceleration), _boxesUnvisited(0), _objects(new ModelObjects()) {}
-
-	QbertModel& operator= (const QbertModel&);
-
-	ModelObjects_Ptr GetModelObjects() {return _objects;}
 	virtual void Move(QbertGameObject_ptr ,const SimpleControler::InputData& inputdata) = 0;
 	virtual void MoveEnemies(DWORD deltaTime) = 0;
+	virtual void CreateEnemies (DWORD deltaTime) = 0;
+
+public:
+	QbertModel (std::string boxNameBefore, std::string boxNameAfter, int * score, int * livesLeft, float freeFallAcceleration) :
+	  _unvisitedBoxName(boxNameBefore), _visitedBoxName(boxNameAfter), _score(score), _livesLeft(livesLeft), _gameStage(DidntStart),
+		  _freeFallAcceleration(freeFallAcceleration), _boxesUnvisited(0), _objects(new ModelObjects()) {}
+
+	  QbertModel(){}
+
+	QbertModel::ModelObjects_Ptr GetModelObjects();
+	void StartGame();
+
 	virtual void AddNewEnemyType(const std::string& type, const std::string& name, DWORD firstDelay, DWORD appearanceFrequency, DWORD moveLength, 
 		int maxAppearances) = 0;
-	virtual void CreateEnemies (DWORD deltaTime) = 0;
+
 	virtual void ReciveInput(const SimpleControler::InputData&) = 0;
-	bool IsQbertAlive() {return *_livesLeft > 0;}
-	int LivesLeft() {return *_livesLeft;}
-	int Score() {return *_score;}
-	bool IsGameWon() {return _boxesUnvisited == 0;}
+
+	GameStage GetGameStage() {return _gameStage;}
+	bool IsGameWon() {return (_boxesUnvisited <= 0);}
 	QbertBox_ptr GetBoxAt(const Math::Point3D&) const;
 	QbertBox_ptr GetBoxAt(int x, int y, int z) const;
 };
+
+typedef boost::shared_ptr<QbertModel> QbertModel_ptr;
 
 }	//namespace BGComplete

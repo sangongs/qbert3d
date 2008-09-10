@@ -18,7 +18,7 @@ void QbertModel::VisitBox (QbertBox_ptr box)
 
 	box->_isVisited = true;
 	box->Name = _visitedBoxName;
-	_score += 25;
+	*_score += 25;
 	_boxesUnvisited--;
 }
 
@@ -43,6 +43,20 @@ QbertBox_ptr QbertModel::GetBoxAt(int x, int y, int z) const
 {
 	std::map<Math::Point3D, QbertBox_ptr>::const_iterator box = _objects->BoxMap.find(Math::Point3D((float)x, (float)y, (float)z));
 	return (box != _objects->BoxMap.end()) ? box->second : QbertBox_ptr();
+}
+
+QbertModel::ModelObjects_Ptr QbertModel::GetModelObjects()
+{
+	_objects->Score = *_score; 
+	_objects->LivesLeft = *_livesLeft;
+	_objects->gameStage = _gameStage;
+	return _objects;
+}
+
+void QbertModel::StartGame()
+{
+	_gameStage = GoingOn;
+	ReciveInput(SimpleControler::InputData());
 }
 
 }	//namespace BGComplete
