@@ -8,7 +8,7 @@
 namespace BGComplete
 {
 
-const float  DiamondQbertModelEnemyDirect::_luckFactor = 0.1f;
+const float  DiamondQbertModelEnemyDirect::_luckFactor = 0.075f;
 
 DiamondQbertModelEnemyDirect::DiamondQbertModelEnemyDirect(const std::string& name, Model* model, QbertBox_ptr box, DWORD moveLegth)
 	: QbertEnemyObj(name, model, box, "directEnemy", moveLegth), _movesToChase(0), _movesOfLuckLeft(0)
@@ -19,10 +19,23 @@ DiamondQbertModelEnemyDirect::DiamondQbertModelEnemyDirect(const std::string& na
 
 void DiamondQbertModelEnemyDirect::SetListOfBoxes()
 {
+	int size = static_cast<DiamondQbertModel*>(_model)->Size();
 	VecOfAppearanceBox_ptr ret(new std::vector<AppearanceBox>);
-	ret->push_back(AppearanceBox(static_cast<QbertModel*>(_model)->GetBoxAt(0, static_cast<DiamondQbertModel*>(_model)->Size() - 1, 0),
+	ret->push_back(AppearanceBox(static_cast<QbertModel*>(_model)->GetBoxAt(1, size - 2, 0),
 		Math::Point3D(0, 1.0f, 0), Math::Point3D(0.0f, 0.0f, 1.0f)));
-	ret->push_back(AppearanceBox(static_cast<QbertModel*>(_model)->GetBoxAt(0, - static_cast<DiamondQbertModel*>(_model)->Size() + 1, 0),
+ 	ret->push_back(AppearanceBox(static_cast<QbertModel*>(_model)->GetBoxAt(1, - size + 2, 0),
+		Math::Point3D(0, -1.0f, 0), Math::Point3D(0.0f, 0.0f, 1.0f)));
+	ret->push_back(AppearanceBox(static_cast<QbertModel*>(_model)->GetBoxAt(-1, size - 2, 0),
+		Math::Point3D(0, 1.0f, 0), Math::Point3D(0.0f, 0.0f, 1.0f)));
+	ret->push_back(AppearanceBox(static_cast<QbertModel*>(_model)->GetBoxAt(-1, - size + 2, 0),
+		Math::Point3D(0, -1.0f, 0), Math::Point3D(0.0f, 0.0f, 1.0f)));
+	ret->push_back(AppearanceBox(static_cast<QbertModel*>(_model)->GetBoxAt(0, size - 2, 1),
+		Math::Point3D(0, 1.0f, 0), Math::Point3D(0.0f, 0.0f, 1.0f)));
+	ret->push_back(AppearanceBox(static_cast<QbertModel*>(_model)->GetBoxAt(0, - size + 2, 1),
+		Math::Point3D(0, -1.0f, 0), Math::Point3D(0.0f, 0.0f, 1.0f)));
+	ret->push_back(AppearanceBox(static_cast<QbertModel*>(_model)->GetBoxAt(0, size - 2, -1),
+		Math::Point3D(0, 1.0f, 0), Math::Point3D(0.0f, 0.0f, 1.0f)));
+	ret->push_back(AppearanceBox(static_cast<QbertModel*>(_model)->GetBoxAt(0, - size + 2, -1),
 		Math::Point3D(0, -1.0f, 0), Math::Point3D(0.0f, 0.0f, 1.0f)));
 
 	_apperanceMap["directEnemy"] = ret;

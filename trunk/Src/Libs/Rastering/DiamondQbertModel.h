@@ -28,7 +28,7 @@ private:
 
 public:
 	DiamondQbertModel(int sizeOfDiamond, const std::string& unvisitedBoxName, const std::string& visitedBoxName, const std::string& qbertName,
-		int * score, int * livesLeft, float freeFallAcceleration);
+		int * score, int * livesLeft, int * level, float freeFallAcceleration);
 	DiamondQbertModel() {}
 
 	int Size() const {return _size;}

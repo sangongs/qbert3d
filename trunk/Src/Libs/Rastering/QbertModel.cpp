@@ -49,6 +49,7 @@ QbertModel::ModelObjects_Ptr QbertModel::GetModelObjects()
 {
 	_objects->Score = *_score; 
 	_objects->LivesLeft = *_livesLeft;
+	_objects->Level = *_level;
 	_objects->gameStage = _gameStage;
 	return _objects;
 }
