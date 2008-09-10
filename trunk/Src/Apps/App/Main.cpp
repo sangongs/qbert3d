@@ -15,8 +15,10 @@
 #include "Rastering/FontView.h"
 #include "Rastering/FPSHud.h"
 #include "Rastering/ControlKeysView.h"
-#include "Rastering/QbertGameModel.h"
+#include "Rastering/ScoreView.h"
+#include "Rastering/GameOverView.h"
 
+#include "Rastering/QbertGameModel.h"
 
 int WINAPI WinMain(HINSTANCE /*hInst*/, HINSTANCE /*hPrev*/, LPSTR /*szCmdLine*/, int /*sw*/)
 {
@@ -40,6 +42,20 @@ int WINAPI WinMain(HINSTANCE /*hInst*/, HINSTANCE /*hPrev*/, LPSTR /*szCmdLine*/
 				Math::Point2D(0, 0), 
 				Math::Point2D(1, 1))));
 
+	listOfQbertViews.push_back(
+		LayeredQbertView::CoordinatedQbertView(
+			QbertView_Ptr(new ScoreView()),
+		LayeredQbertView::QuadCoords(
+			Math::Point2D(0, 0.9), 
+			Math::Point2D(0.1, 0.1))));
+
+	listOfQbertViews.push_back(
+		LayeredQbertView::CoordinatedQbertView(
+			QbertView_Ptr(new GameOverView()),
+		LayeredQbertView::QuadCoords(
+			Math::Point2D(0.4, 0.4), 
+			Math::Point2D(0.4, 0.2))));
+
 	std::list<LayeredQbertView::CoordinatedSimpleView> listOfSimpleViews;
 	listOfSimpleViews.push_back(
 		LayeredQbertView::CoordinatedSimpleView(
@@ -50,6 +66,7 @@ int WINAPI WinMain(HINSTANCE /*hInst*/, HINSTANCE /*hPrev*/, LPSTR /*szCmdLine*/
 		LayeredQbertView::CoordinatedSimpleView(
 		View_Ptr(new ControlKeysView()),
 		LayeredQbertView::QuadCoords(Math::Point2D(0.0f, 0.0f), Math::Point2D(1.0f, 1.0f))));
+
 
 	LayeredQbertView view(listOfQbertViews, listOfSimpleViews);
 	SimpleControler controler((QbertView*)&view, &gameModel);

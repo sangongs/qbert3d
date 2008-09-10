@@ -10,7 +10,6 @@
 
 namespace BGComplete
 {
-
 	ControlKeysView::ControlKeysView() : _showState(false), _linkText("FONTS\\CALIBRI.TTF", 28)
 	{}
 
