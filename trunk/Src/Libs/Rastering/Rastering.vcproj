@@ -320,7 +320,15 @@
 					>
 				</File>
 				<File
+					RelativePath=".\GameStartView.h"
+					>
+				</File>
+				<File
 					RelativePath=".\LayeredQbertView.h"
+					>
+				</File>
+				<File
+					RelativePath=".\LifesView.h"
 					>
 				</File>
 				<File
@@ -376,7 +384,15 @@
 					>
 				</File>
 				<File
+					RelativePath=".\GameStartView.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\LayeredQbertView.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\LifesView.cpp"
 					>
 				</File>
 				<File
