@@ -57,6 +57,11 @@ namespace BGComplete
 
 	void SimpleQbertView::Draw(bool clearAndSwap, unsigned startX, unsigned startY, unsigned width, unsigned height)
 	{
+
+		//[todo] decide that to do in case of Gameover and Didntbegin cases of GameState
+		if (_modelToDraw->gameStage != GoingOn)
+			return;
+
 		glViewport(startX, startY, width, height );
 		glShadeModel(GL_SMOOTH);
 		glEnable(GL_DEPTH_TEST);
@@ -101,7 +106,7 @@ namespace BGComplete
 
 		if (!isBox)
 			PerformAdditionalTransformations(obj, false);
-
+	
 		(*objToDraw).second->Draw(obj->XRotate, obj->YRotate, obj->ZRotate, 1.0f);
 		glPopMatrix();
 	}

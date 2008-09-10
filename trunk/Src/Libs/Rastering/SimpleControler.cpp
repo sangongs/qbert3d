@@ -11,6 +11,7 @@
 #include "QbertBox.h"
 #include "QbertGameObject.h"
 #include "QbertEnemyObj.h"
+#include "QbertGameModel.h"
 
 #include "SimpleControler.h"
 
@@ -49,7 +50,7 @@ namespace BGComplete
 	};
 
 
-	SimpleControler::SimpleControler(QbertView * view, QbertModel * model) : _view(view), _model(model), _leftMouseKeyDown(false), _running(true)
+	SimpleControler::SimpleControler(QbertView * view, QbertGameModel * model) : _view(view), _model(model), _leftMouseKeyDown(false), _running(true)
 	{
 	}
 
@@ -92,6 +93,8 @@ namespace BGComplete
 					inputData.direction = Down;
 				else if (event.key.keysym.sym == SDLK_LEFT)
 					inputData.direction = Left;
+				else if (event.key.keysym.sym == SDLK_n)
+					inputData.StartNewGame = true;
 				else if (event.key.keysym.sym == SDLK_RIGHT)
 					inputData.direction = Right;
 				else if (event.key.keysym.sym == SDLK_v)

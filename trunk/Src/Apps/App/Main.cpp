@@ -14,14 +14,17 @@
 #include "Rastering/LayeredQbertView.h"
 #include "Rastering/FontView.h"
 #include "Rastering/FPSHud.h"
+#include "Rastering/QbertGameModel.h"
 
 
 int WINAPI WinMain(HINSTANCE /*hInst*/, HINSTANCE /*hPrev*/, LPSTR /*szCmdLine*/, int /*sw*/)
 {
 	using namespace BGComplete;
-	int livesLeft = 3, score = 0;
-	DiamondQbertModel model(5, "RedBox", "BlueBox", "Qbert", &score, &livesLeft, 10.0f);
-	model.AddNewEnemyType("ball", "ball", 1000, 1000, 500, 5);
+
+	QbertGameModel gameModel = QbertGameModel();
+	//int livesLeft = 3, score = 0;
+	//DiamondQbertModel model(5, "RedBox", "BlueBox", "Qbert", &score, &livesLeft, 10.0f);
+	//model.AddNewEnemyType("ball", "ball", 1000, 1000, 500, 5);
 	//model.AddNewEnemyType("directEnemy", "directEnemy", 2500, 1500, 1200, 6);
 	
 	std::list<LayeredQbertView::CoordinatedQbertView> listOfQbertViews;
@@ -48,7 +51,7 @@ int WINAPI WinMain(HINSTANCE /*hInst*/, HINSTANCE /*hPrev*/, LPSTR /*szCmdLine*/
 			LayeredQbertView::QuadCoords(Math::Point2D(0.0f, 0.0f), Math::Point2D(0.1f, 0.1f))));
 
 	LayeredQbertView view(listOfQbertViews, listOfSimpleViews);
-	SimpleControler controler((QbertView*)&view, (QbertModel*)&model);
+	SimpleControler controler((QbertView*)&view, &gameModel);
 
 	controler.Run(1000, 1000, 24);
 
