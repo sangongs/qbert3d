@@ -18,7 +18,7 @@ namespace BGComplete
 
 	float swing()
 	{
-		float stage = (GetTickCount() % 1000);
+		float stage = (float)(GetTickCount() % 1000);
 		if (stage > 500)
 			stage = 1000 - stage;
 		return stage / 500;
@@ -26,8 +26,7 @@ namespace BGComplete
 
 	void GameOverView::Draw(bool clearAndSwap, unsigned startX, unsigned startY, unsigned width, unsigned height)
 	{
-		//if (_modelObjects->gameStage == GameStage::GameOver)
-		if (true)
+		if (_modelObjects->gameStage == GameStage::GameOver)
 		{
 			float points[] = {
 				-(float)width * 0.5f, (float)height * 0.3f, -1.0f,
@@ -36,10 +35,10 @@ namespace BGComplete
 				-(float)width * 0.5f, -(float)height * 0.3f, -1.0f};
 
 			_gameOverFont.SetText("Game Over!", 255, 255, 255, points);
-			_gameOverFont.Draw(clearAndSwap, startX, startY + (float)height * 0.4f, width, (float)height * 0.6f);
+			_gameOverFont.Draw(clearAndSwap, startX, (unsigned)(startY + (float)height * 0.4f), width, unsigned((float)height * 0.6f));
 			
 			if (swing() > 0.5)
-			_pressNFont.Draw(clearAndSwap, startX, startY, width, (float)height * 0.4f);
+			_pressNFont.Draw(clearAndSwap, startX, startY, width, (unsigned)((float)height * 0.4f));
 		}
 	}
 
