@@ -169,6 +169,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\GameOverView.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\QbertEnemyObj.cpp"
 				>
 			</File>
@@ -182,6 +186,10 @@
 			</File>
 			<File
 				RelativePath=".\QbertModel.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ScoreView.cpp"
 				>
 			</File>
 			<File
@@ -239,6 +247,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\GameOverView.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Model.h"
 				>
 			</File>
@@ -260,6 +272,10 @@
 			</File>
 			<File
 				RelativePath=".\QbertModel.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ScoreView.h"
 				>
 			</File>
 			<File
