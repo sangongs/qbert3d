@@ -61,7 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="SDL.lib SDLmain.lib opengl32.lib glu32.lib"
+				AdditionalDependencies="SDL_ttf.lib SDL.lib SDLmain.lib opengl32.lib glu32.lib"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(SolutionDir)\..\Common\Libs"
 				GenerateDebugInformation="true"
@@ -137,7 +137,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="SDL.lib SDLmain.lib opengl32.lib glu32.lib"
+				AdditionalDependencies="SDL_ttf.lib SDL.lib SDLmain.lib opengl32.lib glu32.lib"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="$(SolutionDir)\..\Common\Libs"
 				GenerateDebugInformation="true"

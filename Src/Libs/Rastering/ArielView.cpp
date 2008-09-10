@@ -3,7 +3,7 @@
 #include "SDL\SDL.h"
 #include "SDL\SDL_opengl.h"
 
-#include "Math.h"
+#include "MathUtils.h"
 #include "Point3D.h"
 #include "QbertModel.h"
 #include "QbertGameObject.h"
@@ -24,7 +24,7 @@ namespace BGComplete
 		_zRotate += zRotate;
 	}
 
-	void ArielView::SetUpCamera(QbertModel::ModelObjects& /*modelObjects*/)
+	void ArielView::SetUpCamera()
 	{
 		glTranslatef(-_x, -_y, -_z);
 		glRotatef(_xRotate, 1.0f, 0.0f, 0.0f);

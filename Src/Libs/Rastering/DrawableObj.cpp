@@ -13,7 +13,7 @@
 #include "SDL\SDL.h"
 #include "SDL\SDL_opengl.h"
 
-#include "Math.h"
+#include "MathUtils.h"
 #include "Point3D.h"
 
 #include "DrawableObj.h"

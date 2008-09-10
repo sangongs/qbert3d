@@ -12,7 +12,7 @@ namespace BGComplete
 
 bool QbertEnemyObj::IsQbertStillAlive()
 {
-	return Center.IsEqual((static_cast<QbertModel*>(_model))->_objects.Qbert->Center, 0.2f);
+	return Center.IsEqual((static_cast<QbertModel*>(_model))->_objects->Qbert->Center, 0.2f); //[todo] remove the 0.2f from here...
 }
 
 VecOfAppearanceBox_ptr QbertEnemyObj::GetAppearanceBoxes()

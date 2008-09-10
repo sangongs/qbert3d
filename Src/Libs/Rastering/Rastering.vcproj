@@ -149,10 +149,6 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\ArielView.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\DiamondQbertEnemiesFactory.cpp"
 				>
 			</File>
@@ -165,23 +161,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\DoubleQbertView.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\DrawableObj.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\FPSView.cpp"
+				RelativePath=".\FontView.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\LayeredQbertView.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Math.cpp"
+				RelativePath=".\MathUtils.cpp"
 				>
 			</File>
 			<File
@@ -202,10 +190,6 @@
 			</File>
 			<File
 				RelativePath=".\SimpleControler.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\SimpleQbertView.cpp"
 				>
 			</File>
 			<File
@@ -235,10 +219,6 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\ArielView.h"
-				>
-			</File>
-			<File
 				RelativePath=".\DiamondQbertEnemiesFactory.h"
 				>
 			</File>
@@ -251,15 +231,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\DoubleQbertView.h"
-				>
-			</File>
-			<File
 				RelativePath=".\DrawableObj.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FPSView.h"
+				RelativePath=".\FontView.h"
 				>
 			</File>
 			<File
@@ -267,11 +243,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\LayeredQbertView.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Math.h"
+				RelativePath=".\MathUtils.h"
 				>
 			</File>
 			<File
@@ -299,15 +271,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\QbertView.h"
-				>
-			</File>
-			<File
 				RelativePath=".\SimpleControler.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SimpleQbertView.h"
 				>
 			</File>
 			<File
@@ -320,6 +284,74 @@
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
+		</Filter>
+		<Filter
+			Name="Views"
+			>
+			<Filter
+				Name="Header"
+				>
+				<File
+					RelativePath=".\ArielView.h"
+					>
+				</File>
+				<File
+					RelativePath=".\DoubleQbertView.h"
+					>
+				</File>
+				<File
+					RelativePath=".\FPSHud.h"
+					>
+				</File>
+				<File
+					RelativePath=".\FPSView.h"
+					>
+				</File>
+				<File
+					RelativePath=".\LayeredQbertView.h"
+					>
+				</File>
+				<File
+					RelativePath=".\QbertView.h"
+					>
+				</File>
+				<File
+					RelativePath=".\SimpleQbertView.h"
+					>
+				</File>
+				<File
+					RelativePath=".\View.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Source"
+				>
+				<File
+					RelativePath=".\ArielView.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\DoubleQbertView.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\FPSHud.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\FPSView.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\LayeredQbertView.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SimpleQbertView.cpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<File
 			RelativePath=".\ReadMe.txt"
