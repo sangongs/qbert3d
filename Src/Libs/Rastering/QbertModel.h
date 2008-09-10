@@ -31,7 +31,7 @@ public:
 	class ModelObjects
 	{
 	public:
-		int Score, LivesLeft;
+		int Score, LivesLeft, Level;
 		GameStage gameStage;
 		QbertGameObject_ptr Qbert;
 		std::list<QbertEnemyObj_ptr> Enemies;
@@ -56,7 +56,7 @@ public:
 	};
 
 protected:
-	int _boxesUnvisited, *_score, *_livesLeft;
+	int _boxesUnvisited, *_score, *_livesLeft, *_level;
 	float _freeFallAcceleration;
 	std::string _visitedBoxName, _unvisitedBoxName;
 	QbertBox_ptr _startingBox;
@@ -79,9 +79,9 @@ protected:
 	virtual void CreateEnemies (DWORD deltaTime) = 0;
 
 public:
-	QbertModel (std::string boxNameBefore, std::string boxNameAfter, int * score, int * livesLeft, float freeFallAcceleration) :
+	QbertModel (std::string boxNameBefore, std::string boxNameAfter, int * score, int * livesLeft, int* level, float freeFallAcceleration) :
 	  _unvisitedBoxName(boxNameBefore), _visitedBoxName(boxNameAfter), _score(score), _livesLeft(livesLeft), _gameStage(DidntStart),
-		  _freeFallAcceleration(freeFallAcceleration), _boxesUnvisited(0), _objects(new ModelObjects()) {}
+		  _level(level), _freeFallAcceleration(freeFallAcceleration), _boxesUnvisited(0), _objects(new ModelObjects()) {}
 
 	  QbertModel(){}
 

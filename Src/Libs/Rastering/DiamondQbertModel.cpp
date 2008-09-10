@@ -19,8 +19,8 @@ namespace BGComplete
 {
 
 DiamondQbertModel::DiamondQbertModel(int sizeOfDiamond, const std::string& unvisitedBoxName, const std::string& visitedBoxName, const std::string& qbertName,
-	int * score, int * livesLeft, float freeFallAcceleration)
-	: QbertModel(unvisitedBoxName, visitedBoxName, score, livesLeft, freeFallAcceleration), _size(sizeOfDiamond)
+	int * score, int * livesLeft, int * level, float freeFallAcceleration)
+	: QbertModel(unvisitedBoxName, visitedBoxName, score, level, livesLeft, freeFallAcceleration), _size(sizeOfDiamond)
 {
 	CreateDiamondStructure(sizeOfDiamond);
 	SetupQbert(sizeOfDiamond, qbertName);
@@ -348,7 +348,7 @@ void DiamondQbertModel::CreateEnemies (DWORD deltaTime)
 	BOOST_FOREACH (EnemiesAppearanceData& data, _enemiesAppearanceData)
 	{
 		data.TimeSinceLastAppearance += deltaTime;
-		if (data.TimeSinceLastAppearance > ((data.IsAppearedOnce) ? data.FirstDelay : data.AppearanceFrequency))
+		if (data.TimeSinceLastAppearance > ((data.IsAppearedOnce) ? data.AppearanceFrequency : data.FirstDelay))
 		{
 			if (data.TotalAmount >= data.MaxAppearances)
 				continue;
