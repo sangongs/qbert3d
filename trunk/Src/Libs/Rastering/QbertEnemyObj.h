@@ -31,8 +31,10 @@ public:
 		: QbertGameObject(name, model, box, moveLegth), _type(type) {_isQbert = false;}
 
 	virtual Direction WhereToMove() = 0;
-	bool IsQbertStillAlive();
+	bool IsQbertStillDies();
 
+	const std::string& GetType() const {return _type;}
+	std::string GetType() {return _type;}
 	VecOfAppearanceBox_ptr GetAppearanceBoxes();
 
 	~QbertEnemyObj(void);

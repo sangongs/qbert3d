@@ -41,22 +41,25 @@ public:
 	struct EnemiesAppearanceData
 	{
 		std::string Name, Type;
-		DWORD AppearanceFrequency, TimeSinceLastAppearance, MoveLength;
+		DWORD AppearanceFrequency, TimeSinceLastAppearance, MoveLength, FirstDelay;
+		bool IsAppearedOnce;
+		int MaxAppearances, TotalAmount;
 
-		EnemiesAppearanceData (const std::string& type, const std::string& name, DWORD appearanceFrequency, DWORD moveLength)
-			: Name(name), Type(type), AppearanceFrequency(appearanceFrequency), MoveLength(moveLength), TimeSinceLastAppearance(0) {}
+		EnemiesAppearanceData (const std::string& type, const std::string& name, DWORD firstDelay, DWORD appearanceFrequency, DWORD moveLength, int maxAppearances)
+			: Name(name), Type(type), FirstDelay(firstDelay), AppearanceFrequency(appearanceFrequency), MoveLength(moveLength),
+			TimeSinceLastAppearance(0), MaxAppearances(maxAppearances), TotalAmount(0), IsAppearedOnce(false) {}
 		EnemiesAppearanceData() {}
 		~EnemiesAppearanceData() {}
+		bool operator==(const std::string& type) {return type == Type;}
 	};
 
 protected:
-	bool _isQbertAlive, _isFirstCall;
-	int _boxesUnvisited;
+	int _boxesUnvisited, *_score, *_livesLeft;
 	float _freeFallAcceleration;
 	std::string _visitedBoxName, _unvisitedBoxName;
 	QbertBox_ptr _startingBox;
 	ModelObjects_Ptr _objects;
-	std::list<EnemiesAppearanceData> _enemiesAppearanceData; //The point3D is upDirection.
+	std::list<EnemiesAppearanceData> _enemiesAppearanceData;
 	std::list<QbertEnemyObj_ptr> _enemiesToDelete;
 
 	void VisitBox (QbertBox_ptr box);
@@ -66,19 +69,25 @@ protected:
 	void SetEnemysMoveLength (QbertEnemyObj_ptr enemy, DWORD MoveLength) {enemy->_moveLength = MoveLength;}
 	void SetEnemysModelToThis (QbertEnemyObj_ptr enemy) {enemy->_model = this;}
 
+	virtual void RemoveEnemy(const QbertEnemyObj_ptr iter) = 0;
+
 public:
-	QbertModel (std::string boxNameBefore, std::string boxNameAfter, float freeFallAcceleration) :
-	  _unvisitedBoxName(boxNameBefore), _visitedBoxName(boxNameAfter), _isQbertAlive(true), _freeFallAcceleration(freeFallAcceleration) ,
-		  _boxesUnvisited(0), _isFirstCall(false), _objects(new ModelObjects()) {}
+	QbertModel (std::string boxNameBefore, std::string boxNameAfter, int * score, int * livesLeft, float freeFallAcceleration) :
+	  _unvisitedBoxName(boxNameBefore), _visitedBoxName(boxNameAfter), _score(score), _livesLeft(livesLeft),
+		  _freeFallAcceleration(freeFallAcceleration), _boxesUnvisited(0), _objects(new ModelObjects()) {}
+
+	QbertModel& operator= (const QbertModel&);
 
 	ModelObjects_Ptr GetModelObjects() {return _objects;}
 	virtual void Move(QbertGameObject_ptr ,const SimpleControler::InputData& inputdata) = 0;
 	virtual void MoveEnemies(DWORD deltaTime) = 0;
-	virtual void AddNewEnemyType(const std::string& type, const std::string& name, DWORD appearanceFrequency, 
-		DWORD moveLength) = 0;
+	virtual void AddNewEnemyType(const std::string& type, const std::string& name, DWORD firstDelay, DWORD appearanceFrequency, DWORD moveLength, 
+		int maxAppearances) = 0;
 	virtual void CreateEnemies (DWORD deltaTime) = 0;
 	virtual void ReciveInput(const SimpleControler::InputData&) = 0;
-	bool IsQbertAlive() {return _isQbertAlive;}
+	bool IsQbertAlive() {return *_livesLeft > 0;}
+	int LivesLeft() {return *_livesLeft;}
+	int Score() {return *_score;}
 	bool IsGameWon() {return _boxesUnvisited == 0;}
 	QbertBox_ptr GetBoxAt(const Math::Point3D&) const;
 	QbertBox_ptr GetBoxAt(int x, int y, int z) const;

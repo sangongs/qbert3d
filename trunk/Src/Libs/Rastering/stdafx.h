@@ -20,4 +20,5 @@
 #include <boost\format.hpp>
 #include <boost\random.hpp>
 #include <boost\random\uniform_int.hpp>
+#include <boost\random\uniform_01.hpp>
 #include <boost\random\variate_generator.hpp>

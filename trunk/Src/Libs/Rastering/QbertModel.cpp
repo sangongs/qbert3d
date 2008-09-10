@@ -10,36 +10,39 @@
 
 namespace BGComplete
 {
-	void QbertModel::VisitBox (QbertBox_ptr box)
-	{
-		if (box->_isVisited)
-			return;
 
-		box->_isVisited = true;
-		box->Name = _visitedBoxName;
-		_boxesUnvisited--;
-	}
+void QbertModel::VisitBox (QbertBox_ptr box)
+{
+	if (box->_isVisited)
+		return;
 
-	void QbertModel::InsertBox (Math::Point3D point, QbertBox_ptr box)
-	{
-		_objects->BoxMap.insert(std::pair<Math::Point3D, QbertBox_ptr>(point, box));
-		_objects->Boxes.push_back(box);
-	}
-
-	void QbertModel::SetQbert (std::string qbertName, QbertBox_ptr box)
-	{
-		_objects->Qbert = QbertGameObject_ptr(new QbertGameObject(qbertName, this, box));
-	}
-
-	QbertBox_ptr QbertModel::GetBoxAt(const Math::Point3D& point) const
-	{
-		std::map<Math::Point3D, QbertBox_ptr>::const_iterator box = _objects->BoxMap.find(point);
-		return (box != _objects->BoxMap.end()) ? box->second : QbertBox_ptr();
-	}
-
-	QbertBox_ptr QbertModel::GetBoxAt(int x, int y, int z) const
-	{
-		std::map<Math::Point3D, QbertBox_ptr>::const_iterator box = _objects->BoxMap.find(Math::Point3D((float)x, (float)y, (float)z));
-		return (box != _objects->BoxMap.end()) ? box->second : QbertBox_ptr();
-	}
+	box->_isVisited = true;
+	box->Name = _visitedBoxName;
+	_score += 25;
+	_boxesUnvisited--;
 }
+
+void QbertModel::InsertBox (Math::Point3D point, QbertBox_ptr box)
+{
+	_objects->BoxMap.insert(std::pair<Math::Point3D, QbertBox_ptr>(point, box));
+	_objects->Boxes.push_back(box);
+}
+
+void QbertModel::SetQbert (std::string qbertName, QbertBox_ptr box)
+{
+	_objects->Qbert = QbertGameObject_ptr(new QbertGameObject(qbertName, this, box));
+}
+
+QbertBox_ptr QbertModel::GetBoxAt(const Math::Point3D& point) const
+{
+	std::map<Math::Point3D, QbertBox_ptr>::const_iterator box = _objects->BoxMap.find(point);
+	return (box != _objects->BoxMap.end()) ? box->second : QbertBox_ptr();
+}
+
+QbertBox_ptr QbertModel::GetBoxAt(int x, int y, int z) const
+{
+	std::map<Math::Point3D, QbertBox_ptr>::const_iterator box = _objects->BoxMap.find(Math::Point3D((float)x, (float)y, (float)z));
+	return (box != _objects->BoxMap.end()) ? box->second : QbertBox_ptr();
+}
+
+}	//namespace BGComplete

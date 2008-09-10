@@ -13,9 +13,11 @@ private:
 	void CreateDiamondStructure(int sizeOfDiamond);
 	void SetupQbert(int sizeOfDiamond, const std::string& qbertName);
 
+	void RemoveEnemy(const QbertEnemyObj_ptr iter);
+
 public:
-	DiamondQbertModel(int sizeOfDiamond, const std::string& boxNameBefore, const std::string& boxNameAfter, const std::string& qbertName
-		, float freeFallAcceleration);
+	DiamondQbertModel(int sizeOfDiamond, const std::string& unvisitedBoxName, const std::string& visitedBoxName, const std::string& qbertName,
+		int * score, int * livesLeft, float freeFallAcceleration);
 
 
 	int Size() const {return _size;}
@@ -24,7 +26,7 @@ public:
 	void Move(QbertGameObject_ptr object, const SimpleControler::InputData& inputData);
 	void MoveEnemies(DWORD deltaTime);
 
-	void AddNewEnemyType(const std::string& type, const std::string& name, DWORD appearanceFrequency, DWORD moveLength);
+	void AddNewEnemyType(const std::string& type, const std::string& name, DWORD firstDelay, DWORD appearanceFrequency, DWORD moveLength, int maxAppearances);
 	void CreateEnemies (DWORD deltaTime);
 
 	void UpdateCenterOfObject(QbertGameObject_ptr object);
