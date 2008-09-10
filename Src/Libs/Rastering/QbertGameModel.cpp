@@ -46,17 +46,12 @@ void QbertGameModel::ReciveInput(const SimpleControler::InputData& data)
 			SetupNextLevel();
 		return;
 	}
-	
-	if (_gameStage == GameOver)
-	{
-		//[todo] think what to do here. Maybe nothing, maybe the view should handle the info about that and response.
-	}
 }
 
 void QbertGameModel::SetupNewGame()
 {
 	_currentScore = 0;
-	_currentLevel = 0;
+	_currentLevel = 5;
 	_qbertLivesLeft = _defaultLivesNum;
 	SetupNextLevel();
 	_gameStage = GoingOn;
@@ -75,8 +70,8 @@ void QbertGameModel::SetupNextLevel()
 		secondBoxName = _boxNames[uniRand()];
 
 	_currentQbertModel = DiamondQbertModel_ptr(new DiamondQbertModel((_currentLevel + 3) / 2, firstBoxName, secondBoxName, _qbertName, &_currentScore, &_qbertLivesLeft, 10.0f));
-	_currentQbertModel->AddNewEnemyType("ball", "ball", 2000, 2000, 2000, 2);					//[todo] implement some function for those to make levels harder but playable
-	//_currentQbertModel->AddNewEnemyType("directEnemy", "directEnemy", 1000, 1000, 500, 5);		//[todo] implement some function for those to make levels harder but playable
+	_currentQbertModel->AddNewEnemyType("ball", "ball", 2500, 550, 600, 2);					//[todo] implement some function for those to make levels harder but playable
+	_currentQbertModel->AddNewEnemyType("directEnemy", "directEnemy", 2700, 500, 500, 5);		//[todo] implement some function for those to make levels harder but playable
 	_currentQbertModel->StartGame();
 	
 	

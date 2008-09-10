@@ -16,9 +16,6 @@ class QbertEnemyObj : public QbertGameObject
 	friend class QbertModel;
 
 protected:
-	static const float _floatEquPrecision;
-	static const float _point3DEquPrecision;
-	static const float _killingDist;
 
 	static std::map<std::string, VecOfAppearanceBox_ptr> _apperanceMap;
 
@@ -31,7 +28,7 @@ public:
 		: QbertGameObject(name, model, box, moveLegth), _type(type) {_isQbert = false;}
 
 	virtual Direction WhereToMove() = 0;
-	bool IsQbertStillDies();
+	bool IsQbertDies();
 
 	const std::string& GetType() const {return _type;}
 	std::string GetType() {return _type;}

@@ -106,6 +106,8 @@ namespace BGComplete
 
 		if (!isBox)
 			PerformAdditionalTransformations(obj, false);
+
+		glScalef(obj->Scale, obj->Scale, obj->Scale);
 	
 		(*objToDraw).second->Draw(obj->XRotate, obj->YRotate, obj->ZRotate, 1.0f);
 		glPopMatrix();

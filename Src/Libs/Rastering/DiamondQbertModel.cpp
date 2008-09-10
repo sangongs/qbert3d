@@ -83,6 +83,15 @@ void DiamondQbertModel::ReciveInput(const SimpleControler::InputData& inputData)
 
 void DiamondQbertModel::Move(QbertGameObject_ptr object, const SimpleControler::InputData& inputData)
 {
+	if (object->IsDying)
+	{
+		object->Scale -= (float)inputData.DeltaTime / (float)object->DyingDuration;
+		if (object->Scale < 0)
+			_enemiesToDelete.push_back(boost::static_pointer_cast<QbertEnemyObj>(object));
+
+		return;
+	}
+
 	object->Center = object->LastBox->Center + object->LastUpDirection;
 
 	object->CurrentFaceDirection = object->LastFaceDirection;
@@ -284,7 +293,7 @@ void DiamondQbertModel::MoveEnemies(DWORD deltaTime)
 	BOOST_FOREACH(QbertEnemyObj_ptr iter, _objects->Enemies)
 	{
 		Move(iter, SimpleControler::InputData(deltaTime, iter->WhereToMove()));
-		if (iter->IsQbertStillDies())
+		if (iter->IsQbertDies())
 		{
 			_enemiesToDelete = _objects->Enemies;
 			(*_livesLeft)--;
@@ -294,8 +303,21 @@ void DiamondQbertModel::MoveEnemies(DWORD deltaTime)
 			BOOST_FOREACH (EnemiesAppearanceData& data, _enemiesAppearanceData)
 				data.IsAppearedOnce = false;
 
-			//Sleep(1500);				//[todo] decide whether we need this delay or not.
+			Sleep(1000);				//[todo] decide whether we need this delay or not.
 			break;
+		}
+
+		BOOST_FOREACH(QbertEnemyObj_ptr iter2, _objects->Enemies)
+		{
+			if (iter == iter2)
+				continue;
+			if(iter->TestCollision(iter2))
+			{
+				iter->IsDying = true;
+				iter->DyingProgress = 0;
+				iter2->IsDying = true;
+				iter2->DyingProgress = 0;
+			}
 		}
 	}
 
