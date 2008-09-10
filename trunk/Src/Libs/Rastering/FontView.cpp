@@ -16,9 +16,7 @@ FontView::FontView(const std::string& fileName, unsigned fontSize) : _texture(0)
 	if (TTF_Init())
 		throw std::exception("Can't intilize SDL_TTF");
 
-	_font = TTF_OpenFont(fileName.c_str(), fontSize);
-	if (!_font)
-		throw std::exception("Error loading font");
+	_font = FontEncapsulator_Ptr(new FontEncapsulator(fileName, fontSize));
 }
 
 FontView::~FontView()
@@ -28,7 +26,6 @@ FontView::~FontView()
 		glFinish();
 		glDeleteTextures(1, &_texture);
 	}
-	TTF_CloseFont(_font);
 }
 
 void FontView::CameraMove(float /*deltaX*/, float /*deltaY*/, float /*deltaZ*/, float /*xRotate*/, float /*yRotate*/, float /*zRotate*/, char /*viewKey*/){}
@@ -42,10 +39,19 @@ void FontView::SetText(const std::string& text, unsigned char r, unsigned char g
 		glDeleteTextures(1, &_texture);
 	}
 
-	memcpy(_quadPoints, points, sizeof(float) * 12);
+	if (points == 0)
+		_fitView = true;
+	else
+	{
+		memcpy(_quadPoints, points, sizeof(float) * 12);
+		_fitView = false;
+	}
+
 	SDL_Color color = {r, g, b, 0};
 
-	SDL_Surface *firstText = TTF_RenderText_Blended(_font, text.c_str(), color );
+	SDL_Surface *firstText = TTF_RenderText_Blended(_font->Font, text.c_str(), color );
+	_clip.Points[0] = (float)firstText->w / (float)Math::NextPowerOfTwo(firstText->w);
+	_clip.Points[1] = (float)firstText->h / (float)Math::NextPowerOfTwo(firstText->h);
 	SDL_Surface *intermediary = SDL_CreateRGBSurface(0, Math::NextPowerOfTwo(firstText->w), Math::NextPowerOfTwo(firstText->h), 32, 
 		0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
 	SDL_BlitSurface(firstText, 0, intermediary, 0);
@@ -78,7 +84,7 @@ void FontView::Draw(bool clearAndSwap, unsigned startX, unsigned startY, unsigne
 
 	glMatrixMode( GL_PROJECTION );
 	glLoadIdentity();
-	gluPerspective(45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 1000.0f);
+	glFrustum(-(float)width / 2.0f, (float)width / 2.0f, -(float)height / 2.0f, (float)height / 2.0f, 1.0f, 1000.0f);
 	glMatrixMode( GL_MODELVIEW );
 	glLoadIdentity();
 
@@ -88,14 +94,30 @@ void FontView::Draw(bool clearAndSwap, unsigned startX, unsigned startY, unsigne
 	glDisable(GL_DEPTH_TEST);
 
 	glBegin(GL_QUADS);
-	glTexCoord2f(0.0f, 0.0f);
+
+	if (_fitView)
+	{
+		glTexCoord2f(0.0f, 0.0f);
+		glVertex3f(-(float)width * 0.5f, (float)height * 0.5f, -1.0f);
+		glTexCoord2f(_clip.Points[0], 0.0f);
+		glVertex3f((float)width * 0.5f, (float)height * 0.5f, -1.0f);
+		glTexCoord2f(_clip.Points[0], _clip.Points[1]);
+		glVertex3f((float)width * 0.5f, -(float)height * 0.5f, -1.0f);
+		glTexCoord2f(0.0f, _clip.Points[1]);
+		glVertex3f(-(float)width * 0.5f, -(float)height * 0.5f, -1.0f);
+	}
+	else
+	{
+		glTexCoord2f(0.0f, 0.0f);
 		glVertex3fv(_quadPoints);
-	glTexCoord2f(1.0f, 0.0f);
+		glTexCoord2f(_clip.Points[0], 0.0f);
 		glVertex3fv(_quadPoints + 3);
-	glTexCoord2f(1.0f, 1.0f);
+		glTexCoord2f(_clip.Points[0], _clip.Points[1]);
 		glVertex3fv(_quadPoints + 6);
-	glTexCoord2f(0.0f, 1.0f);
+		glTexCoord2f(0.0f, _clip.Points[1]);
 		glVertex3fv(_quadPoints + 9);
+	}
+	
 	glEnd();
 	
 	glDisable(GL_BLEND);

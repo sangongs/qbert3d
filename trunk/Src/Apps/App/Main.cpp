@@ -14,6 +14,7 @@
 #include "Rastering/LayeredQbertView.h"
 #include "Rastering/FontView.h"
 #include "Rastering/FPSHud.h"
+#include "Rastering/ControlKeysView.h"
 #include "Rastering/QbertGameModel.h"
 
 
@@ -40,15 +41,15 @@ int WINAPI WinMain(HINSTANCE /*hInst*/, HINSTANCE /*hPrev*/, LPSTR /*szCmdLine*/
 				Math::Point2D(1, 1))));
 
 	std::list<LayeredQbertView::CoordinatedSimpleView> listOfSimpleViews;
-	float fpsHudPoints[] = 
-		{-2.0f, 2.0f, -5.0f,
-		2.0f, 2.0f, -5.0f,
-		2.0f, -2.0f, -5.0f,
-		-2.0f, -2.0f, -5.0f};
 	listOfSimpleViews.push_back(
 		LayeredQbertView::CoordinatedSimpleView(
-			View_Ptr(new FPSHud("Fonts//CALIBRI.TTF", 24, fpsHudPoints)),
+			View_Ptr(new FPSHud("Fonts//CALIBRI.TTF", 24)),
 			LayeredQbertView::QuadCoords(Math::Point2D(0.0f, 0.0f), Math::Point2D(0.1f, 0.1f))));
+
+	listOfSimpleViews.push_back(
+		LayeredQbertView::CoordinatedSimpleView(
+		View_Ptr(new ControlKeysView()),
+		LayeredQbertView::QuadCoords(Math::Point2D(0.0f, 0.0f), Math::Point2D(1.0f, 1.0f))));
 
 	LayeredQbertView view(listOfQbertViews, listOfSimpleViews);
 	SimpleControler controler((QbertView*)&view, &gameModel);
