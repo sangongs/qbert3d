@@ -9,7 +9,7 @@
 
 #include "boost/tuple/tuple.hpp"
 
-#include "Math.h"
+#include "MathUtils.h"
 
 #include "DrawableObj.h"
 #include "Model.h"
@@ -36,6 +36,7 @@ public:
 		std::list<GameObject_ptr> ObjectsList;
 		std::map<Math::Point3D, QbertBox_ptr> BoxMap;
 	};
+	typedef boost::shared_ptr<ModelObjects> ModelObjects_Ptr;
 			
 	struct EnemiesAppearanceData
 	{
@@ -54,7 +55,7 @@ protected:
 	float _freeFallAcceleration;
 	std::string _visitedBoxName, _unvisitedBoxName;
 	QbertBox_ptr _startingBox;
-	ModelObjects _objects;
+	ModelObjects_Ptr _objects;
 	std::list<EnemiesAppearanceData> _enemiesAppearanceData; //The point3D is upDirection.
 	std::list<QbertEnemyObj_ptr> _enemiesToDelete;
 
@@ -68,9 +69,9 @@ protected:
 public:
 	QbertModel (std::string boxNameBefore, std::string boxNameAfter, float freeFallAcceleration) :
 	  _unvisitedBoxName(boxNameBefore), _visitedBoxName(boxNameAfter), _isQbertAlive(true), _freeFallAcceleration(freeFallAcceleration) ,
-		  _boxesUnvisited(0), _isFirstCall(false) {}
+		  _boxesUnvisited(0), _isFirstCall(false), _objects(new ModelObjects()) {}
 
-	QbertModel::ModelObjects& GetModelObjects() {return _objects;}
+	ModelObjects_Ptr GetModelObjects() {return _objects;}
 	virtual void Move(QbertGameObject_ptr ,const SimpleControler::InputData& inputdata) = 0;
 	virtual void MoveEnemies(DWORD deltaTime) = 0;
 	virtual void AddNewEnemyType(const std::string& type, const std::string& name, DWORD appearanceFrequency, 

@@ -17,8 +17,8 @@ class DoubleQbertView : public QbertView
 
 	public:
 		DoubleQbertView(QbertView_Ptr view1, QbertView_Ptr view2, float ratio);
-		
-		void Draw(QbertModel::ModelObjects& modelObjects, bool clearAndSwap, unsigned startX, unsigned startY, unsigned width, unsigned height);
+		void SetUpDrawModel(QbertModel::ModelObjects_Ptr modelObjects);
+		void Draw(bool clearAndSwap, unsigned startX, unsigned startY, unsigned width, unsigned height);
 		void Init();
 };
 

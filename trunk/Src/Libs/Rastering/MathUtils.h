@@ -8,5 +8,6 @@ namespace BGComplete
 		float DCos(float degrees);
 		float Dacos(float value);
 		float Modulu(float inp);
+		int NextPowerOfTwo(int x);
 	}
 }

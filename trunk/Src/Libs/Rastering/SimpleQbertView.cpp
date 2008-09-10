@@ -7,7 +7,7 @@
 #include "SDL\SDL_opengl.h"
 
 #include "Point3D.h"
-#include "Math.h"
+#include "MathUtils.h"
 #include "DrawableObj.h"
 #include "GameObject.h"
 
@@ -30,7 +30,7 @@ namespace BGComplete
 		_objects.insert(std::pair<std::string, DrawableObj_Ptr>("ball", DrawableObj_Ptr(new DrawableObj("Objects", "Q-bert.obj", 1, -90, -100, 0))));
 	}
 
-	void SimpleQbertView::SetupLights(QbertModel::ModelObjects& /*modelObjects*/)
+	void SimpleQbertView::SetupLights()
 	{
 		glEnable(GL_LIGHTING);
 		glEnable(GL_LIGHT0);
@@ -41,7 +41,12 @@ namespace BGComplete
 		glLightfv(GL_LIGHT0, GL_SPECULAR, lightParams + 10);
 	}
 
-	void SimpleQbertView::Draw(QbertModel::ModelObjects& modelObjects, bool clearAndSwap, unsigned startX, unsigned startY, unsigned width, unsigned height)
+	void SimpleQbertView::SetUpDrawModel(QbertModel::ModelObjects_Ptr modelObjects)
+	{
+		_modelToDraw = modelObjects;
+	}
+
+	void SimpleQbertView::Draw(bool clearAndSwap, unsigned startX, unsigned startY, unsigned width, unsigned height)
 	{
 		glViewport(startX, startY, width, height );
 		glShadeModel(GL_SMOOTH);
@@ -61,16 +66,16 @@ namespace BGComplete
 		glMatrixMode( GL_MODELVIEW );
 		glLoadIdentity();
 
-		SetupLights(modelObjects);	
-		SetUpCamera(modelObjects);
+		SetupLights();	
+		SetUpCamera();
 
-		BOOST_FOREACH(const GameObject_ptr& iter, modelObjects.Boxes)
+		BOOST_FOREACH(GameObject_ptr iter, _modelToDraw->Boxes)
 			DrawObj(iter);
 
-		BOOST_FOREACH(const GameObject_ptr& iter, modelObjects.Enemies) //[todo] use boost::foreach everywhere!!! yeay! yum yum
+		BOOST_FOREACH(GameObject_ptr iter, _modelToDraw->Enemies) //[todo] use boost::foreach everywhere!!! yeay! yum yum
 			DrawObj(iter, false);
 
-		DrawObj(boost::dynamic_pointer_cast<GameObject>(modelObjects.Qbert), false);
+		DrawObj(boost::dynamic_pointer_cast<GameObject>(_modelToDraw->Qbert), false);
 		
 		if (clearAndSwap)
 			SDL_GL_SwapBuffers();

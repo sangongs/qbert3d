@@ -3,7 +3,7 @@
 #include "SDL\SDL.h"
 #include "SDL\SDL_opengl.h"
 
-#include "Math.h"
+#include "MathUtils.h"
 #include "Point3D.h"
 
 #include "DoubleQbertView.h"
@@ -26,7 +26,13 @@ void DoubleQbertView::CameraMove(float deltaX, float deltaY, float deltaZ, float
 	_views[1]->CameraMove(deltaX, deltaY, deltaZ, xRotate, yRotate, zRotate, 0);
 }
 
-void DoubleQbertView::Draw(QbertModel::ModelObjects& modelObjects, bool clearAndSwap, unsigned startX, unsigned startY, unsigned width, unsigned height)
+void DoubleQbertView::SetUpDrawModel(QbertModel::ModelObjects_Ptr modelObjects)
+{
+	_views[0]->SetUpDrawModel(modelObjects);
+	_views[1]->SetUpDrawModel(modelObjects);
+}
+
+void DoubleQbertView::Draw(bool clearAndSwap, unsigned startX, unsigned startY, unsigned width, unsigned height)
 {
 	if (clearAndSwap)
 	{
@@ -34,9 +40,9 @@ void DoubleQbertView::Draw(QbertModel::ModelObjects& modelObjects, bool clearAnd
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
-	_views[_state]->Draw(modelObjects, false, startX, startY, startX + width, startY + height);
+	_views[_state]->Draw(false, startX, startY, startX + width, startY + height);
 	glClear(GL_DEPTH_BUFFER_BIT);
-	_views[!_state]->Draw(modelObjects, false, 
+	_views[!_state]->Draw(false, 
 		startX + (unsigned)(width * (1 - _ratio)), startY + (unsigned)(height * (1 - _ratio)),
 		startX + (unsigned)(width * _ratio), startY + (unsigned)(height * _ratio));
 

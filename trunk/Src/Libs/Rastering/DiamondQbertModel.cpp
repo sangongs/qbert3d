@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "Math.h"
+#include "MathUtils.h"
 #include "Point3D.h"
 
 #include "QbertModel.h"
@@ -62,20 +62,20 @@ void DiamondQbertModel::CreateDiamondStructure(int sizeOfDiamond)
 
 void DiamondQbertModel::SetupQbert(int sizeOfDiamond, const std::string& qbertName)
 {
-	SetQbert(qbertName, _startingBox = _objects.BoxMap.find(Math::Point3D(0.0f , (float)sizeOfDiamond - 1.0f, 0.0f))->second);
-	_objects.Qbert->SetModel(this);
+	SetQbert(qbertName, _startingBox = _objects->BoxMap.find(Math::Point3D(0.0f , (float)sizeOfDiamond - 1.0f, 0.0f))->second);
+	_objects->Qbert->SetModel(this);
 
 
-	_objects.Qbert->LastUpDirection = Math::Point3D(0, 1, 0);
-	_objects.Qbert->LastFaceDirection = Math::Point3D(0, 0, 1);
-	_objects.Qbert->NextUpDirection = Math::Point3D(0, 1, 0);
-	_objects.Qbert->NextFaceDirection = Math::Point3D(0, 0, 1);
-	_objects.Qbert->SetMoveLength(1000, _freeFallAcceleration);
+	_objects->Qbert->LastUpDirection = Math::Point3D(0, 1, 0);
+	_objects->Qbert->LastFaceDirection = Math::Point3D(0, 0, 1);
+	_objects->Qbert->NextUpDirection = Math::Point3D(0, 1, 0);
+	_objects->Qbert->NextFaceDirection = Math::Point3D(0, 0, 1);
+	_objects->Qbert->SetMoveLength(1000, _freeFallAcceleration);
 }
 
 void DiamondQbertModel::ReciveInput(const SimpleControler::InputData& inputData)
 {
-	Move(_objects.Qbert, inputData);
+	Move(_objects->Qbert, inputData);
 	CreateEnemies(inputData.DeltaTime);
 	MoveEnemies(inputData.DeltaTime);
 }
@@ -208,8 +208,8 @@ void DiamondQbertModel::ChangeBox(QbertGameObject_ptr object)
 		return;
 	}
 
-	std::map<Math::Point3D, QbertBox_ptr>::iterator box = _objects.BoxMap.find(newBoxCoordinate + object->LastUpDirection);
-	if (box != _objects.BoxMap.end())
+	std::map<Math::Point3D, QbertBox_ptr>::iterator box = _objects->BoxMap.find(newBoxCoordinate + object->LastUpDirection);
+	if (box != _objects->BoxMap.end())
 	{
 		object->IsMovingUp = true;
 		object->IsChangingBox = true;
@@ -222,7 +222,7 @@ void DiamondQbertModel::ChangeBox(QbertGameObject_ptr object)
 	}
 
 	if (object->IsChangingBox &&
-		(box = _objects.BoxMap.find(newBoxCoordinate - object->LastUpDirection)) != _objects.BoxMap.end())
+		(box = _objects->BoxMap.find(newBoxCoordinate - object->LastUpDirection)) != _objects->BoxMap.end())
 	{
 		object->IsMovingUp = false;
 		object->IsChangingBox = true;
@@ -280,7 +280,7 @@ void DiamondQbertModel::EndMovement(QbertGameObject_ptr object)
 
 void DiamondQbertModel::MoveEnemies(DWORD deltaTime)
 {
-	BOOST_FOREACH(QbertEnemyObj_ptr iter, _objects.Enemies)
+	BOOST_FOREACH(QbertEnemyObj_ptr iter, _objects->Enemies)
 	{
 		Move(iter, SimpleControler::InputData(deltaTime, iter->WhereToMove()));
 		if (_isQbertAlive)
@@ -288,7 +288,7 @@ void DiamondQbertModel::MoveEnemies(DWORD deltaTime)
 	}
 
 	BOOST_FOREACH(QbertEnemyObj_ptr iter, _enemiesToDelete)
-		_objects.Enemies.remove(iter);
+		_objects->Enemies.remove(iter);
 	_enemiesToDelete.erase(_enemiesToDelete.begin(), _enemiesToDelete.end());
 }
 
@@ -326,7 +326,7 @@ void DiamondQbertModel::CreateEnemies (DWORD deltaTime)
 
 			data.TimeSinceLastAppearance = 0;
 
-			_objects.Enemies.push_back(newEnemy);
+			_objects->Enemies.push_back(newEnemy);
 		}
 	}
 }

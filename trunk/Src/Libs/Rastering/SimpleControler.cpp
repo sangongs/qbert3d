@@ -35,6 +35,8 @@ namespace BGComplete
 			_screen = SDL_SetVideoMode(width, height, depth, SDL_OPENGL | SDL_RESIZABLE);
 			if (!_screen)
 				throw std::exception("Call to SDL_SetVideoMode failed...");
+
+			SDL_WM_SetCaption("QBert 3D by BGComplete", 0);
 		}
 
 		~SDLLayer()
@@ -123,8 +125,9 @@ namespace BGComplete
 			DWORD tempTime = GetTickCount();
 			ReadInput(tempTime - lastTime);
 			lastTime = tempTime;
-
-			_view->Draw(_model->GetModelObjects(), true, 0, 0, _width, _height);
+			
+			_view->SetUpDrawModel(_model->GetModelObjects());
+			_view->Draw(true, 0, 0, _width, _height);
 
 			SDL_Delay(20); //[todo] maybe we don't need this
 		}
