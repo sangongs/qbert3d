@@ -161,6 +161,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DiamondQbertModelEnemyChaser.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\DiamondQbertModelEnemyDirect.cpp"
 				>
 			</File>
@@ -224,6 +228,10 @@
 			</File>
 			<File
 				RelativePath=".\DiamondQbertModelEnemyBall.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DiamondQbertModelEnemyChaser.h"
 				>
 			</File>
 			<File
