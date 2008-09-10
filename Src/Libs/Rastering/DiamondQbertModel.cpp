@@ -269,7 +269,7 @@ void DiamondQbertModel::EndMovement(QbertGameObject_ptr object)
 			throw std::exception("Qbert can't be removed from the model! (in function 'DiamondQbertModel::EndMovement()'");
 
 		_enemiesToDelete.push_back(boost::static_pointer_cast<QbertEnemyObj>(object));
-		*_score += 75;
+		*_score += boost::static_pointer_cast<QbertEnemyObj>(object)->GetScore();
 		return;
 	}
 
@@ -339,9 +339,10 @@ void DiamondQbertModel::RemoveEnemy(const QbertEnemyObj_ptr iter)
 		}
 }
 
-void DiamondQbertModel::AddNewEnemyType(const std::string& type, const std::string& name, DWORD firstDelay, DWORD appearanceFrequency, DWORD moveLength, int maxAppearances)
+void DiamondQbertModel::AddNewEnemyType(const std::string& type, const std::string& name, 
+	DWORD firstDelay, DWORD appearanceFrequency, DWORD moveLength, int maxAppearances, int score)
 {
-	_enemiesAppearanceData.push_back(EnemiesAppearanceData (type, name, firstDelay, appearanceFrequency, moveLength, maxAppearances));
+	_enemiesAppearanceData.push_back(EnemiesAppearanceData (type, name, firstDelay, appearanceFrequency, moveLength, maxAppearances, score));
 }
 
 void DiamondQbertModel::CreateEnemies (DWORD deltaTime)
@@ -354,7 +355,7 @@ void DiamondQbertModel::CreateEnemies (DWORD deltaTime)
 			if (data.TotalAmount >= data.MaxAppearances)
 				continue;
 
-			QbertEnemyObj_ptr newEnemy = DiamondQbertEnemiesFactory::GetNewEnemy(data.Type, data.Name, this);
+			QbertEnemyObj_ptr newEnemy = DiamondQbertEnemiesFactory::GetNewEnemy(data.Type, data.Name, this, data.Score);
 
 			SetEnemysMoveLength(newEnemy, data.MoveLength);
 

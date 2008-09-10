@@ -26,10 +26,6 @@ int WINAPI WinMain(HINSTANCE /*hInst*/, HINSTANCE /*hPrev*/, LPSTR /*szCmdLine*/
 	using namespace BGComplete;
 
 	QbertGameModel gameModel = QbertGameModel();
-	//int livesLeft = 3, score = 0;
-	//DiamondQbertModel model(5, "RedBox", "BlueBox", "Qbert", &score, &livesLeft, 10.0f);
-	//model.AddNewEnemyType("ball", "ball", 1000, 1000, 500, 5);
-	//model.AddNewEnemyType("directEnemy", "directEnemy", 2500, 1500, 1200, 6);
 	
 	std::list<LayeredQbertView::CoordinatedQbertView> listOfQbertViews;
 	listOfQbertViews.push_back(
@@ -40,22 +36,22 @@ int WINAPI WinMain(HINSTANCE /*hInst*/, HINSTANCE /*hPrev*/, LPSTR /*szCmdLine*/
 					QbertView_Ptr(new FPSView()), 
 					0.3f)),
 			LayeredQbertView::QuadCoords(
-				Math::Point2D(0, 0), 
-				Math::Point2D(1, 1))));
+				Math::Point2D(0.0f, 0.0f), 
+				Math::Point2D(1.0f, 1.0f))));
 
 	listOfQbertViews.push_back(
 		LayeredQbertView::CoordinatedQbertView(
 			QbertView_Ptr(new ScoreView()),
 		LayeredQbertView::QuadCoords(
-			Math::Point2D(0, 0.9), 
-			Math::Point2D(0.1, 0.1))));
+			Math::Point2D(0.0f, 0.9f), 
+			Math::Point2D(0.1f, 0.1f))));
 
 	listOfQbertViews.push_back(
 		LayeredQbertView::CoordinatedQbertView(
 			QbertView_Ptr(new GameOverView()),
 		LayeredQbertView::QuadCoords(
-			Math::Point2D(0.4, 0.4), 
-			Math::Point2D(0.4, 0.2))));
+			Math::Point2D(0.4f, 0.4f), 
+			Math::Point2D(0.4f, 0.2f))));
 
 	listOfQbertViews.push_back(
 		LayeredQbertView::CoordinatedQbertView(

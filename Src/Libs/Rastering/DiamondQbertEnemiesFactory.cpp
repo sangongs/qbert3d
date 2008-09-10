@@ -9,12 +9,12 @@
 namespace BGComplete
 {
 
-QbertEnemyObj_ptr DiamondQbertEnemiesFactory::GetNewEnemy (const std::string& type, const std::string& name, Model* model)
+QbertEnemyObj_ptr DiamondQbertEnemiesFactory::GetNewEnemy (const std::string& type, const std::string& name, Model* model, int score)
 {
 	if (type == "ball")
-		return QbertEnemyObj_ptr(new DiamondQbertModelEnemyBall(name, model));
+		return QbertEnemyObj_ptr(new DiamondQbertModelEnemyBall(name, model, score));
 	if (type == "directEnemy")
-		return QbertEnemyObj_ptr(new DiamondQbertModelEnemyDirect(name, model));
+		return QbertEnemyObj_ptr(new DiamondQbertModelEnemyDirect(name, model, score));
 
 	return QbertEnemyObj_ptr();
 }
