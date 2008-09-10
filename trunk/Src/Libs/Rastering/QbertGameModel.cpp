@@ -27,6 +27,7 @@ QbertModel::ModelObjects_Ptr QbertGameModel::GetModelObjects()
 
 	_returnObject->Score = _currentScore;
 	_returnObject->Level = _currentLevel;
+	_returnObject->LivesLeft = _qbertLivesLeft;
 	_returnObject->gameStage = _gameStage;
 	return _returnObject;
 }
