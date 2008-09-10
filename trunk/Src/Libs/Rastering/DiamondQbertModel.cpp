@@ -20,8 +20,9 @@ namespace BGComplete
 
 DiamondQbertModel::DiamondQbertModel(int sizeOfDiamond, const std::string& unvisitedBoxName, const std::string& visitedBoxName, const std::string& qbertName,
 	int * score, int * livesLeft, int * level, float freeFallAcceleration)
-	: QbertModel(unvisitedBoxName, visitedBoxName, score, level, livesLeft, freeFallAcceleration), _size(sizeOfDiamond)
+	: QbertModel(unvisitedBoxName, visitedBoxName, score, livesLeft, level, freeFallAcceleration), _size(sizeOfDiamond)
 {
+	this;
 	CreateDiamondStructure(sizeOfDiamond);
 	SetupQbert(sizeOfDiamond, qbertName);
 }

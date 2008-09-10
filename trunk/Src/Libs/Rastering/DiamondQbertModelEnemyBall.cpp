@@ -11,16 +11,16 @@ namespace BGComplete
 DiamondQbertModelEnemyBall::DiamondQbertModelEnemyBall(const std::string& name, Model* model, QbertBox_ptr box, DWORD moveLegth)
 	: QbertEnemyObj(name, model, box, "ball", moveLegth) 
 {
-	if (_apperanceMap.find("ball") == _apperanceMap.end())
-		SetListOfBoxes();
+	SetListOfBoxes();
 }
 
 void DiamondQbertModelEnemyBall::SetListOfBoxes()
 {
+	int size = static_cast<DiamondQbertModel*>(_model)->Size();
 	VecOfAppearanceBox_ptr ret(new std::vector<AppearanceBox>);
-	ret->push_back(AppearanceBox(static_cast<QbertModel*>(_model)->GetBoxAt(0, static_cast<DiamondQbertModel*>(_model)->Size() - 1, 0),
+	ret->push_back(AppearanceBox(static_cast<QbertModel*>(_model)->GetBoxAt(0, size - 1, 0),
 		Math::Point3D(0, 1.0f, 0), Math::Point3D(0.0f, 0.0f, 1.0f)));
- 	ret->push_back(AppearanceBox(static_cast<QbertModel*>(_model)->GetBoxAt(0, - static_cast<DiamondQbertModel*>(_model)->Size() + 1, 0),
+ 	ret->push_back(AppearanceBox(static_cast<QbertModel*>(_model)->GetBoxAt(0, - size + 1, 0),
  		Math::Point3D(0, -1.0f, 0), Math::Point3D(0.0f, 0.0f, 1.0f)));
 
 	_apperanceMap["ball"] = ret;
