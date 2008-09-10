@@ -10,8 +10,10 @@ namespace BGComplete
 class DiamondQbertModelEnemyDirect : public QbertEnemyObj
 {
 private:
+	static const int _maxMovesToChase = 5, _luckContinuation = 3;
+	static const float  _luckFactor;
 	void SetListOfBoxes();
-	int _movesToChase;
+	int _movesToChase, _movesOfLuckLeft;
 
 	Direction HelperToWhereToMove(bool isXAxis);
 public:

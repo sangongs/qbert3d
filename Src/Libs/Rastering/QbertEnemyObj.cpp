@@ -14,7 +14,7 @@ const float QbertEnemyObj::_point3DEquPrecision = 0.003f;
 const float QbertEnemyObj::_killingDist = 0.2f;
 std::map<std::string, VecOfAppearanceBox_ptr> QbertEnemyObj::_apperanceMap;
 
-bool QbertEnemyObj::IsQbertStillAlive()
+bool QbertEnemyObj::IsQbertStillDies()
 {
 	return Center.IsEqual((static_cast<QbertModel*>(_model))->_objects->Qbert->Center, _killingDist);
 }

@@ -18,8 +18,9 @@
 namespace BGComplete
 {
 
-DiamondQbertModel::DiamondQbertModel(int sizeOfDiamond, const std::string& unvisitedBoxName, const std::string& visitedBoxName, const std::string& qbertName, float freeFallAcceleration)
-	: QbertModel(unvisitedBoxName, visitedBoxName, freeFallAcceleration), _size(sizeOfDiamond)
+DiamondQbertModel::DiamondQbertModel(int sizeOfDiamond, const std::string& unvisitedBoxName, const std::string& visitedBoxName, const std::string& qbertName,
+	int * score, int * livesLeft, float freeFallAcceleration)
+	: QbertModel(unvisitedBoxName, visitedBoxName, score, livesLeft, freeFallAcceleration), _size(sizeOfDiamond)
 {
 	CreateDiamondStructure(sizeOfDiamond);
 	SetupQbert(sizeOfDiamond, qbertName);
@@ -258,7 +259,7 @@ void DiamondQbertModel::EndMovement(QbertGameObject_ptr object)
 			throw std::exception("Qbert can't be removed from the model! (in function 'DiamondQbertModel::EndMovement()'");
 
 		_enemiesToDelete.push_back(boost::static_pointer_cast<QbertEnemyObj>(object));
-		//_objects.Enemies.remove(boost::static_pointer_cast<QbertEnemyObj>(object));
+		_score += 75;
 		return;
 	}
 
@@ -283,18 +284,35 @@ void DiamondQbertModel::MoveEnemies(DWORD deltaTime)
 	BOOST_FOREACH(QbertEnemyObj_ptr iter, _objects->Enemies)
 	{
 		Move(iter, SimpleControler::InputData(deltaTime, iter->WhereToMove()));
-		if (_isQbertAlive)
-			_isQbertAlive = iter->IsQbertStillAlive();
+		if (iter->IsQbertStillDies())
+		{
+			_enemiesToDelete = _objects->Enemies;
+			_livesLeft--;
+			break;
+		}
 	}
 
 	BOOST_FOREACH(QbertEnemyObj_ptr iter, _enemiesToDelete)
-		_objects->Enemies.remove(iter);
+	{
+		RemoveEnemy(iter);
+	}
 	_enemiesToDelete.erase(_enemiesToDelete.begin(), _enemiesToDelete.end());
 }
 
-void DiamondQbertModel::AddNewEnemyType(const std::string& type, const std::string& name, DWORD appearanceFrequency, DWORD moveLength)
+void DiamondQbertModel::RemoveEnemy(const QbertEnemyObj_ptr iter)
 {
-	_enemiesAppearanceData.push_back(EnemiesAppearanceData (type, name, appearanceFrequency, moveLength));
+	_objects->Enemies.remove(iter);
+	BOOST_FOREACH(EnemiesAppearanceData& data, _enemiesAppearanceData)
+		if (data.Type == iter->GetType())
+		{
+			data.TotalAmount--;
+			return;
+		}
+}
+
+void DiamondQbertModel::AddNewEnemyType(const std::string& type, const std::string& name, DWORD firstDelay, DWORD appearanceFrequency, DWORD moveLength, int maxAppearances)
+{
+	_enemiesAppearanceData.push_back(EnemiesAppearanceData (type, name, firstDelay, appearanceFrequency, moveLength, maxAppearances));
 }
 
 void DiamondQbertModel::CreateEnemies (DWORD deltaTime)
@@ -302,9 +320,11 @@ void DiamondQbertModel::CreateEnemies (DWORD deltaTime)
 	BOOST_FOREACH (EnemiesAppearanceData& data, _enemiesAppearanceData)
 	{
 		data.TimeSinceLastAppearance += deltaTime;
-		if (data.TimeSinceLastAppearance > data.AppearanceFrequency)
+		if (data.TimeSinceLastAppearance > ((data.IsAppearedOnce) ? data.FirstDelay : data.AppearanceFrequency))
 		{
-		
+			if (data.TotalAmount >= data.MaxAppearances)
+				continue;
+
 			QbertEnemyObj_ptr newEnemy = DiamondQbertEnemiesFactory::GetNewEnemy(data.Type, data.Name, this);
 
 			SetEnemysMoveLength(newEnemy, data.MoveLength);
@@ -312,8 +332,7 @@ void DiamondQbertModel::CreateEnemies (DWORD deltaTime)
 			VecOfAppearanceBox_ptr vectorOfBoxes = newEnemy->GetAppearanceBoxes();
 
 			boost::mt19937 generator((boost::uint32_t)std::time(0));
-			boost::uniform_int<> uni_dist(0, (int)vectorOfBoxes->size() - 1);
-			boost::variate_generator<boost::mt19937, boost::uniform_int<>> uniRand(generator, uni_dist);
+			boost::variate_generator<boost::mt19937, boost::uniform_int<>> uniRand(generator, boost::uniform_int<>(0, (int)vectorOfBoxes->size() - 1));
 
 			int index = uniRand();
 
@@ -331,6 +350,9 @@ void DiamondQbertModel::CreateEnemies (DWORD deltaTime)
 			data.TimeSinceLastAppearance = 0;
 
 			_objects->Enemies.push_back(newEnemy);
+
+			data.TotalAmount++;
+			data.IsAppearedOnce = true;
 		}
 	}
 }

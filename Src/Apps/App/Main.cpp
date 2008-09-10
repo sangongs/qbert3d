@@ -19,9 +19,10 @@
 int WINAPI WinMain(HINSTANCE /*hInst*/, HINSTANCE /*hPrev*/, LPSTR /*szCmdLine*/, int /*sw*/)
 {
 	using namespace BGComplete;
-	DiamondQbertModel model(5, "RedBox", "BlueBox", "Qbert", 10.0f);
-	//model.AddNewEnemyType("ball", "ball", 1000, 500);
-	model.AddNewEnemyType("directEnemy", "directEnemy", 1500, 1200);
+	int livesLeft = 3, score = 0;
+	DiamondQbertModel model(5, "RedBox", "BlueBox", "Qbert", &score, &livesLeft, 10.0f);
+	model.AddNewEnemyType("ball", "ball", 1000, 1000, 500, 5);
+	//model.AddNewEnemyType("directEnemy", "directEnemy", 2500, 1500, 1200, 6);
 	
 	std::list<LayeredQbertView::CoordinatedQbertView> listOfQbertViews;
 	listOfQbertViews.push_back(

@@ -1,9 +1,5 @@
 #include "StdAfx.h"
 
-#include <boost/random/linear_congruential.hpp>
-#include <boost/random/uniform_int.hpp>
-#include <boost/random/variate_generator.hpp>
-
 #include "DiamondQbertModel.h"
 
 #include "DiamondQbertModelEnemyDirect.h"
@@ -12,8 +8,10 @@
 namespace BGComplete
 {
 
+const float  DiamondQbertModelEnemyDirect::_luckFactor = 0.1f;
+
 DiamondQbertModelEnemyDirect::DiamondQbertModelEnemyDirect(const std::string& name, Model* model, QbertBox_ptr box, DWORD moveLegth)
-	: QbertEnemyObj(name, model, box, "directEnemy", moveLegth), _movesToChase(0)
+	: QbertEnemyObj(name, model, box, "directEnemy", moveLegth), _movesToChase(0), _movesOfLuckLeft(0)
 {
 	if (_apperanceMap.find("directEnemy") == _apperanceMap.end())
 		SetListOfBoxes();
@@ -58,11 +56,17 @@ Direction DiamondQbertModelEnemyDirect::HelperToWhereToMove(bool isXAxis)
 Direction DiamondQbertModelEnemyDirect::WhereToMove()
 {
 	boost::mt19937 generator((boost::uint32_t)std::time(0));
-	boost::uniform_int<> uni_dist100(0,99);
-	boost::uniform_int<> uni_dist4(0,4);
-	boost::variate_generator<boost::mt19937, boost::uniform_int<>> uniRand100(generator, uni_dist100);
-	boost::variate_generator<boost::mt19937, boost::uniform_int<>> uniRand4(generator, uni_dist4);
+	boost::variate_generator<boost::mt19937,  boost::uniform_real<float>> uniRandReal01(generator, boost::uniform_real<float>(0, 1));
+	boost::variate_generator<boost::mt19937, boost::uniform_int<>> uniRand4(generator, boost::uniform_int<>(0 ,4));
 
+	if (_movesOfLuckLeft-- > 0)
+		return Direction(uniRand4());
+
+	if (uniRandReal01() < _luckFactor)						//Factor of luck, enemy forgets about the Qbert.
+	{
+		_movesOfLuckLeft = _luckContinuation;
+		return Direction(uniRand4());
+	}
 
 	if (Center.Y() * static_cast<QbertModel*>(_model)->GetModelObjects()->Qbert->LastBox->Center.Y() > 0)		//Same half (up, down)
 	{
