@@ -86,7 +86,7 @@ namespace BGComplete
 		BOOST_FOREACH(GameObject_ptr iter, _modelToDraw->Boxes)
 			DrawObj(iter);
 
-		BOOST_FOREACH(GameObject_ptr iter, _modelToDraw->Enemies) //[todo] use boost::foreach everywhere!!! yeay! yum yum
+		BOOST_FOREACH(GameObject_ptr iter, _modelToDraw->Enemies)
 			DrawObj(iter, false);
 
 		DrawObj(boost::dynamic_pointer_cast<GameObject>(_modelToDraw->Qbert), false);
