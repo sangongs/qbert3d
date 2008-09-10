@@ -169,18 +169,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FontView.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\MathUtils.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Point3D.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\QbertEnemyObj.cpp"
 				>
 			</File>
@@ -243,23 +231,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FontView.h"
-				>
-			</File>
-			<File
 				RelativePath=".\GameObject.h"
 				>
 			</File>
 			<File
-				RelativePath=".\MathUtils.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Model.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Point3D.h"
 				>
 			</File>
 			<File
@@ -308,6 +284,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\FontView.h"
+					>
+				</File>
+				<File
 					RelativePath=".\FPSHud.h"
 					>
 				</File>
@@ -344,6 +324,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\FontView.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\FPSHud.cpp"
 					>
 				</File>
@@ -360,6 +344,34 @@
 					>
 				</File>
 			</Filter>
+		</Filter>
+		<Filter
+			Name="Math"
+			>
+			<File
+				RelativePath=".\MathUtils.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\MathUtils.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Point2D.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Point2D.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Point3D.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Point3D.h"
+				>
+			</File>
 		</Filter>
 		<File
 			RelativePath=".\ReadMe.txt"

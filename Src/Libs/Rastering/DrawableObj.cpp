@@ -14,6 +14,7 @@
 #include "SDL\SDL_opengl.h"
 
 #include "MathUtils.h"
+#include "Point2D.h"
 #include "Point3D.h"
 
 #include "DrawableObj.h"
@@ -21,20 +22,6 @@
 
 namespace BGComplete
 {
-	class Point2D
-	{
-	public:
-		Point2D(const std::string& argument)
-		{
-			if (sscanf(argument.c_str(), "%f %f", Points, Points + 1) != 2)
-				throw std::exception("Couldn't read line into Point2D");
-		}
-
-		Point2D() {}
-
-		float Points[2];
-	};
-
 	class Face
 	{
 	public:
@@ -145,7 +132,7 @@ namespace BGComplete
 		std::string mtlObjName;
 		
 		std::vector<Math::Point3D> vertices(0);
-		std::vector<Point2D> texturePoints(0);
+		std::vector<Math::Point2D> texturePoints(0);
 		std::vector<Math::Point3D> normals(0);
 		std::list<Face> faces;
 
@@ -161,7 +148,7 @@ namespace BGComplete
 			else if (command == "v")
 				vertices.push_back(Math::Point3D(arguments));
 			else if (command == "vt")
-				texturePoints.push_back(Point2D(arguments));
+				texturePoints.push_back(Math::Point2D(arguments));
 			else if (command == "vn")
 				normals.push_back(Math::Point3D(arguments));
 			else if (command == "usemtl")
