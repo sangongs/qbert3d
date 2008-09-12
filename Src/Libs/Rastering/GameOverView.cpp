@@ -19,8 +19,9 @@ namespace BGComplete
 
 	void GameOverView::Draw(bool clearAndSwap, unsigned startX, unsigned startY, unsigned width, unsigned height)
 	{
-		if (_modelObjects->gameStage == GameStage::GameOver)
+		if ((_modelObjects->gameStage == GameStage::GameOver) || (_modelObjects->gameStage == GameStage::GameWon))
 		{
+			_gameOverFont.SetText(_modelObjects->gameStage == GameStage::GameWon ? "Congratulations you finished the game!" : "Game Over!", 255, 255, 255, 0);
 			_gameOverFont.Draw(clearAndSwap, startX, (unsigned)(startY + (float)height * 0.4f), width, unsigned((float)height * 0.6f));
 			
 			if (Math::Swing(1000) > 0.5)
@@ -30,7 +31,7 @@ namespace BGComplete
 
 	void GameOverView::Init() 
 	{
-		_gameOverFont.SetText("Game Over!", 255, 255, 255, 0);
+		
 		_pressNFont.SetText("Press N to restart game", 255, 255, 255, 0);
 	}
 	void GameOverView::SetUpDrawModel(QbertModel::ModelObjects_Ptr modelObjects)
