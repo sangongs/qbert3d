@@ -167,7 +167,6 @@ namespace BGComplete
 
 	void SimpleQbertView::PerformAdditionalTransformations(const GameObject_ptr &obj, bool inverted)
 	{
-		QbertGameObject_ptr temp = boost::static_pointer_cast<QbertGameObject>(obj);
 		ChangeCoordinateSystem(
 			std::pair<Math::Point3D, Math::Point3D>(
 				Math::Point3D(0, 0, 1),

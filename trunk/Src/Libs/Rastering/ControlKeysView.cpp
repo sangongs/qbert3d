@@ -46,6 +46,5 @@ namespace BGComplete
 		_instructionsText[1].SetText("Up/Down/Left/Right - Common, figure it out yourself.", 255, 255, 255, 0);
 		_instructionsText[2].SetText("N - Restart the game.", 255, 255, 255, 0);
 		_instructionsText[3].SetText("V - Swap the views.", 255, 255, 255, 0);
-		_instructionsText[4].SetText("NUM +/ENTER - Zoom In/Out",255, 255, 255, 0);
 	}
 }
