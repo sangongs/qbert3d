@@ -15,8 +15,11 @@ QbertGameModel::QbertGameModel() : _qbertLivesLeft(_defaultLivesNum), _currentSc
 	_gameStage(DidntStart), _isGameInitialized(false)
 {
 	_returnObject = QbertModel::ModelObjects_Ptr(new QbertModel::ModelObjects());
+	_boxNames.push_back(std::pair<std::string, std::string>("Box5", "Box2"));
+	_boxNames.push_back(std::pair<std::string, std::string>("Box6", "Box1"));
+	_boxNames.push_back(std::pair<std::string, std::string>("Box3", "Box2"));
+	_boxNames.push_back(std::pair<std::string, std::string>("Box4", "Box2"));
 	_boxNames.push_back(std::pair<std::string, std::string>("RedBox", "BlueBox"));
-	_boxNames.push_back(std::pair<std::string, std::string>("BlueBox", "RedBox"));
 }
 
 QbertGameModel::~QbertGameModel(void) {}
