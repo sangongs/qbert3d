@@ -36,7 +36,7 @@ namespace BGComplete
 	void ArielView::SetUpCamera()
 	{
 		glLoadIdentity();
-		glTranslatef(0, 0, -z);
+		glTranslatef(0, 0, -_z);
 		glMultMatrixf(_matrix);
 	}
 }
