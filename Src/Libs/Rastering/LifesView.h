@@ -1,5 +1,7 @@
 #pragma once
 
+#include "DrawableObj.h"
+
 #include "QbertView.h"
 
 namespace BGComplete
@@ -7,8 +9,8 @@ namespace BGComplete
 	class LifesView : public QbertView
 	{
 	private:
-		FontView _lifesFont;
 		int _currentLifes;
+		DrawableObj_Ptr _heart;
 
 	public:
 		LifesView();
