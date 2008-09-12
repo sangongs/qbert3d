@@ -57,7 +57,7 @@ public:
 	};
 
 protected:
-	int _boxesUnvisited, *_score, *_livesLeft, *_level;
+	int _boxesUnvisited, *_score, *_livesLeft, *_level, *_gainLifeAt, *_addToNextLifeAt;
 	float _freeFallAcceleration;
 	std::string _visitedBoxName, _unvisitedBoxName;
 	QbertBox_ptr _startingBox;
@@ -78,11 +78,13 @@ protected:
 	virtual void Move(QbertGameObject_ptr ,const SimpleControler::InputData& inputdata) = 0;
 	virtual void MoveEnemies(DWORD deltaTime) = 0;
 	virtual void CreateEnemies (DWORD deltaTime) = 0;
+	void GetAdditionalLife();
 
 public:
-	QbertModel (std::string boxNameBefore, std::string boxNameAfter, int * score, int * livesLeft, int* level, float freeFallAcceleration) :
-	  _unvisitedBoxName(boxNameBefore), _visitedBoxName(boxNameAfter), _score(score), _livesLeft(livesLeft), _gameStage(DidntStart),
-		  _level(level), _freeFallAcceleration(freeFallAcceleration), _boxesUnvisited(0), _objects(new ModelObjects()) {}
+	QbertModel (std::string boxNameBefore, std::string boxNameAfter, int * score, int * livesLeft, int* level, 
+		int* gainLifeAt, int* addToNextLifeAt, float freeFallAcceleration) :
+	  _unvisitedBoxName(boxNameBefore), _visitedBoxName(boxNameAfter), _score(score), _livesLeft(livesLeft), _gainLifeAt(gainLifeAt), _addToNextLifeAt(addToNextLifeAt),
+		  _gameStage(DidntStart), _level(level), _freeFallAcceleration(freeFallAcceleration), _boxesUnvisited(0), _objects(new ModelObjects()) {}
 
 	  QbertModel(){}
 

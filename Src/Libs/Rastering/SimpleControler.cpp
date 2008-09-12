@@ -138,7 +138,7 @@ namespace BGComplete
 			_view->SetUpDrawModel(_model->GetModelObjects());
 			_view->Draw(true, 0, 0, _width, _height);
 
-			SDL_Delay(20); //[todo] maybe we don't need this
+			SDL_Delay(20);
 		}
 	}
 }

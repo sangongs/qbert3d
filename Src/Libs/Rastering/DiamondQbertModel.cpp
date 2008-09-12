@@ -19,8 +19,8 @@ namespace BGComplete
 {
 
 DiamondQbertModel::DiamondQbertModel(int sizeOfDiamond, const std::string& unvisitedBoxName, const std::string& visitedBoxName, const std::string& qbertName,
-	int * score, int * livesLeft, int * level, float freeFallAcceleration)
-	: QbertModel(unvisitedBoxName, visitedBoxName, score, livesLeft, level, freeFallAcceleration), _size(sizeOfDiamond)
+	int * score, int * livesLeft, int * level, int * gainLifeAt, int * addToNextLifeAt, float freeFallAcceleration)
+	: QbertModel(unvisitedBoxName, visitedBoxName, score, livesLeft, level, gainLifeAt, addToNextLifeAt, freeFallAcceleration), _size(sizeOfDiamond)
 {
 	this;
 	CreateDiamondStructure(sizeOfDiamond);
@@ -80,6 +80,7 @@ void DiamondQbertModel::ReciveInput(const SimpleControler::InputData& inputData)
 	Move(_objects->Qbert, inputData);
 	CreateEnemies(inputData.DeltaTime);
 	MoveEnemies(inputData.DeltaTime);
+	GetAdditionalLife();
 }
 
 void DiamondQbertModel::Move(QbertGameObject_ptr object, const SimpleControler::InputData& inputData)
@@ -301,23 +302,26 @@ void DiamondQbertModel::MoveEnemies(DWORD deltaTime)
 			if (*_livesLeft <= 0)
 				_gameStage = GameOver;
 
+			Sleep(1000);
+
 			BOOST_FOREACH (EnemiesAppearanceData& data, _enemiesAppearanceData)
 				data.IsAppearedOnce = false;
 
-			Sleep(1000);
 			break;
 		}
 
-		BOOST_FOREACH(QbertEnemyObj_ptr iter2, _objects->Enemies)
+		if (!iter->IsDying)
 		{
-			if (iter == iter2)
-				continue;
-			if(iter->TestCollision(iter2))
+			BOOST_FOREACH(QbertEnemyObj_ptr iter2, _objects->Enemies)
 			{
-				iter->IsDying = true;
-				iter->DyingProgress = 0;
-				iter2->IsDying = true;
-				iter2->DyingProgress = 0;
+				if (iter == iter2)
+					continue;
+				if(iter->TestCollision(iter2))
+				{
+					*_score += iter->GetScore();
+					iter->IsDying = true;
+					iter->DyingProgress = 0;
+				}
 			}
 		}
 	}
