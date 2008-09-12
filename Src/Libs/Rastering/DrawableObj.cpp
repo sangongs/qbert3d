@@ -303,7 +303,7 @@ namespace BGComplete
 				glEnd();
 			}
 		
-			glPopMatrix();
+			//glPopMatrix();
 		glEndList();
 	}
 
