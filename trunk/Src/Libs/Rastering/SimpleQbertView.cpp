@@ -32,10 +32,10 @@ namespace BGComplete
 
 	void SimpleQbertView::Init()
 	{
-		AddNewObject("Qbert", "Objects", "10.obj", 1.3, 0, 0, 0);
+		AddNewObject("Qbert", "Objects", "10.obj", 1.3f, 0, 0, 0);
 		AddNewObject("RedBox", "Objects", "box4.obj", 1, 0, 0, 0);
 		AddNewObject("BlueBox", "Objects", "box3.obj", 1, 0, 0, 0);
-		AddNewObject("ball", "Objects", "vall.obj", 0.9, -90, -100, 0);
+		AddNewObject("ball", "Objects", "vall.obj", 0.9f, -90, -100, 0);
 		AddNewObject("directEnemy", "Objects", "smurf_2.obj", 1, -90, 0 , 0);
 		AddNewObject("chaser", "Objects", "toad.obj", 1, 0, 90, 90);
 	}
@@ -140,7 +140,8 @@ namespace BGComplete
 		Math::Point3D translatedSecondVector = (2 * (rotationDirection.ScalarProduct(from.second) / rotationDirection.ScalarProduct(rotationDirection)) * rotationDirection - 
 			from.second).Normalize();
 
-		float rotationAngle = Math::Dacos(translatedSecondVector.ScalarProduct(to.second));
+		float cosOfrotationAngle = translatedSecondVector.ScalarProduct(to.second);
+		float rotationAngle = Math::Dacos(std::abs(cosOfrotationAngle) > 1 ? Math::Sign(cosOfrotationAngle) : cosOfrotationAngle);
 		Math::Point3D normalVector = translatedSecondVector.CrossProduct(to.second);
 
 		if (!normalVector.IsEqual(Math::Point3D::Zero, point3DEquPrecision) && !normalVector.Normalize().IsEqual(to.first, point3DEquPrecision))

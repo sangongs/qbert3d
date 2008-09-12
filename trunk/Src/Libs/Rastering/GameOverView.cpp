@@ -18,9 +18,9 @@ namespace BGComplete
 
 	void GameOverView::Draw(bool clearAndSwap, unsigned startX, unsigned startY, unsigned width, unsigned height)
 	{
-		if ((_modelObjects->gameStage == GameStage::GameOver) || (_modelObjects->gameStage == GameStage::GameWon))
+		if ((_modelObjects->gameStage == GameOver) || (_modelObjects->gameStage == GameWon))
 		{
-			_gameOverFont.SetText(_modelObjects->gameStage == GameStage::GameWon ? "Congratulations you finished the game!" : "Game Over!", 255, 255, 255, 0);
+			_gameOverFont.SetText(_modelObjects->gameStage == GameWon ? "Congratulations you finished the game!" : "Game Over!", 255, 255, 255, 0);
 			_gameOverFont.Draw(clearAndSwap, startX, (unsigned)(startY + (float)height * 0.4f), width, unsigned((float)height * 0.6f));
 			
 			if (Math::Swing(1000) > 0.5)

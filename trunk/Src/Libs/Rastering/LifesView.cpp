@@ -44,10 +44,10 @@ namespace BGComplete
 		glLightfv(GL_LIGHT0, GL_SPECULAR, lightParams + 10);
 		glLoadIdentity();
 
-		glTranslatef((1.0f / 6.0f) * - 2.5, 0, -5.0f);
+		glTranslatef((1.0f / 6.0f) * - 2.5f, 0, -5.0f);
 		for (int i = 0; i < _currentLifes; i++)
 		{
-			_heart->Draw(0, 0, 0, 0.16);
+			_heart->Draw(0, 0, 0, 0.16f);
 			glTranslatef((1.0f / 6.0f), 0, 0);
 		}
 

@@ -12,9 +12,9 @@
 
 namespace BGComplete
 {
-	ArielView::ArielView(unsigned z) : _z(z) {}
+	ArielView::ArielView(unsigned z) : _z((float)z) {}
 
-	void ArielView::CameraMove(float deltaX, float deltaY, float deltaZ, float xRotate, float yRotate, float zRotate, char /*viewKey*/)
+	void ArielView::CameraMove(float /*deltaX*/, float /*deltaY*/, float /*deltaZ*/, float xRotate, float yRotate, float zRotate, char /*viewKey*/)
 	{
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
