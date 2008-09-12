@@ -74,8 +74,8 @@ int WINAPI WinMain(HINSTANCE /*hInst*/, HINSTANCE /*hPrev*/, LPSTR /*szCmdLine*/
 		LayeredQbertView::CoordinatedQbertView(
 			QbertView_Ptr(new LifesView()),
 		LayeredQbertView::QuadCoords(
-			Math::Point2D(0.05f, 0.8f), 
-			Math::Point2D(0.1f, 0.05f))));
+			Math::Point2D(0.001f, 0.85f), 
+			Math::Point2D(0.2f, 0.05f))));
 
 	std::list<LayeredQbertView::CoordinatedSimpleView> listOfSimpleViews;
 	listOfSimpleViews.push_back(

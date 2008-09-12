@@ -32,11 +32,11 @@ namespace BGComplete
 
 	void SimpleQbertView::Init()
 	{
-		AddNewObject("Qbert", "Objects", "kirby.obj", 1, -90, 0, 0);
+		AddNewObject("Qbert", "Objects", "qbert_3.obj", 1, -90, 0, 0);
 		AddNewObject("RedBox", "Objects", "cube.obj", 1, 0, 0, 0);
 		AddNewObject("BlueBox", "Objects", "cube2.obj", 1, 0, 0, 0);
-		AddNewObject("ball", "Objects", "Q-bert.obj", 1, -90, -100, 0);
-		AddNewObject("directEnemy", "Objects", "kirby.obj", 1, -90, 0 , 0);
+		AddNewObject("ball", "Objects", "vall.obj", 1, -90, -100, 0);
+		AddNewObject("directEnemy", "Objects", "toad.obj", 1, -90, 0 , 0);
 		AddNewObject("chaser", "Objects", "Q-bert.obj", 1, -90, -100, 0);
 	}
 
