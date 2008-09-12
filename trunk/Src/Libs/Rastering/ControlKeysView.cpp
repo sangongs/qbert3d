@@ -25,7 +25,6 @@ namespace BGComplete
 		{		
 			_instructionsText[0].Draw(clearAndSwap, startX + (unsigned)(width * 0.2), startY + (unsigned)(height * 0.77), (unsigned)(width * 0.2), (unsigned)(height * 0.08));
 			_instructionsText[1].Draw(clearAndSwap, startX + (unsigned)(width * 0.2), startY + (unsigned)(height * (0.7 - 0.02 - 0.03 * 1)), (unsigned)(width * 0.65), (unsigned)(height * 0.03)); //arcade style baby
-			_instructionsText[4].Draw(clearAndSwap, startX + (unsigned)(width * 0.2), startY + (unsigned)(height * (0.7 - 0.02 - 0.03 * 4)), (unsigned)(width * 0.375), (unsigned)(height * 0.03)); //arcade style baby
 
 			for (int l = 2; l < 4; l++)
 				_instructionsText[l].Draw(clearAndSwap, startX + (unsigned)(width * 0.2), startY + (unsigned)(height * (0.7 - 0.02 - 0.03 * l)), (unsigned)(width * 0.3), (unsigned)(height * 0.03));
@@ -39,7 +38,7 @@ namespace BGComplete
 	void ControlKeysView::Init()
 	{
 		_linkText.SetText("Hold / to view controls.", 255, 255, 255, 0);
-		for (int i = 0; i < 5; i++)
+		for (int i = 0; i < 4; i++)
 			_instructionsText.push_back(FontView("FONTS\\CALIBRI.TTF", 28));
 
 		_instructionsText[0].SetText("Controls", 255, 255, 255, 0);
