@@ -46,8 +46,12 @@ void QbertGameModel::ReciveInput(const SimpleControler::InputData& data)
 		_gameStage = _currentQbertModel->GetGameStage();
 
 		if(_currentQbertModel->IsGameWon())
-			SetupNextLevel();
-		return;
+		{
+			if (_currentLevel < _lastLecel)
+				SetupNextLevel();
+			else
+				_gameStage = GameWon;
+		}
 	}
 }
 
