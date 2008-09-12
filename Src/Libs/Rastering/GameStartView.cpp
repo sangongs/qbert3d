@@ -26,10 +26,10 @@ namespace BGComplete
 
 	void GameStartView::Draw(bool clearAndSwap, unsigned startX, unsigned startY, unsigned width, unsigned height)
 	{
-		if (_modelObjects->gameStage == GameStage::DidntStart)
+		if (_modelObjects->gameStage == DidntStart)
 		{
-			_gameStartFont.Draw(clearAndSwap, startX, (unsigned)(startY + (float)height * 0.5f), width, unsigned((float)height * 0.5f));
-			_bgComplete.Draw(clearAndSwap, startX + (float)width * 0.4f, (unsigned)(startY + (float)height * 0.4f), (float)width * 0.6f, unsigned((float)height * 0.1f));
+			_gameStartFont.Draw(clearAndSwap, startX, (startY + (unsigned)(height * 0.5)), width, unsigned(height * 0.5));
+			_bgComplete.Draw(clearAndSwap, startX + (unsigned)(width * 0.4), startY + (unsigned)(height * 0.4), (unsigned)(width * 0.6), unsigned(height * 0.1));
 
 			if (Math::Swing(1000) > 0.5)
 				_pressNFont.Draw(clearAndSwap, startX, startY, width, (unsigned)((float)height * 0.4f));

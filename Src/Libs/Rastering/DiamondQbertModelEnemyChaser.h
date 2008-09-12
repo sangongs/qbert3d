@@ -13,7 +13,7 @@ class DiamondQbertModelEnemyChaser : public QbertEnemyObj
 private:
 	void SetListOfBoxes();
 
-	Direction HelperToWhereToMove(bool isXAxis);
+	Direction MoveToPoint(const Math::Point3D& moveTo);
 
 public:
 	DiamondQbertModelEnemyChaser(const std::string& name = "", Model* model = NULL, int score = 0, QbertBox_ptr box = QbertBox_ptr(), DWORD moveLegth = 100);

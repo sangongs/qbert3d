@@ -22,6 +22,7 @@ namespace BGComplete
 		DWORD _moveLength;
 		float _verticalSpeed, _horizontalSpeed, _freeFallAcceleration;
 
+		bool IsEqulZero(float inp) {return std::abs(inp) < _floatEquPrecision;}
 	public:
 		float Progress;
 		QbertBox_ptr LastBox, NextBox;

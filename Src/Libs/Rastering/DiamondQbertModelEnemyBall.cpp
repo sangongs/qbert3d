@@ -28,6 +28,9 @@ void DiamondQbertModelEnemyBall::SetListOfBoxes()
 
 Direction DiamondQbertModelEnemyBall::WhereToMove()
 {
+	if (IsMoving)
+		return None;
+
 	boost::mt19937 generator((boost::uint32_t)std::time(0));
 	boost::variate_generator<boost::mt19937, boost::uniform_int<>> uniRand12(generator, boost::uniform_int<>(0, 11));
 

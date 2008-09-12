@@ -8,7 +8,7 @@ namespace BGComplete
 	{
 	private:
 		FontView _newLevelFont;
-		unsigned _lastLevel;
+		int _lastLevel;
 		DWORD _lastLevelTime;
 
 	public:

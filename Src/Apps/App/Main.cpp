@@ -59,23 +59,23 @@ int WINAPI WinMain(HINSTANCE /*hInst*/, HINSTANCE /*hPrev*/, LPSTR /*szCmdLine*/
 		LayeredQbertView::CoordinatedQbertView(
 			QbertView_Ptr(new GameStartView()),
 		LayeredQbertView::QuadCoords(
-			Math::Point2D(0.4, 0.4), 
-			Math::Point2D(0.4, 0.2))));
+			Math::Point2D(0.4f, 0.4f), 
+			Math::Point2D(0.4f, 0.2f))));
 
 
 	listOfQbertViews.push_back(
 		LayeredQbertView::CoordinatedQbertView(
 			QbertView_Ptr(new NewLevelView()),
 		LayeredQbertView::QuadCoords(
-			Math::Point2D(0.4, 0.4), 
-			Math::Point2D(0.2, 0.2))));
+			Math::Point2D(0.4f, 0.4f), 
+			Math::Point2D(0.2f, 0.2f))));
 
 	listOfQbertViews.push_back(
 		LayeredQbertView::CoordinatedQbertView(
 			QbertView_Ptr(new LifesView()),
 		LayeredQbertView::QuadCoords(
-			Math::Point2D(0.05, 0.8), 
-			Math::Point2D(0.1, 0.05))));
+			Math::Point2D(0.05f, 0.8f), 
+			Math::Point2D(0.1f, 0.05f))));
 
 	std::list<LayeredQbertView::CoordinatedSimpleView> listOfSimpleViews;
 	listOfSimpleViews.push_back(

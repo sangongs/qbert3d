@@ -3,6 +3,7 @@
 #include "QbertEnemyObj.h"
 #include "DiamondQbertModelEnemyBall.h"
 #include "DiamondQbertModelEnemyDirect.h"
+#include "DiamondQbertModelEnemyChaser.h"
 
 #include "DiamondQbertEnemiesFactory.h"
 
@@ -15,8 +16,10 @@ QbertEnemyObj_ptr DiamondQbertEnemiesFactory::GetNewEnemy (const std::string& ty
 		return QbertEnemyObj_ptr(new DiamondQbertModelEnemyBall(name, model, score));
 	if (type == "directEnemy")
 		return QbertEnemyObj_ptr(new DiamondQbertModelEnemyDirect(name, model, score));
-
-	return QbertEnemyObj_ptr();
+	if (type == "chaser")
+		return QbertEnemyObj_ptr(new DiamondQbertModelEnemyChaser(name, model, score));
+	
+	throw std::exception ("factory faild to create new enemy in DiamondQbertEnemiesFactory::GetNewEnemy()");
 }
 
 }	//namespace BGComplete

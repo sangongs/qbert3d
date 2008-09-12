@@ -68,6 +68,9 @@ Direction DiamondQbertModelEnemyDirect::HelperToWhereToMove(bool isXAxis)
 
 Direction DiamondQbertModelEnemyDirect::WhereToMove()
 {
+	if (IsMoving)
+		return None;
+
 	boost::mt19937 generator((boost::uint32_t)std::time(0));
 	boost::variate_generator<boost::mt19937,  boost::uniform_real<float>> uniRandReal01(generator, boost::uniform_real<float>(0, 1));
 	boost::variate_generator<boost::mt19937, boost::uniform_int<>> uniRand4(generator, boost::uniform_int<>(0 ,4));
