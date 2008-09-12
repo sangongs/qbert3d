@@ -15,8 +15,9 @@ class QbertGameModel : public Model
 	GameStage _gameStage;
 	QbertModel_ptr _currentQbertModel;
 	QbertModel::ModelObjects_Ptr _returnObject;
-	int _qbertLivesLeft, _currentScore, _currentLevel;
+	int _qbertLivesLeft, _currentScore, _currentLevel, _nextLifeAt, _addToNextLifeAt;
 	std::vector<std::pair<std::string, std::string>> _boxNames;
+	bool _isGameInitialized;
 public:
 	QbertGameModel(void);
 	~QbertGameModel(void);

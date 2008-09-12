@@ -60,4 +60,14 @@ void QbertModel::StartGame()
 	ReciveInput(SimpleControler::InputData());
 }
 
+void QbertModel::GetAdditionalLife()
+{
+	if (*_score > *_gainLifeAt)
+	{
+		(*_livesLeft)++;
+		*_gainLifeAt += *_addToNextLifeAt;
+		*_addToNextLifeAt += 200;
+	}
+}
+
 }	//namespace BGComplete

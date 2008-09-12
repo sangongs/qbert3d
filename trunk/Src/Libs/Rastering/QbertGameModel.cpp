@@ -11,7 +11,8 @@ namespace BGComplete
 
 const std::string QbertGameModel::_qbertName = "Qbert";
 
-QbertGameModel::QbertGameModel() : _qbertLivesLeft(_defaultLivesNum), _currentScore(0), _currentLevel(0), _gameStage(DidntStart)
+QbertGameModel::QbertGameModel() : _qbertLivesLeft(_defaultLivesNum), _currentScore(0), _currentLevel(0), _nextLifeAt(0),
+	_gameStage(DidntStart), _isGameInitialized(false)
 {
 	_returnObject = QbertModel::ModelObjects_Ptr(new QbertModel::ModelObjects());
 	_boxNames.push_back(std::pair<std::string, std::string>("RedBox", "BlueBox"));
@@ -42,6 +43,12 @@ void QbertGameModel::ReciveInput(const SimpleControler::InputData& data)
 
 	if (_gameStage == GoingOn)
 	{
+		if (!_isGameInitialized)
+		{
+			_isGameInitialized = true;
+			return;
+		}
+
 		_currentQbertModel->ReciveInput(data);
 		_gameStage = _currentQbertModel->GetGameStage();
 
@@ -59,6 +66,8 @@ void QbertGameModel::SetupNewGame()
 {
 	_currentScore = 0;
 	_currentLevel = 0;
+	_nextLifeAt = 700;
+	 _addToNextLifeAt = 900;
 	_qbertLivesLeft = _defaultLivesNum;
 	SetupNextLevel();
 	_gameStage = GoingOn;
@@ -67,6 +76,7 @@ void QbertGameModel::SetupNewGame()
 void QbertGameModel::SetupNextLevel()
 {
 	_currentLevel++;
+
 	int numOfChasers = 0;
 
 	if (_currentLevel == _lastLevel)
@@ -76,14 +86,16 @@ void QbertGameModel::SetupNextLevel()
 
 	_currentQbertModel = QbertModel_ptr(new DiamondQbertModel(_currentLevel + 2, 
 		_boxNames[_currentLevel % _boxNames.size()].first, _boxNames[_currentLevel % _boxNames.size()].second,
-		_qbertName, &_currentScore, &_qbertLivesLeft, &_currentLevel, 10.0f));
-	_currentQbertModel->AddNewEnemyType("ball", "ball", 1500, 3000, 1000, 3 * _currentLevel + 2, _currentLevel > _lastLevel / 2 ? 10 : 0);
-	_currentQbertModel->AddNewEnemyType("directEnemy", "directEnemy", 2500, 2800, 1200, _currentLevel * 2 + 1, 15);
-	_currentQbertModel->AddNewEnemyType("chaser", "chaser", 3000, 1000, (numOfChasers == 1) ? 1100 : 1250, numOfChasers, 50);
+		_qbertName, &_currentScore, &_qbertLivesLeft, &_currentLevel, &_nextLifeAt, & _addToNextLifeAt, 10.0f));
+	_currentQbertModel->AddNewEnemyType("ball", "ball", 2000, 2800, 1000, 3 * _currentLevel, _currentLevel > _lastLevel / 2 ? 10 : 0);
+	_currentQbertModel->AddNewEnemyType("directEnemy", "directEnemy", 3500, 3100, 1350, _currentLevel, 15);
+	_currentQbertModel->AddNewEnemyType("chaser", "chaser", 5500, 1000, (numOfChasers == 1) ? 1100 : 1250, numOfChasers, 50);
 	_currentQbertModel->StartGame();
 	
-	
-	Sleep(1500);		//delay between levels!
+
+	_isGameInitialized = false;		//in order to skip the first input witchs time is wrong due to the initalizing of the level
+
+	Sleep(1500);					//delay between levels!
 }
 
 
