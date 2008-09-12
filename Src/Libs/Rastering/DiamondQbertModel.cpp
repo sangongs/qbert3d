@@ -305,7 +305,10 @@ void DiamondQbertModel::MoveEnemies(DWORD deltaTime)
 			Sleep(1000);
 
 			BOOST_FOREACH (EnemiesAppearanceData& data, _enemiesAppearanceData)
+			{
 				data.IsAppearedOnce = false;
+				data.TimeSinceLastAppearance = 0;
+			}
 
 			break;
 		}
