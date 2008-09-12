@@ -7,7 +7,7 @@
 
 newmtl mat_0
 Ka 0 0 0
-Kd 1 0 0.5
+Kd 1 0 0.3
 Ks 1 1 1
 illum 2
 Ns 200
