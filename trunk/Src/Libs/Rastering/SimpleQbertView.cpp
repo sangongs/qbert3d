@@ -128,7 +128,7 @@ namespace BGComplete
 		{
 			float firstScalar = from.first.ScalarProduct(from.second), secondScalar = to.first.ScalarProduct(to.second);
 
-			if (firstScalar == -1 || secondScalar == -1 || std::abs(firstScalar - secondScalar) > floatEquPrecision)
+			if (std::abs(firstScalar) == 1 || std::abs(secondScalar) == 1 || std::abs(firstScalar - secondScalar) > floatEquPrecision)
 				throw std::exception("Incompatible set of coordinate systems, can't match them (in function View::ChangeSystemCoordinate()");
 
 			if (firstScalar)
@@ -147,6 +147,7 @@ namespace BGComplete
 
 		float rotationAngle = Math::Dacos(translatedSecondVector.ScalarProduct(to.second));
 		Math::Point3D normalVector = translatedSecondVector.CrossProduct(to.second);
+
 		if (!normalVector.IsEqual(Math::Point3D::Zero, point3DEquPrecision) && !normalVector.Normalize().IsEqual(to.first, point3DEquPrecision))
 			rotationAngle *= -1;
 
