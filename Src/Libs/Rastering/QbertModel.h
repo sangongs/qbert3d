@@ -19,7 +19,7 @@
 #include "QbertGameObject.h"
 #include "QbertEnemyObj.h"
 
-enum GameStage {DidntStart, GoingOn, GameOver};
+enum GameStage {DidntStart, GoingOn, GameOver, GameWon};
 namespace BGComplete
 {
 

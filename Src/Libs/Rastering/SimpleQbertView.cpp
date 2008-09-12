@@ -58,8 +58,6 @@ namespace BGComplete
 
 	void SimpleQbertView::Draw(bool clearAndSwap, unsigned startX, unsigned startY, unsigned width, unsigned height)
 	{
-
-		//[todo] decide that to do in case of Gameover and Didntbegin cases of GameState
 		if (_modelToDraw->gameStage != GoingOn)
 			return;
 
@@ -67,7 +65,7 @@ namespace BGComplete
 		glShadeModel(GL_SMOOTH);
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LEQUAL);
-		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST); //[todo] understand what this does.
+		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 		glMatrixMode( GL_PROJECTION );
 		glLoadIdentity();
 		gluPerspective(45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 1000.0f);
