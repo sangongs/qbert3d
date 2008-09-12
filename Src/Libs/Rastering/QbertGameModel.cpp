@@ -87,9 +87,9 @@ void QbertGameModel::SetupNextLevel()
 	_currentQbertModel = QbertModel_ptr(new DiamondQbertModel(_currentLevel + 2, 
 		_boxNames[_currentLevel % _boxNames.size()].first, _boxNames[_currentLevel % _boxNames.size()].second,
 		_qbertName, &_currentScore, &_qbertLivesLeft, &_currentLevel, &_nextLifeAt, & _addToNextLifeAt, 10.0f));
-	_currentQbertModel->AddNewEnemyType("ball", "ball", 2000, 2800, 1000, 3 * _currentLevel, _currentLevel > _lastLevel / 2 ? 10 : 0);
-	_currentQbertModel->AddNewEnemyType("directEnemy", "directEnemy", 3500, 3100, 1350, _currentLevel, 15);
-	_currentQbertModel->AddNewEnemyType("chaser", "chaser", 5500, 1000, (numOfChasers == 1) ? 1100 : 1250, numOfChasers, 50);
+	_currentQbertModel->AddNewEnemyType("ball", "ball", 3000, 2800, 1000, 3 * _currentLevel, _currentLevel > _lastLevel / 2 ? 10 : 0);
+	_currentQbertModel->AddNewEnemyType("directEnemy", "directEnemy", 3000, 3250, 1350, _currentLevel, 35);
+	_currentQbertModel->AddNewEnemyType("chaser", "chaser", 1500, 2500, (numOfChasers == 1) ? 1200 : 1400, numOfChasers, 300);
 	_currentQbertModel->StartGame();
 	
 
