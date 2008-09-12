@@ -121,9 +121,9 @@ namespace BGComplete
 
 		bool Point3D::IsEqual (const Point3D& point, float precition ) const
 		{
-			return (std::abs(X() - point.X()) < precition &&
-				std::abs(Y() - point.Y()) < precition &&
-				std::abs(Z() - point.Z()) < precition);
+			return (std::abs(X() - point.X()) <= precition &&
+				std::abs(Y() - point.Y()) <= precition &&
+				std::abs(Z() - point.Z()) <= precition);
 		}
 
 		Point3D& Point3D::Normalize()

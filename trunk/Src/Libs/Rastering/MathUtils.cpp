@@ -44,5 +44,10 @@ namespace BGComplete
 				stage = (float)precision - stage;
 			return stage / (float)(precision / 2);
 		}
+
+		float Sign(float inp)
+		{
+			return ((inp >= 0) ? 1.0f : -1.0f);
+		}
 	}
 }

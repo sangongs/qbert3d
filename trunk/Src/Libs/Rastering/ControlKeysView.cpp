@@ -23,17 +23,17 @@ namespace BGComplete
 	{
 		if (_showState)
 		{		
-			_instructionsText[0].Draw(clearAndSwap, startX + width * 0.2, startY + height * 0.77, width * 0.2, height * 0.08);
-			_instructionsText[1].Draw(clearAndSwap, startX + width * 0.2, startY + height * (0.7 - 0.02 - 0.03 * 1), width * 0.65, height * 0.03); //arcade style baby
-			_instructionsText[4].Draw(clearAndSwap, startX + width * 0.2, startY + height * (0.7 - 0.02 - 0.03 * 4), width * 0.375, height * 0.03); //arcade style baby
+			_instructionsText[0].Draw(clearAndSwap, startX + (unsigned)(width * 0.2), startY + (unsigned)(height * 0.77), (unsigned)(width * 0.2), (unsigned)(height * 0.08));
+			_instructionsText[1].Draw(clearAndSwap, startX + (unsigned)(width * 0.2), startY + (unsigned)(height * (0.7 - 0.02 - 0.03 * 1)), (unsigned)(width * 0.65), (unsigned)(height * 0.03)); //arcade style baby
+			_instructionsText[4].Draw(clearAndSwap, startX + (unsigned)(width * 0.2), startY + (unsigned)(height * (0.7 - 0.02 - 0.03 * 4)), (unsigned)(width * 0.375), (unsigned)(height * 0.03)); //arcade style baby
 
 			for (int l = 2; l < 4; l++)
-				_instructionsText[l].Draw(clearAndSwap, startX + width * 0.2, startY + height * (0.7 - 0.02 - 0.03 * l), width * 0.3, height * 0.03);
+				_instructionsText[l].Draw(clearAndSwap, startX + (unsigned)(width * 0.2), startY + (unsigned)(height * (0.7 - 0.02 - 0.03 * l)), (unsigned)(width * 0.3), (unsigned)(height * 0.03));
 
 
 		}
 		else
-			_linkText.Draw(clearAndSwap, startX + width * 0.8, startY, width * 0.2, height * 0.03);
+			_linkText.Draw(clearAndSwap, startX + (unsigned)(width * 0.8), startY, (unsigned)(width * 0.2), (unsigned)(height * 0.03));
 	}
 
 	void ControlKeysView::Init()
