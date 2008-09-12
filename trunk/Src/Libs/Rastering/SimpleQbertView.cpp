@@ -36,8 +36,8 @@ namespace BGComplete
 		AddNewObject("RedBox", "Objects", "cube.obj", 1, 0, 0, 0);
 		AddNewObject("BlueBox", "Objects", "cube2.obj", 1, 0, 0, 0);
 		AddNewObject("ball", "Objects", "vall.obj", 1, -90, -100, 0);
-		AddNewObject("directEnemy", "Objects", "toad.obj", 1, -90, 0 , 0);
-		AddNewObject("chaser", "Objects", "Q-bert.obj", 1, -90, -100, 0);
+		AddNewObject("directEnemy", "Objects", "smurf_2.obj", 1, -90, 0 , 0);
+		AddNewObject("chaser", "Objects", "toad.obj", 1, -90, -100, 0);
 	}
 
 	void SimpleQbertView::SetupLights()

@@ -50,7 +50,7 @@ Direction DiamondQbertModelEnemyChaser::MoveToPoint(const Math::Point3D& moveTo)
 	else if (!IsEqulZero(Center.Y() - moveTo.Y()) && IsEqulZero(Math::Point3D(0, 1, 0).ScalarProduct(LastUpDirection)))
 		nextFaceDirection = Math::Point3D(0,  moveTo.Y() - Center.Y(), 0);
 
-	if (nextFaceDirection.IsEqual(Point3D::Zero))
+	if (nextFaceDirection.IsEqual(Math::Point3D::Zero))
 		throw std::exception("Can't move like this, moving direction equals to UpDirection in 'DiamondQbertModelEnemyChaser::MoveToPoint()'");
 
 	nextFaceDirection.Normalize();
