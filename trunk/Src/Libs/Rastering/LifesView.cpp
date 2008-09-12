@@ -21,7 +21,7 @@ namespace BGComplete
 		glShadeModel(GL_SMOOTH);
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LEQUAL);
-		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST); //[todo] understand what this does.
+		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 		glMatrixMode( GL_PROJECTION );
 		glLoadIdentity();
 		glOrtho(-0.5f, 0.5f, -(float)height / (float)width * 0.5f, (float)height / (float)width * 0.5f, 1.0f, 1000.0f);

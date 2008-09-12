@@ -19,8 +19,6 @@ void DiamondQbertModelEnemyChaser::SetListOfBoxes()
 {
 	int size = static_cast<DiamondQbertModel*>(_model)->Size();
 	VecOfAppearanceBox_ptr ret(new std::vector<AppearanceBox>);
-	ret->push_back(AppearanceBox(static_cast<QbertModel*>(_model)->GetBoxAt(0, size - 1, 0),
-		Math::Point3D(0.0f, 1.0f, 0.0f), Math::Point3D(0.0f, 0.0f, 1.0f)));
 	ret->push_back(AppearanceBox(static_cast<QbertModel*>(_model)->GetBoxAt(0, - size + 1, 0),
 		Math::Point3D(0.0f, -1.0f, 0.0f), Math::Point3D(0.0f, 0.0f, -1.0f)));
 	ret->push_back(AppearanceBox(static_cast<QbertModel*>(_model)->GetBoxAt(size - 1, 0, 0),

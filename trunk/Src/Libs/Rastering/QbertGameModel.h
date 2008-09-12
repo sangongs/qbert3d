@@ -9,7 +9,7 @@ namespace BGComplete
 
 class QbertGameModel : public Model
 {
-	static const int _defaultLivesNum = 4, _lastLecel = 5;
+	static const int _defaultLivesNum = 4, _lastLevel = 5;
 	static const std::string _qbertName;
 
 	GameStage _gameStage;
