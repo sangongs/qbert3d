@@ -12,23 +12,31 @@
 
 namespace BGComplete
 {
-	ArielView::ArielView(unsigned z)	: _x(0), _y(0), _z((float)z), _xRotate(0), _yRotate(0), _zRotate(0){}
+	ArielView::ArielView(unsigned z) : _z(z) {}
 
 	void ArielView::CameraMove(float deltaX, float deltaY, float deltaZ, float xRotate, float yRotate, float zRotate, char /*viewKey*/)
 	{
-		_x += deltaX;
-		_y += deltaY;
-		_z += deltaZ;
-		_xRotate += xRotate;
-		_yRotate += yRotate;
-		_zRotate += zRotate;
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		glRotatef(xRotate, 1.0f, 0.0f, 0.0f);
+		glRotatef(yRotate, 0.0f, 1.0f, 0.0f);
+		glRotatef(zRotate, 0.0f, 0.0f, 1.0f);
+		glMultMatrixf(_matrix);
+		glGetFloatv(GL_MODELVIEW_MATRIX, _matrix);
+	}
+
+	void ArielView::Init()
+	{
+		SimpleQbertView::Init();
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		glGetFloatv(GL_MODELVIEW_MATRIX, _matrix);
 	}
 
 	void ArielView::SetUpCamera()
 	{
-		glTranslatef(-_x, -_y, -_z);
-		glRotatef(_xRotate, 1.0f, 0.0f, 0.0f);
-		glRotatef(_yRotate, 0.0f, 1.0f, 0.0f);
-		glRotatef(_zRotate, 0.0f, 0.0f, 1.0f);
+		glLoadIdentity();
+		glTranslatef(0, 0, -z);
+		glMultMatrixf(_matrix);
 	}
 }
