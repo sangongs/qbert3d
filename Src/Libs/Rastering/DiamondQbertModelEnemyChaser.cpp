@@ -78,7 +78,14 @@ Direction DiamondQbertModelEnemyChaser::WhereToMove()
 	float sizeOfModel = (float)static_cast<DiamondQbertModel*>(_model)->Size();
 
 	if (((Center.Y() * QbertCenter.Y()) > 0))		//Same half (up, down)
+	{
+		if (IsEqulZero(Center.X()))
+			return MoveToPoint(Center + Math::Point3D(0, 0, -Math::Sign(Center.Z())));
+		else if (IsEqulZero(Center.Z()))
+			return MoveToPoint(Center + Math::Point3D(-Math::Sign(Center.X()), 0, 0));
+		
 		return MoveToPoint(QbertCenter);
+	}
 	
 	if (IsEqulZero(Center.Y()))						//The Enemy is on the perimeter
 	{
